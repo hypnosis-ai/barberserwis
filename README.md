@@ -1,2 +1,2 @@
 # barberserwis
-BarberSerwis.com – serwis maszynek barberskich Wrocław
+BarberSerwis.com – serwis maszynek barberskich cała Polska
