@@ -305,7 +305,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      max-width: 700px;
+      max-width: 760px;
       margin: 0 auto;
     }
 
@@ -316,8 +316,7 @@
     }
 
     .form-box input,
-    .form-box textarea,
-    .form-box select {
+    .form-box textarea {
       width: 100%;
       padding: 14px;
       border-radius: 10px;
@@ -489,7 +488,7 @@
   <section class="section">
     <h3>Cennik</h3>
     <p class="section-sub">
-      Ceny netto. Do wszystkich cen należy doliczyć VAT 23% oraz koszt przesyłki kurierskiej.
+      Prosty i przejrzysty cennik końcowy dla klientów z całej Polski.
     </p>
 
     <div class="pricing-list">
@@ -498,7 +497,7 @@
           <strong>Czyszczenie i konserwacja</strong>
           <span>Podstawowy serwis maszynki</span>
         </div>
-        <div class="price">60 zł netto</div>
+        <div class="price">95 zł</div>
       </div>
 
       <div class="price-row">
@@ -506,7 +505,7 @@
           <strong>Regulacja ostrzy</strong>
           <span>Poprawa cięcia i ustawienia</span>
         </div>
-        <div class="price">70 zł netto</div>
+        <div class="price">110 zł</div>
       </div>
 
       <div class="price-row">
@@ -514,7 +513,7 @@
           <strong>Kompleksowy serwis</strong>
           <span>Czyszczenie, smarowanie i regulacja</span>
         </div>
-        <div class="price">80 zł netto</div>
+        <div class="price">125 zł</div>
       </div>
 
       <div class="price-row">
@@ -522,7 +521,7 @@
           <strong>Naprawa mechanizmu</strong>
           <span>Blokady, zacinanie, słaba praca</span>
         </div>
-        <div class="price">od 80 zł netto</div>
+        <div class="price">od 125 zł</div>
       </div>
 
       <div class="price-row">
@@ -530,20 +529,12 @@
           <strong>Naprawa elektroniki</strong>
           <span>Wycena po diagnozie</span>
         </div>
-        <div class="price">od 100 zł netto</div>
-      </div>
-
-      <div class="price-row">
-        <div>
-          <strong>Przesyłka kurierska</strong>
-          <span>Obsługa wysyłkowa na terenie całej Polski</span>
-        </div>
-        <div class="price">20 zł netto</div>
+        <div class="price">od 155 zł</div>
       </div>
     </div>
 
     <p class="section-sub" style="margin-top:24px;">
-      Do wszystkich cen należy doliczyć VAT 23%. W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.
+      W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.
     </p>
   </section>
 
@@ -557,20 +548,20 @@
       <div class="steps-grid">
         <div class="step">
           <div class="step-number">1</div>
-          <h4>Skontaktuj się</h4>
-          <p>Zadzwoń lub napisz e-mail i opisz problem z maszynką.</p>
+          <h4>Wypełnij zgłoszenie</h4>
+          <p>Podaj dane, model maszynki i opisz problem.</p>
         </div>
 
         <div class="step">
           <div class="step-number">2</div>
-          <h4>Wyślij sprzęt</h4>
-          <p>Zapakuj maszynkę i wyślij ją kurierem do serwisu.</p>
+          <h4>Otwórz InPost</h4>
+          <p>Po zgłoszeniu otworzy się strona InPost do nadania przesyłki.</p>
         </div>
 
         <div class="step">
           <div class="step-number">3</div>
-          <h4>Odbierz po serwisie</h4>
-          <p>Po diagnozie i naprawie sprzęt wraca do Ciebie gotowy do pracy.</p>
+          <h4>Wyślij i czekaj na kontakt</h4>
+          <p>Po otrzymaniu sprzętu wrócimy z informacją o dalszych krokach.</p>
         </div>
       </div>
     </div>
@@ -579,13 +570,18 @@
   <section class="section">
     <h3>Formularz zgłoszenia problemu</h3>
     <p class="section-sub">
-      Wypełnij formularz, a przygotuje się gotowa wiadomość e-mail ze zgłoszeniem.
+      Uzupełnij dane, a po kliknięciu przycisku otworzy się wiadomość e-mail oraz strona nadania przesyłki InPost.
     </p>
 
     <div class="form-box">
       <form onsubmit="sendMail(event)">
         <div class="form-row">
           <input type="text" id="name" placeholder="Imię i nazwisko" required>
+          <input type="text" id="company" placeholder="Nazwa firmy">
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="nip" placeholder="NIP">
           <input type="tel" id="phone" placeholder="Telefon" required>
         </div>
 
@@ -594,24 +590,13 @@
           <input type="text" id="model" placeholder="Model maszynki">
         </div>
 
-        <select id="issueType">
-          <option value="">Wybierz rodzaj problemu</option>
-          <option>Słabo tnie</option>
-          <option>Szarpie włosy</option>
-          <option>Nie włącza się</option>
-          <option>Problem z ostrzem</option>
-          <option>Problem po upadku</option>
-          <option>Naprawa elektroniki</option>
-          <option>Inny problem</option>
-        </select>
+        <textarea id="problem" placeholder="Opisz problem z maszynką"></textarea>
 
-        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką" required></textarea>
-
-        <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
+        <button class="btn btn-gold" type="submit">Zgłoś naprawę</button>
       </form>
 
       <div class="form-note">
-        Po kliknięciu otworzy się gotowa wiadomość e-mail na adres: hypnosis@barberserwis.com
+        Po kliknięciu otworzy się gotowa wiadomość e-mail oraz strona InPost do nadania przesyłki.
       </div>
     </div>
   </section>
@@ -650,7 +635,7 @@
         <p>📍 Obsługa wysyłkowa – cała Polska</p>
         <p>📞 <a href="tel:+48782618575" style="color:#e0b36a;">+48 782 618 575</a></p>
         <p>📧 <a href="mailto:hypnosis@barberserwis.com" style="color:#e0b36a;">hypnosis@barberserwis.com</a></p>
-        <p>Na życzenie klienta możliwość wystawienia faktury VAT.</p>
+        <p>Na życzenie klienta możliwość wystawienia faktury.</p>
       </div>
 
       <div class="map-box">
@@ -668,25 +653,30 @@
       e.preventDefault();
 
       const name = document.getElementById("name").value;
+      const company = document.getElementById("company").value;
+      const nip = document.getElementById("nip").value;
       const phone = document.getElementById("phone").value;
       const city = document.getElementById("city").value;
       const model = document.getElementById("model").value;
-      const issueType = document.getElementById("issueType").value;
       const problem = document.getElementById("problem").value;
 
-      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
+      const subject = encodeURIComponent("Zgłoszenie naprawy maszynki");
       const body = encodeURIComponent(
         "Imię i nazwisko: " + name + "\n" +
+        "Nazwa firmy: " + company + "\n" +
+        "NIP: " + nip + "\n" +
         "Telefon: " + phone + "\n" +
         "Miasto: " + city + "\n" +
-        "Model maszynki: " + model + "\n" +
-        "Rodzaj problemu: " + issueType + "\n\n" +
-        "Opis problemu:\n" + problem + "\n\n" +
-        "Informacja: obsługa wysyłkowa na terenie całej Polski."
+        "Model maszynki: " + model + "\n\n" +
+        "Opis problemu:\n" + problem
       );
 
       window.location.href =
         "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
+
+      setTimeout(function() {
+        window.open("https://inpost.pl/wysylam", "_blank");
+      }, 1200);
     }
   </script>
 
