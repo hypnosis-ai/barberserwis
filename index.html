@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BarberSerwis.com – Wrocław</title>
+  <meta name="description" content="Czyszczenie, konserwacja, regulacja i naprawa maszynek barberskich we Wrocławiu." />
+  <style>
+    :root{
+      --bg:#0a0d12;
+      --bg-2:#11161f;
+      --card:rgba(17,22,31,.82);
+      --text:#f3f7fb;
+      --muted:#aeb8c4;
+      --line:rgba(255,255,255,.09);
+      --accent:#d8b36a;
+      --accent-2:#f3d79c;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --radius:24px;
+      --radius-sm:16px;
+      --max:1120px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(216,179,106,.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(243,215,156,.10), transparent 26%),
+        linear-gradient(180deg, #0a0d12 0%, #0f141d 100%);
+      line-height:1.55;
+    }
+
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:blur(12px);
+      background:rgba(10,13,18,.72);
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+
+    .topbar-inner{
+      max-width:var(--max);margin:0 auto;padding:14px 20px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    }
+
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{
+      width:46px;height:46px;border-radius:14px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 30px rgba(216,179,106,.32);
+      position:relative;
+    }
+    .brand-mark::after{
+      content:"✂";
+      position:absolute;inset:0;display:grid;place-items:center;
+      color:#1d1609;font-size:22px;font-weight:700;
+    }
+    .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.2px}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+
+    .nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 16px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);color:var(--text);font-weight:700;
+      transition:.2s ease;font-size:14px;
+    }
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+    .btn.primary{
+      border:none;color:#1f170b;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 30px rgba(216,179,106,.22);
+    }
+
+    .hero{padding:64px 0 26px}
+    .hero-grid{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch;
+    }
+    .hero-card,.panel{
+      background:var(--card);border:1px solid var(--line);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+    }
+    .hero-card{padding:34px;position:relative;overflow:hidden}
+    .hero-card::before{
+      content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;
+      background:radial-gradient(circle, rgba(216,179,106,.18), transparent 68%);
+    }
+
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(216,179,106,.10);border:1px solid rgba(216,179,106,.22);
+      color:#f2d9a6;font-size:13px;font-weight:700;margin-bottom:16px;
+    }
+
+    .hero h2{
+      margin:0 0 14px;font-size:48px;line-height:1.03;letter-spacing:-1.3px;max-width:720px;
+    }
+    .lead{margin:0;color:var(--muted);font-size:17px;max-width:650px}
+
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+    .stat{
+      padding:16px;border-radius:18px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+    .stat strong{display:block;font-size:21px;margin-bottom:5px}
+    .stat span{color:var(--muted);font-size:13px}
+
+    .photo-panel{padding:20px;display:flex;flex-direction:column;gap:16px}
+    .photo{
+      min-height:280px;border-radius:22px;overflow:hidden;position:relative;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.58)),
+        url('https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1200&q=80') center/cover;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .photo-badge{
+      position:absolute;left:16px;bottom:16px;
+      padding:10px 14px;border-radius:999px;
+      background:rgba(10,13,18,.72);backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.09);font-weight:700;
+    }
+
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini{
+      padding:16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.03)
+    }
+    .mini h3{margin:0 0 6px;font-size:16px}
+    .mini p{margin:0;color:var(--muted);font-size:13px}
+
+    .section{padding:20px 0}
+    .section-title{margin:0 0 14px;font-size:30px;letter-spacing:-.6px}
+    .section-sub{margin:0 0 20px;color:var(--muted)}
+
+    .services{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    }
+    .service{
+      padding:22px;border-radius:22px;background:var(--card);
+      border:1px solid var(--line);box-shadow:var(--shadow);
+    }
+    .icon{
+      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+      background:rgba(216,179,106,.12);color:#f2d9a6;font-size:22px;margin-bottom:14px;
+    }
+    .service h3{margin:0 0 8px;font-size:18px}
+    .service p{margin:0;color:var(--muted);font-size:14px}
+
+    .pricing-wrap{
+      display:grid;grid-template-columns:1fr .82fr;gap:20px;
+    }
+    .pricing,.contact,.form-panel,.faq{padding:24px}
+    .pricing,.contact,.form-panel,.faq{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+    }
+    .price-list{display:grid;gap:12px}
+    .price-row{
+      display:flex;justify-content:space-between;gap:16px;align-items:center;
+      padding:16px 18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)
+    }
+    .price-row span{color:var(--muted);display:block;font-size:13px;margin-top:3px}
+    .price{font-size:22px;font-weight:800;color:#f2d9a6;white-space:nowrap}
+
+    .contact p,.faq p{color:var(--muted)}
+    .contact-list{display:grid;gap:12px;margin-top:18px}
+    .contact-item{
+      padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid var(--line)
+    }
+    .contact-item strong{display:block;font-size:14px;margin-bottom:4px}
+
+    form{display:grid;gap:12px}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    input,textarea{
+      width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);color:var(--text);font:inherit;outline:none;
+    }
+    input:focus,textarea:focus{border-color:rgba(216,179,106,.45)}
+    textarea{min-height:130px;resize:vertical}
+    .note{font-size:13px;color:var(--muted);margin-top:6px}
+
+    .faq ul{padding-left:18px;color:var(--muted);margin:10px 0 0}
+    .faq li{margin:8px 0}
+
+    footer{padding:26px 0 50px;color:var(--muted);text-align:center;font-size:13px}
+
+    @media (max-width: 980px){
+      .hero-grid,.pricing-wrap,.services{grid-template-columns:1fr}
+      .hero h2{font-size:40px}
+    }
+    @media (max-width: 720px){
+      .topbar-inner{padding:12px 14px}
+      .wrap{padding:0 14px}
+      .hero{padding-top:34px}
+      .hero-card,.photo-panel,.pricing,.contact,.form-panel,.faq{padding:18px}
+      .hero h2{font-size:32px}
+      .stats,.mini-grid,.fields{grid-template-columns:1fr}
+      .section-title{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div>
+          <h1>BarberSerwis.com – Wrocław</h1>
+          <p>Czyszczenie • konserwacja • regulacja • naprawa</p>
+        </div>
+      </div>
+      <div class="nav">
+        <a class="btn" href="#uslugi">Usługi</a>
+        <a class="btn" href="#cennik">Cennik</a>
+        <a class="btn" href="#formularz">Zgłoszenie</a>
+        <a class="btn primary" href="tel:+48782618575">📞 +48 782 618 575</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">💈 Wrocław • diagnostyka gratis</div>
+          <h2>Maszynka tnie słabo, szarpie albo przestała działać?</h2>
+          <p class="lead">
+            Oferuję profesjonalne czyszczenie, konserwację, regulację ostrzy i naprawę maszynek barberskich.
+            Szybko, dokładnie i bez zbędnego gadania.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="tel:+48782618575">Zadzwoń teraz</a>
+            <a class="btn" href="#formularz">Wyślij zgłoszenie</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>60 zł</strong>
+              <span>Czyszczenie i konserwacja</span>
+            </div>
+            <div class="stat">
+              <strong>Od 80 zł</strong>
+              <span>Naprawa mechanizmu</span>
+            </div>
+            <div class="stat">
+              <strong>Gratis</strong>
+              <span>Wstępna diagnoza</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel photo-panel">
+          <div class="photo">
+            <div class="photo-badge">Serwis maszynek • Wrocław</div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini">
+              <h3>Dokładne czyszczenie</h3>
+              <p>Usuwanie włosów, brudu i blokad mechanizmu.</p>
+            </div>
+            <div class="mini">
+              <h3>Regulacja ostrzy</h3>
+              <p>Lepsze cięcie bez szarpania i zacinania.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="uslugi">
+      <h2 class="section-title">Zakres usług</h2>
+      <p class="section-sub">Strona ma wyglądać profesjonalnie, ale treść też musi być konkretna — dlatego usługi są jasno opisane.</p>
+      <div class="services">
+        <article class="service">
+          <div class="icon">🧼</div>
+          <h3>Czyszczenie maszynki</h3>
+          <p>Dokładne usuwanie włosów, kurzu i zabrudzeń z obudowy, ostrzy oraz wnętrza mechanizmu.</p>
+        </article>
+        <article class="service">
+          <div class="icon">⚙️</div>
+          <h3>Konserwacja i smarowanie</h3>
+          <p>Przygotowanie maszynki do dalszej pracy, zmniejszenie tarcia i poprawa działania ruchomych elementów.</p>
+        </article>
+        <article class="service">
+          <div class="icon">✂️</div>
+          <h3>Regulacja ostrzy</h3>
+          <p>Ustawienie ostrzy tak, aby maszynka cięła płynnie, równo i bez szarpania.</p>
+        </article>
+        <article class="service">
+          <div class="icon">🔧</div>
+          <h3>Naprawa mechanizmu</h3>
+          <p>Usuwanie blokad spowodowanych włosami, brudem lub zużyciem elementów.</p>
+        </article>
+        <article class="service">
+          <div class="icon">🔌</div>
+          <h3>Naprawa elektroniki</h3>
+          <p>Diagnoza i naprawa prostych usterek elektronicznych, jeśli naprawa jest opłacalna.</p>
+        </article>
+        <article class="service">
+          <div class="icon">📦</div>
+          <h3>Serwis po upadku</h3>
+          <p>Sprawdzenie obudowy, ostrzy, mocowania i pracy mechanizmu po uszkodzeniu.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="cennik">
+      <div class="pricing-wrap">
+        <div class="pricing">
+          <h2 class="section-title">Cennik</h2>
+          <p class="section-sub">Prosty i czytelny. Końcowa cena zależy od stanu maszynki i ewentualnych części.</p>
+          <div class="price-list">
+            <div class="price-row">
+              <div><strong>Czyszczenie i konserwacja</strong><span>Podstawowy serwis</span></div>
+              <div class="price">60 zł</div>
+            </div>
+            <div class="price-row">
+              <div><strong>Regulacja ostrzy</strong><span>Poprawa cięcia i ustawienia</span></div>
+              <div class="price">70 zł</div>
+            </div>
+            <div class="price-row">
+              <div><strong>Kompleksowy serwis</strong><span>Czyszczenie, smarowanie i regulacja</span></div>
+              <div class="price">80 zł</div>
+            </div>
+            <div class="price-row">
+              <div><strong>Naprawa mechanizmu</strong><span>Blokady, zacinanie, słaba praca</span></div>
+              <div class="price">od 80 zł</div>
+            </div>
+            <div class="price-row">
+              <div><strong>Naprawa elektroniki</strong><span>Wycena po diagnozie</span></div>
+              <div class="price">od 100 zł</div>
+            </div>
+          </div>
+          <p class="note">W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.</p>
+        </div>
+
+        <aside class="contact">
+          <h2 class="section-title">Kontakt</h2>
+          <p>Klient ma od razu wiedzieć, jak się z Tobą skontaktować.</p>
+          <div class="contact-list">
+            <div class="contact-item">
+              <strong>E-mail</strong>
+              <a href="mailto:hypnosis@barberserwis.com">hypnosis@barberserwis.com</a>
+            </div>
+            <div class="contact-item">
+              <strong>Telefon</strong>
+              <a href="tel:+48782618575">+48 782 618 575</a>
+            </div>
+            <div class="contact-item">
+              <strong>Miasto</strong>
+              Wrocław
+            </div>
+            <div class="contact-item">
+              <strong>Informacja</strong>
+              Na życzenie klienta możliwość wystawienia faktury.
+            </div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="btn primary" href="tel:+48782618575">Zadzwoń</a>
+            <a class="btn" href="#formularz">Formularz</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="formularz">
+      <div class="pricing-wrap">
+        <div class="form-panel">
+          <h2 class="section-title">Zgłoszenie naprawy</h2>
+          <p class="section-sub">Klient może od razu opisać problem. Po kliknięciu otworzy się SMS z gotową treścią.</p>
+          <form onsubmit="sendToPhone(event)">
+            <div class="fields">
+              <input type="text" id="name" placeholder="Imię" required>
+              <input type="tel" id="phone" placeholder="Telefon" required>
+            </div>
+            <input type="text" id="model" placeholder="Model maszynki">
+            <textarea id="problem" placeholder="Opisz problem" required></textarea>
+            <button class="btn primary" type="submit">Wyślij zgłoszenie</button>
+          </form>
+          <p class="note">To działa najlepiej na telefonie. Na komputerze klient nadal zobaczy dane kontaktowe i może zadzwonić.</p>
+        </div>
+
+        <aside class="faq">
+          <h2 class="section-title">Najczęstsze problemy</h2>
+          <p>Ta sekcja dobrze wygląda i dodatkowo pomaga stronie w wyszukiwaniu.</p>
+          <ul>
+            <li>Maszynka słabo tnie</li>
+            <li>Ostrze szarpie włosy</li>
+            <li>Mechanizm jest zablokowany przez włosy lub brud</li>
+            <li>Maszynka nie działa po upadku</li>
+            <li>Potrzebna jest regulacja lub konserwacja</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> BarberSerwis.com – Wrocław
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function sendToPhone(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const model = document.getElementById('model').value;
+      const problem = document.getElementById('problem').value;
+
+      const text =
+        'Zgłoszenie naprawy maszynki:%0A' +
+        'Imię: ' + encodeURIComponent(name) + '%0A' +
+        'Telefon: ' + encodeURIComponent(phone) + '%0A' +
+        'Model: ' + encodeURIComponent(model) + '%0A' +
+        'Problem: ' + encodeURIComponent(problem);
+
+      window.location.href = 'sms:+48782618575?body=' + text;
+    }
+  </script>
+</body>
+</html>
