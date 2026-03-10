@@ -104,9 +104,11 @@
       background: #23232b;
     }
 
-   .hero {
+.hero {
   min-height: 900px;
-  background-image: url("hero-barberserwis3.png");
+  background-image:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.75)),
+    url("hero-barberserwis3.png");
   background-size: 80%;
   background-position: center 20px;
   background-repeat: no-repeat;
@@ -115,7 +117,6 @@
   justify-content: center;
   text-align: center;
 }
-
     .hero::before {
       content: "";
       position: absolute;
@@ -163,17 +164,20 @@
     }
 
     .hero h2 {
-      font-size: 48px;
-      margin: 0 0 16px;
-      line-height: 1.1;
-    }
+  font-size: 48px;
+  margin: 0 0 16px;
+  line-height: 1.1;
+  color: white;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.85);
+}
 
     .hero p {
-      font-size: 18px;
-      color: #ddd;
-      max-width: 760px;
-      margin: 0 auto 26px;
-    }
+  font-size: 18px;
+  color: #f1f1f1;
+  max-width: 760px;
+  margin: 0 auto 26px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
 
     .hero-buttons {
       display: flex;
