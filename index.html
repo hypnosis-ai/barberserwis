@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BarberSerwis.com – Serwis maszynek barberskich na terenie całej Polski</title>
+  <title>BarberSerwis.com – Serwis maszynek barberskich Polska</title>
   <meta name="description" content="BarberSerwis.com – serwis maszynek barberskich na terenie całej Polski. Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia." />
-  <meta name="keywords" content="serwis maszynek barberskich na terenie całej Polski, naprawa maszynek do strzyżenia , konserwacja maszynek barber Polska, czyszczenie maszynek Wrocław" />
+  <meta name="keywords" content="serwis maszynek barberskich Polska, naprawa maszynek do strzyżenia Polska, konserwacja maszynek barber, czyszczenie maszynek, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis.png" />
   <style>
     * {
@@ -104,83 +104,60 @@
       background: #23232b;
     }
 
-.hero {
-  min-height: 900px;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.4)),
-    url("hero-barberserwis3.png");
-  background-size: 80%;
-  background-position: center 20px;
-  background-repeat: no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-    .hero::before {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(224,179,106,0.18), transparent 70%);
-      top: -80px;
-      left: -80px;
-      animation: glow 5s ease-in-out infinite;
-      pointer-events: none;
+    .hero {
+      min-height: 900px;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.4)),
+        url("hero-barberserwis3.png");
+      background-size: 80%;
+      background-position: center 20px;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(224,179,106,0.10), transparent 70%);
-      bottom: -100px;
-      right: -60px;
-      animation: glow 6s ease-in-out infinite alternate;
-      pointer-events: none;
+    .hero-content {
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+      margin-top: -120px;
     }
-
-    @keyframes glow {
-      from { transform: scale(1); opacity: 0.7; }
-      to { transform: scale(1.12); opacity: 1; }
-    }
-
-    .hero-content{
-  margin-top:550px;
-}
 
     .hero-badge {
       display: inline-block;
-      background: rgba(224,179,106,0.16);
+      background: rgba(224,179,106,0.15);
       color: #f0c988;
-      border: 1px solid rgba(224,179,106,0.30);
-      padding: 8px 14px;
-      border-radius: 999px;
+      border: 1px solid rgba(224,179,106,0.35);
+      padding: 8px 16px;
+      border-radius: 30px;
       font-size: 14px;
       margin-bottom: 18px;
-      margin-top:-300px;
+      box-shadow: 0 0 20px rgba(224,179,106,0.25);
     }
 
-    .hero h2{
-  font-size:48px;
-  margin:0 0 16px;
-  line-height:1.1;
-  color:white;
-
-  text-shadow:
-  0 3px 10px rgba(0,0,0,0.9),
-  0 0 25px rgba(224,179,106,0.45),
-  0 0 60px rgba(224,179,106,0.25);
-}
+    .hero h2 {
+      font-size: 48px;
+      margin: 0 0 16px;
+      line-height: 1.1;
+      color: white;
+      text-shadow:
+        0 3px 10px rgba(0,0,0,0.9),
+        0 0 25px rgba(224,179,106,0.45),
+        0 0 60px rgba(224,179,106,0.25);
+    }
 
     .hero p {
-  font-size: 18px;
-  color: #f1f1f1;
-  max-width: 760px;
-  margin: 0 auto 26px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
+      font-size: 18px;
+      color: #f1f1f1;
+      max-width: 760px;
+      margin: 0 auto 26px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
 
     .hero-buttons {
       display: flex;
@@ -288,6 +265,42 @@
       margin-bottom: 10px;
     }
 
+    .steps-box {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .step {
+      background: #202028;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 34px;
+      height: 34px;
+      line-height: 34px;
+      text-align: center;
+      border-radius: 50%;
+      background: #e0b36a;
+      color: #111;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
     .contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -328,6 +341,16 @@
     }
 
     @media (max-width: 768px) {
+      .hero {
+        min-height: 700px;
+        background-size: 120%;
+        background-position: center 40px;
+      }
+
+      .hero-content {
+        margin-top: -40px;
+      }
+
       .hero h2 {
         font-size: 34px;
       }
@@ -358,7 +381,7 @@
         <img src="logo-barberserwis.png" alt="BarberSerwis logo">
         <div class="logo-text">
           <h1>BarberSerwis.com</h1>
-          <p>Premium serwis maszynek barberskich – Polska</p>
+          <p>Serwis maszynek barberskich – cała Polska</p>
         </div>
       </div>
 
@@ -371,11 +394,11 @@
 
   <section class="hero">
     <div class="hero-content">
-      <div class="hero-badge">Polska • Diagnostyka gratis • BarberSerwis.com</div>
+      <div class="hero-badge">Cała Polska • Diagnostyka gratis • BarberSerwis.com</div>
       <h2>Serwis maszynek barberskich na terenie całej Polski</h2>
       <p>
         Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia.
-        Profesjonalna obsługa dla barberów, barber shopów i klientów indywidualnych.
+        Profesjonalna obsługa dla barberów, barber shopów i klientów indywidualnych z całej Polski.
       </p>
       <div class="hero-buttons">
         <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń teraz</a>
@@ -387,7 +410,7 @@
   <section class="section">
     <h3>Nasze usługi</h3>
     <p class="section-sub">
-      BarberSerwis.com oferuje profesjonalny serwis maszynek barberskich w Polsce:
+      BarberSerwis.com oferuje profesjonalny serwis maszynek barberskich na terenie całej Polski:
       naprawa, czyszczenie, konserwacja i regulacja.
     </p>
 
@@ -427,7 +450,7 @@
   <section class="section">
     <h3>Cennik</h3>
     <p class="section-sub">
-      Proste ceny startowe. Ostateczna wycena zależy od stanu sprzętu i ewentualnych części.
+      Ceny netto. Do wszystkich cen należy doliczyć VAT 23% oraz koszt przesyłki kurierskiej.
     </p>
 
     <div class="pricing-list">
@@ -436,7 +459,7 @@
           <strong>Czyszczenie i konserwacja</strong>
           <span>Podstawowy serwis maszynki</span>
         </div>
-        <div class="price">60 zł</div>
+        <div class="price">60 zł netto</div>
       </div>
 
       <div class="price-row">
@@ -444,7 +467,7 @@
           <strong>Regulacja ostrzy</strong>
           <span>Poprawa cięcia i ustawienia</span>
         </div>
-        <div class="price">70 zł</div>
+        <div class="price">70 zł netto</div>
       </div>
 
       <div class="price-row">
@@ -452,7 +475,7 @@
           <strong>Kompleksowy serwis</strong>
           <span>Czyszczenie, smarowanie i regulacja</span>
         </div>
-        <div class="price">80 zł</div>
+        <div class="price">80 zł netto</div>
       </div>
 
       <div class="price-row">
@@ -460,7 +483,7 @@
           <strong>Naprawa mechanizmu</strong>
           <span>Blokady, zacinanie, słaba praca</span>
         </div>
-        <div class="price">od 80 zł</div>
+        <div class="price">od 80 zł netto</div>
       </div>
 
       <div class="price-row">
@@ -468,13 +491,50 @@
           <strong>Naprawa elektroniki</strong>
           <span>Wycena po diagnozie</span>
         </div>
-        <div class="price">od 100 zł</div>
+        <div class="price">od 100 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Przesyłka kurierska</strong>
+          <span>Obsługa wysyłkowa na terenie całej Polski</span>
+        </div>
+        <div class="price">20 zł netto</div>
       </div>
     </div>
 
     <p class="section-sub" style="margin-top:24px;">
-      W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.
+      Do wszystkich cen należy doliczyć VAT 23%. W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.
     </p>
+  </section>
+
+  <section class="section">
+    <h3>Jak wysłać maszynkę do serwisu?</h3>
+    <p class="section-sub">
+      Obsługa działa wysyłkowo na terenie całej Polski. To proste i wygodne.
+    </p>
+
+    <div class="steps-box">
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Skontaktuj się</h4>
+          <p>Zadzwoń lub napisz e-mail i opisz problem z maszynką.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Wyślij sprzęt</h4>
+          <p>Zapakuj maszynkę i wyślij ją kurierem do serwisu.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h4>Odbierz po serwisie</h4>
+          <p>Po diagnozie i naprawie sprzęt wraca do Ciebie gotowy do pracy.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section">
@@ -485,8 +545,8 @@
 
     <div class="barbershop-box">
       <p>
-        Oferuję obsługę barber shopów na terenie calej Polski. Regularny serwis sprzętu pomaga
-        utrzymać maszynki w dobrej kondycji i ogranicza ryzyko awarii w pracy.
+        Oferuję obsługę barber shopów na terenie całej Polski w modelu wysyłkowym.
+        Regularny serwis sprzętu pomaga utrzymać maszynki w dobrej kondycji i ogranicza ryzyko awarii w pracy.
       </p>
 
       <ul>
@@ -502,26 +562,26 @@
   <section class="section">
     <h3>Kontakt</h3>
     <p class="section-sub">
-      Serwis maszynek barberskich Wrocław — szybki kontakt telefoniczny i mailowy.
+      Serwis maszynek barberskich – cała Polska. Szybki kontakt telefoniczny i mailowy.
     </p>
 
     <div class="contact-grid">
       <div class="contact-box">
         <h4>BarberSerwis.com</h4>
-        <p>📍 Wrocław</p>
+        <p>📍 Obsługa wysyłkowa – cała Polska</p>
         <p>📞 <a href="tel:+48782618575" style="color:#e0b36a;">+48 782 618 575</a></p>
         <p>📧 <a href="mailto:hypnosis@barberserwis.com" style="color:#e0b36a;">hypnosis@barberserwis.com</a></p>
-        <p>Na życzenie klienta możliwość wystawienia faktury.</p>
+        <p>Na życzenie klienta możliwość wystawienia faktury VAT.</p>
       </div>
 
       <div class="map-box">
-        <iframe src="https://www.google.com/maps?q=Wroc%C5%82aw&output=embed" loading="lazy"></iframe>
+        <iframe src="https://www.google.com/maps?q=Polska&output=embed" loading="lazy"></iframe>
       </div>
     </div>
   </section>
 
   <footer>
-    © BarberSerwis.com – Wrocław
+    © BarberSerwis.com – Serwis maszynek barberskich Polska
   </footer>
 
 </body>
