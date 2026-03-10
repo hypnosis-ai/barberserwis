@@ -645,6 +645,7 @@
         </div>
 
         <textarea id="problem" placeholder="Opisz problem z maszynką"></textarea>
+        <input type="text" id="tracking" placeholder="Numer przesyłki InPost (opcjonalnie)">
 
         <button class="btn btn-gold" type="submit">Zgłoś naprawę</button>
       </form>
@@ -713,6 +714,7 @@
       const city = document.getElementById("city").value;
       const model = document.getElementById("model").value;
       const problem = document.getElementById("problem").value;
+      const tracking = document.getElementById("tracking").value;
 
       const subject = encodeURIComponent("Zgłoszenie naprawy maszynki");
       const body = encodeURIComponent(
@@ -722,7 +724,8 @@
         "Telefon: " + phone + "\n" +
         "Miasto: " + city + "\n" +
         "Model maszynki: " + model + "\n\n" +
-        "Opis problemu:\n" + problem
+      "Opis problemu:\n" + problem + "\n\n" +
+"Numer przesyłki InPost: " + tracking
       );
 
       window.location.href =
