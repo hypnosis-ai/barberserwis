@@ -83,6 +83,8 @@
       border-radius: 10px;
       font-weight: bold;
       transition: 0.2s ease;
+      cursor: pointer;
+      border: none;
     }
 
     .btn-gold {
@@ -246,13 +248,20 @@
       font-weight: bold;
     }
 
+    .barbershop-box,
+    .steps-box,
+    .form-box {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
     .barbershop-box {
       background: linear-gradient(135deg, #18181d, #111114);
       border: 1px solid rgba(224,179,106,0.18);
-      border-radius: 18px;
-      padding: 32px;
-      max-width: 1000px;
-      margin: 0 auto;
     }
 
     .barbershop-box ul {
@@ -263,15 +272,6 @@
 
     .barbershop-box li {
       margin-bottom: 10px;
-    }
-
-    .steps-box {
-      background: #18181d;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 18px;
-      padding: 30px;
-      max-width: 1000px;
-      margin: 0 auto;
     }
 
     .steps-grid {
@@ -299,6 +299,44 @@
       color: #111;
       font-weight: bold;
       margin-bottom: 12px;
+    }
+
+    .form-box form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-box input,
+    .form-box textarea,
+    .form-box select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #202028;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .form-box textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-note {
+      margin-top: 16px;
+      color: #bbb;
+      text-align: center;
+      font-size: 14px;
     }
 
     .contact-grid {
@@ -359,7 +397,8 @@
         font-size: 16px;
       }
 
-      .contact-grid {
+      .contact-grid,
+      .form-row {
         grid-template-columns: 1fr;
       }
 
@@ -538,6 +577,46 @@
   </section>
 
   <section class="section">
+    <h3>Formularz zgłoszenia problemu</h3>
+    <p class="section-sub">
+      Wypełnij formularz, a przygotuje się gotowa wiadomość e-mail ze zgłoszeniem.
+    </p>
+
+    <div class="form-box">
+      <form onsubmit="sendMail(event)">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Imię i nazwisko" required>
+          <input type="tel" id="phone" placeholder="Telefon" required>
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="city" placeholder="Miasto">
+          <input type="text" id="model" placeholder="Model maszynki">
+        </div>
+
+        <select id="issueType">
+          <option value="">Wybierz rodzaj problemu</option>
+          <option>Słabo tnie</option>
+          <option>Szarpie włosy</option>
+          <option>Nie włącza się</option>
+          <option>Problem z ostrzem</option>
+          <option>Problem po upadku</option>
+          <option>Naprawa elektroniki</option>
+          <option>Inny problem</option>
+        </select>
+
+        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką" required></textarea>
+
+        <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
+      </form>
+
+      <div class="form-note">
+        Po kliknięciu otworzy się gotowa wiadomość e-mail na adres: hypnosis@barberserwis.com
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <h3>Oferta dla barber shopów</h3>
     <p class="section-sub">
       Stała współpraca z salonami to szybki serwis i sprawny sprzęt bez przestojów.
@@ -583,6 +662,33 @@
   <footer>
     © BarberSerwis.com – Serwis maszynek barberskich Polska
   </footer>
+
+  <script>
+    function sendMail(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const city = document.getElementById("city").value;
+      const model = document.getElementById("model").value;
+      const issueType = document.getElementById("issueType").value;
+      const problem = document.getElementById("problem").value;
+
+      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
+      const body = encodeURIComponent(
+        "Imię i nazwisko: " + name + "\n" +
+        "Telefon: " + phone + "\n" +
+        "Miasto: " + city + "\n" +
+        "Model maszynki: " + model + "\n" +
+        "Rodzaj problemu: " + issueType + "\n\n" +
+        "Opis problemu:\n" + problem + "\n\n" +
+        "Informacja: obsługa wysyłkowa na terenie całej Polski."
+      );
+
+      window.location.href =
+        "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
+    }
+  </script>
 
 </body>
 </html>
