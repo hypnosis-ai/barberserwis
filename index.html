@@ -104,20 +104,17 @@
       background: #23232b;
     }
 
-    .hero {
-      min-height: 560px;
-      background:
-        linear-gradient(rgba(0,0,0,0.60), rgba(0,0,0,0.72)),
-        radial-gradient(circle at top left, rgba(224,179,106,0.22), transparent 32%),
-        url("hero-barberserwis.png") center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 20px;
-      position: relative;
-      overflow: hidden;
-    }
+   .hero {
+  min-height: 560px;
+  background-image: url("hero-barberserwis.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
     .hero::before {
       content: "";
