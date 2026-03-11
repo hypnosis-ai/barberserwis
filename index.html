@@ -5,12 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BarberSerwis.com – Serwis maszynek barberskich Polska</title>
   <meta name="description" content="BarberSerwis.com – serwis maszynek barberskich na terenie całej Polski. Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia." />
-  <meta name="keywords" content="serwis maszynek barberskich Polska, naprawa maszynek do strzyżenia Polska, konserwacja maszynek barber, czyszczenie maszynek, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis.png" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -20,10 +17,7 @@
       line-height: 1.6;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+    a { text-decoration: none; color: inherit; }
 
     header {
       background: #111114;
@@ -248,6 +242,7 @@
       font-weight: bold;
     }
 
+    .box,
     .barbershop-box,
     .steps-box,
     .form-box {
@@ -270,9 +265,7 @@
       color: #ddd;
     }
 
-    .barbershop-box li {
-      margin-bottom: 10px;
-    }
+    .barbershop-box li { margin-bottom: 10px; }
 
     .steps-grid {
       display: grid;
@@ -316,7 +309,8 @@
     }
 
     .form-box input,
-    .form-box textarea {
+    .form-box textarea,
+    .form-box select {
       width: 100%;
       padding: 14px;
       border-radius: 10px;
@@ -336,6 +330,13 @@
       color: #bbb;
       text-align: center;
       font-size: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
     }
 
     .contact-grid {
@@ -384,30 +385,20 @@
         background-position: center 40px;
       }
 
-      .hero-content {
-        margin-top: -40px;
-      }
+      .hero-content { margin-top: -40px; }
 
-      .hero h2 {
-        font-size: 34px;
-      }
+      .hero h2 { font-size: 34px; }
 
-      .hero p {
-        font-size: 16px;
-      }
+      .hero p { font-size: 16px; }
 
       .contact-grid,
       .form-row {
         grid-template-columns: 1fr;
       }
 
-      .topbar {
-        padding: 14px 16px;
-      }
+      .topbar { padding: 14px 16px; }
 
-      .section {
-        padding: 50px 16px;
-      }
+      .section { padding: 50px 16px; }
     }
   </style>
 </head>
@@ -457,27 +448,22 @@
         <h4>Czyszczenie maszynki</h4>
         <p>Dokładne usuwanie włosów, kurzu i zabrudzeń z wnętrza i ostrzy.</p>
       </div>
-
       <div class="card">
         <h4>Konserwacja i smarowanie</h4>
         <p>Przygotowanie sprzętu do dalszej pracy i poprawa płynności działania.</p>
       </div>
-
       <div class="card">
         <h4>Regulacja ostrzy</h4>
         <p>Ustawienie ostrzy tak, aby maszynka cięła równo i bez szarpania.</p>
       </div>
-
       <div class="card">
         <h4>Naprawa mechanizmu</h4>
         <p>Usuwanie blokad, zacięć i problemów wynikających z zużycia lub zabrudzeń.</p>
       </div>
-
       <div class="card">
         <h4>Naprawa elektroniki</h4>
         <p>Diagnoza i naprawa prostych usterek elektronicznych, jeśli jest to opłacalne.</p>
       </div>
-
       <div class="card">
         <h4>Serwis po upadku</h4>
         <p>Sprawdzenie obudowy, mocowań, ostrzy i działania po uszkodzeniu.</p>
@@ -539,92 +525,100 @@
   </section>
 
   <section class="section">
-    <h3>Jak wysłać maszynkę do serwisu?</h3>
-    <p class="section-sub">
-      Obsługa działa wysyłkowo na terenie całej Polski. To proste i wygodne.
-    </p>
-
+    <h3>Jak wysłać maszynkę do serwisu</h3>
     <div class="steps-box">
       <div class="steps-grid">
         <div class="step">
           <div class="step-number">1</div>
-          <h4>Wypełnij zgłoszenie</h4>
-          <p>Podaj dane, model maszynki i opisz problem.</p>
+          <h4>Zgłoś naprawę</h4>
+          <p>Wypełnij formularz zgłoszenia i opisz problem z maszynką.</p>
         </div>
 
         <div class="step">
           <div class="step-number">2</div>
-          <h4>Otwórz InPost</h4>
-          <p>Po zgłoszeniu otworzy się strona InPost do nadania przesyłki.</p>
+          <h4>Skopiuj dane</h4>
+          <p>Skopiuj dane do wysyłki i użyj ich podczas nadawania paczki.</p>
         </div>
 
         <div class="step">
           <div class="step-number">3</div>
-          <h4>Wyślij i czekaj na kontakt</h4>
-          <p>Po otrzymaniu sprzętu wrócimy z informacją o dalszych krokach.</p>
+          <h4>Nadaj przesyłkę</h4>
+          <p>Wyślij paczkę przez InPost i zachowaj numer nadania.</p>
         </div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <h3>Jak wysłać maszynkę do serwisu</h3>
-
-<div class="steps-box">
-
-<div class="steps-grid">
-
-<div class="step">
-<div class="step-number">1</div>
-<h4>Zgłoś naprawę</h4>
-<p>Wypełnij formularz zgłoszenia na stronie i opisz problem z maszynką.</p>
-</div>
-
-<div class="step">
-<div class="step-number">2</div>
-<h4>Nadaj paczkę</h4>
-<p>Po zgłoszeniu otworzy się strona InPost do nadania przesyłki.</p>
-</div>
-
-<div class="step">
-<div class="step-number">3</div>
-<h4>Wyślij do serwisu</h4>
-<p>Zapakuj maszynkę i wyślij ją do serwisu. Skontaktujemy się po diagnozie.</p>
-</div>
-
-</div>
-
-</div>
     <h3>Jak zapakować maszynkę do wysyłki</h3>
+    <div class="steps-box">
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Oczyść maszynkę</h4>
+          <p>Usuń nadmiar włosów i zabezpiecz ostrze przed uszkodzeniem.</p>
+        </div>
 
-<div class="steps-box">
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Zabezpiecz sprzęt</h4>
+          <p>Owiń maszynkę folią bąbelkową lub miękkim materiałem.</p>
+        </div>
 
-<div class="steps-grid">
+        <div class="step">
+          <div class="step-number">3</div>
+          <h4>Spakuj do kartonu</h4>
+          <p>Włóż sprzęt do sztywnego kartonu i wypełnij wolne miejsce.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="step">
-<div class="step-number">1</div>
-<h4>Oczyść maszynkę</h4>
-<p>Usuń nadmiar włosów i zabezpiecz ostrze, aby nie uszkodziło się w transporcie.</p>
-</div>
+  <section class="section">
+    <h3>Dane do nadania paczki InPost</h3>
+    <div class="box">
+      <p>Podczas nadawania paczki wpisz poniższe dane odbiorcy:</p>
 
-<div class="step">
-<div class="step-number">2</div>
-<h4>Zabezpiecz sprzęt</h4>
-<p>Owiń maszynkę folią bąbelkową lub miękkim materiałem, aby była dobrze chroniona.</p>
-</div>
+      <p>
+        <strong>Odbiorca:</strong> BarberSerwis<br>
+        <strong>Telefon:</strong> +48 782 618 575<br>
+        <strong>Paczkomat:</strong> MRK03M<br>
+        <strong>Adres:</strong> ul. Sportowa 6, 55-095 Mirków
+      </p>
 
-<div class="step">
-<div class="step-number">3</div>
-<h4>Spakuj do kartonu</h4>
-<p>Włóż sprzęt do kartonu lub solidnego opakowania i wypełnij wolną przestrzeń.</p>
-</div>
+      <p>Po nadaniu paczki wyślij numer przesyłki w formularzu zgłoszenia.</p>
 
-</div>
+      <div class="button-row">
+        <button onclick="copyShipping()" class="btn btn-gold">Kopiuj dane do wysyłki</button>
+        <a href="https://inpost.pl/wysylam" target="_blank" class="btn btn-dark">Nadaj przesyłkę</a>
+      </div>
+    </div>
+  </section>
 
-</div>
+  <section class="section">
+    <h3>Kalkulator kosztu usługi</h3>
+    <div class="form-box">
+      <form onsubmit="return false;">
+        <select id="service" onchange="calculatePrice()">
+          <option value="">Wybierz usługę</option>
+          <option value="95">Czyszczenie i konserwacja – 95 zł</option>
+          <option value="110">Regulacja ostrzy – 110 zł</option>
+          <option value="125">Kompleksowy serwis – 125 zł</option>
+          <option value="125">Naprawa mechanizmu – od 125 zł</option>
+          <option value="155">Naprawa elektroniki – od 155 zł</option>
+        </select>
+
+        <div class="form-note" style="font-size:18px; color:#e0b36a;">
+          Szacunkowy koszt: <strong id="priceResult">—</strong>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
     <h3>Formularz zgłoszenia problemu</h3>
     <p class="section-sub">
-      Uzupełnij dane, a po kliknięciu przycisku otworzy się wiadomość e-mail oraz strona nadania przesyłki InPost.
+      Uzupełnij dane i wyślij zgłoszenie.
     </p>
 
     <div class="form-box">
@@ -644,16 +638,14 @@
           <input type="text" id="model" placeholder="Model maszynki">
         </div>
 
-        <textarea id="problem" placeholder="Opisz problem z maszynką"></textarea>
         <input type="text" id="tracking" placeholder="Numer przesyłki InPost (opcjonalnie)">
+        <textarea id="problem" placeholder="Opisz problem z maszynką"></textarea>
 
-       <button onclick="copyShipping()" class="btn btn-gold">
-Kopiuj dane do wysyłki
-</button>
+        <button class="btn btn-gold" type="submit">Zgłoś naprawę</button>
       </form>
 
       <div class="form-note">
-        Po kliknięciu otworzy się gotowa wiadomość e-mail oraz strona InPost do nadania przesyłki.
+        Po kliknięciu otworzy się gotowa wiadomość e-mail.
       </div>
     </div>
   </section>
@@ -683,7 +675,7 @@ Kopiuj dane do wysyłki
   <section class="section">
     <h3>Kontakt</h3>
     <p class="section-sub">
-      Serwis maszynek barberskich – cała Polska. Szybki kontakt telefoniczny i mailowy.
+      Serwis maszynek barberskich – cała Polska.
     </p>
 
     <div class="contact-grid">
@@ -706,28 +698,17 @@ Kopiuj dane do wysyłki
   </footer>
 
   <script>
+    function sendMail(e) {
+      e.preventDefault();
 
-function copyShipping(){
-
-const text =
-"Odbiorca: BarberSerwis\n" +
-"Telefon: +48 782 618 575\n" +
-"Paczkomat: WRO123M\n" +
-"Miasto: Wrocław";
-
-navigator.clipboard.writeText(text);
-
-alert("Dane do wysyłki skopiowane");
-
-}
       const name = document.getElementById("name").value;
       const company = document.getElementById("company").value;
       const nip = document.getElementById("nip").value;
       const phone = document.getElementById("phone").value;
       const city = document.getElementById("city").value;
       const model = document.getElementById("model").value;
-      const problem = document.getElementById("problem").value;
       const tracking = document.getElementById("tracking").value;
+      const problem = document.getElementById("problem").value;
 
       const subject = encodeURIComponent("Zgłoszenie naprawy maszynki");
       const body = encodeURIComponent(
@@ -736,17 +717,36 @@ alert("Dane do wysyłki skopiowane");
         "NIP: " + nip + "\n" +
         "Telefon: " + phone + "\n" +
         "Miasto: " + city + "\n" +
-        "Model maszynki: " + model + "\n\n" +
-      "Opis problemu:\n" + problem + "\n\n" +
-"Numer przesyłki InPost: " + tracking
+        "Model maszynki: " + model + "\n" +
+        "Numer przesyłki InPost: " + tracking + "\n\n" +
+        "Opis problemu:\n" + problem
       );
 
       window.location.href =
         "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
+    }
 
-      setTimeout(function() {
-        window.open("https://inpost.pl/wysylam", "_blank");
-      }, 1200);
+    function copyShipping() {
+      const text =
+        "Odbiorca: BarberSerwis\n" +
+        "Telefon: +48 782 618 575\n" +
+        "Paczkomat: MRK03M\n" +
+        "Adres: ul. Sportowa 6, 55-095 Mirków";
+
+      navigator.clipboard.writeText(text);
+      alert("Dane do wysyłki skopiowane");
+    }
+
+    function calculatePrice() {
+      const service = document.getElementById("service").value;
+      const result = document.getElementById("priceResult");
+
+      if (!service) {
+        result.textContent = "—";
+        return;
+      }
+
+      result.textContent = service + " zł";
     }
   </script>
 
