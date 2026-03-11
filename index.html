@@ -647,7 +647,9 @@
         <textarea id="problem" placeholder="Opisz problem z maszynką"></textarea>
         <input type="text" id="tracking" placeholder="Numer przesyłki InPost (opcjonalnie)">
 
-        <button class="btn btn-gold" type="submit">Zgłoś naprawę</button>
+       <button onclick="copyShipping()" class="btn btn-gold">
+Kopiuj dane do wysyłki
+</button>
       </form>
 
       <div class="form-note">
@@ -704,9 +706,20 @@
   </footer>
 
   <script>
-    function sendMail(e) {
-      e.preventDefault();
 
+function copyShipping(){
+
+const text =
+"Odbiorca: BarberSerwis\n" +
+"Telefon: +48 782 618 575\n" +
+"Paczkomat: WRO123M\n" +
+"Miasto: Wrocław";
+
+navigator.clipboard.writeText(text);
+
+alert("Dane do wysyłki skopiowane");
+
+}
       const name = document.getElementById("name").value;
       const company = document.getElementById("company").value;
       const nip = document.getElementById("nip").value;
