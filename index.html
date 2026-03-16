@@ -500,6 +500,44 @@ oraz blokadami spowodowanymi zużyciem lub zabrudzeniem.</p>
        <p>Diagnoza problemów z zasilaniem i elektroniką
 oraz naprawa usterek, jeśli naprawa jest opłacalna.</p>
       </div>
+      <section class="section">
+  <h3>Jak wygląda serwis maszynki</h3>
+
+  <p class="section-sub">
+    Każda maszynka trafiająca do serwisu przechodzi dokładną diagnozę.
+    Na tej podstawie określany jest zakres naprawy oraz koszt usługi.
+  </p>
+
+  <div class="steps-box">
+    <div class="steps-grid">
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Diagnoza sprzętu</h4>
+        <p>Sprawdzam stan maszynki, ostrzy oraz mechanizmu.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Informacja o naprawie</h4>
+        <p>Informuję klienta o przyczynie problemu i zakresie naprawy.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>Naprawa i serwis</h4>
+        <p>Po akceptacji wykonuję czyszczenie, regulację lub naprawę.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <h4>Odesłanie sprzętu</h4>
+        <p>Maszynka wraca do klienta gotowa do pracy.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       <div class="card">
         <h4>Serwis po upadku</h4>
@@ -508,34 +546,59 @@ ostrzy oraz elementów mechanicznych.</p>
       </div>
     </div>
   </section>
-  <section class="section">
-    <h3>Jak wysłać maszynkę do serwisu?</h3>
-    <p class="section-sub">
-      Obsługa działa wysyłkowo na terenie całej Polski. To proste i wygodne.
-    </p>
+ <section class="section">
+  <h3>Jak wysłać maszynkę do punktu lub paczkomatu</h3>
+  <p class="section-sub">
+  Serwis działa wysyłkowo na terenie całej Polski. Maszynkę możesz nadać przez
+  InPost, Orlen Paczkę, DPD Pickup lub One Box .
+</p>
 
-    <div class="steps-box">
-      <div class="steps-grid">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h4>Skontaktuj się</h4>
-          <p>Zadzwoń lub napisz e-mail i opisz problem z maszynką.</p>
-        </div>
+  <div class="steps-box">
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Wypełnij zgłoszenie</h4>
+        <p>Podaj swoje dane, model maszynki i opisz problem w formularzu kontaktowym.</p>
+      </div>
 
-        <div class="step">
-          <div class="step-number">2</div>
-          <h4>Wyślij sprzęt</h4>
-          <p>Zapakuj maszynkę i wyślij ją kurierem do serwisu.</p>
-        </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Zabezpiecz maszynkę</h4>
+        <p>Owiń urządzenie folią bąbelkową lub miękkim materiałem i włóż do kartonu.</p>
+      </div>
 
-        <div class="step">
-          <div class="step-number">3</div>
-          <h4>Odbierz po serwisie</h4>
-          <p>Po diagnozie i naprawie sprzęt wraca do Ciebie gotowy do pracy.</p>
-        </div>
+      <div class="step">
+        <div class="step-number">3</div>
+       <h4>Nadaj paczkę</h4>
+<p>Wyślij maszynkę do wskazanego punktu odbioru lub paczkomatu, korzystając z danych podanych na stronie.</p>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <h4>Prześlij numer przesyłki</h4>
+        <p>Po nadaniu wyślij numer paczki, aby łatwo przypisać przesyłkę do zgłoszenia.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+        <section class="section">
+ <h3>Dane do nadania przesyłki</h3>
+ <p class="section-sub">
+  Przed nadaniem przesyłki skontaktuj się, aby potwierdzić aktualny punkt odbioru
+  dla InPost, Orlen Paczki, DPD Pickup lub One Box.
+</p>
+
+  <div class="steps-box">
+    <p><strong>Odbiorca:</strong> BarberSerwis</p>
+    <p><strong>Telefon:</strong> +48 782 618 575</p>
+    <p><strong>Paczkomat odbiorczy:</strong> MRK03M</p>
+    <p><strong>Adres paczkomatu:</strong> ul. Sportowa 6, 55-095 Mirków</p>
+
+    <div class="hero-buttons" style="margin-top: 24px;">
+      <button class="btn btn-gold" onclick="copyShipping()">Kopiuj dane do wysyłki</button>
+      <a class="btn btn-dark" href="https://furgonetka.pl/wysylam" target="_blank" rel="noopener noreferrer">Nadaj przesyłkę</a>
+    </div>
+  </div>
+</section>
 
  <section class="section" id="formularz">
   <h3>Formularz zgłoszenia problemu</h3>
@@ -554,6 +617,10 @@ ostrzy oraz elementów mechanicznych.</p>
           <input type="text" id="city" placeholder="Miasto">
           <input type="text" id="model" placeholder="Model maszynki">
         </div>
+        <div class="form-row">
+ <input type="text" id="tracking" placeholder="Numer przesyłki">
+<input type="text" id="senderLocker" placeholder="Punkt lub paczkomat nadawczy (opcjonalnie)">
+</div>
 
         <select id="issueType">
           <option value="">Wybierz rodzaj problemu</option>
@@ -572,8 +639,8 @@ ostrzy oraz elementów mechanicznych.</p>
       </form>
 
       <div class="form-note">
-        Po kliknięciu otworzy się gotowa wiadomość e-mail na adres: hypnosis@barberserwis.com
-      </div>
+  Po nadaniu paczki wyślij zgłoszenie z numerem przesyłki, aby łatwo przypisać paczkę do naprawy.
+</div>
     </div>
   </section>
 
@@ -624,32 +691,56 @@ ostrzy oraz elementów mechanicznych.</p>
     © BarberSerwis.com – Serwis maszynek barberskich Polska
   </footer>
 
-  <script>
-    function sendMail(e) {
-      e.preventDefault();
+<script>
+  function sendMail(e) {
+    e.preventDefault();
 
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const city = document.getElementById("city").value;
-      const model = document.getElementById("model").value;
-      const issueType = document.getElementById("issueType").value;
-      const problem = document.getElementById("problem").value;
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+    const city = document.getElementById("city").value;
+    const model = document.getElementById("model").value;
+    const tracking = document.getElementById("tracking").value;
+const senderLocker = document.getElementById("senderLocker").value;
+    const issueType = document.getElementById("issueType").value;
+    const problem = document.getElementById("problem").value;
 
-      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
-      const body = encodeURIComponent(
-        "Imię i nazwisko: " + name + "\n" +
-        "Telefon: " + phone + "\n" +
-        "Miasto: " + city + "\n" +
-        "Model maszynki: " + model + "\n" +
-        "Rodzaj problemu: " + issueType + "\n\n" +
-        "Opis problemu:\n" + problem + "\n\n" +
-        "Informacja: obsługa wysyłkowa na terenie całej Polski."
-      );
+    const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
+    const body = encodeURIComponent(
+  "Imię i nazwisko: " + name + "\n" +
+  "Telefon: " + phone + "\n" +
+  "Miasto: " + city + "\n" +
+  "Model maszynki: " + model + "\n" +
+ "Numer przesyłki: " + tracking + "\n" +
+"Punkt lub paczkomat nadawczy: " + senderLocker + "\n" +
+  "Rodzaj problemu: " + issueType + "\n\n" +
+  "Opis problemu:\n" + problem + "\n\n" +
+  "Informacja: obsługa wysyłkowa na terenie całej Polski."
+);
 
-      window.location.href =
-        "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
-    }
-  </script>
+    window.location.href =
+      "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
+  }
 
+  function copyShipping() {
+    const text =
+      "Odbiorca: BarberSerwis\n" +
+      "Telefon: +48 782 618 575\n" +
+      "Paczkomat odbiorczy: MRK03M\n" +
+      "Adres: ul. Sportowa 6, 55-095 Mirków";
+
+    navigator.clipboard.writeText(text);
+    alert("Dane do wysyłki zostały skopiowane.");
+  }
+  function copyShipping() {
+  const text =
+    "Odbiorca: BarberSerwis\n" +
+    "Telefon: +48 782 618 575\n" +
+    "Paczkomat odbiorczy: MRK03M\n" +
+    "Adres: ul. Sportowa 6, 55-095 Mirków";
+
+  navigator.clipboard.writeText(text);
+  alert("Dane do wysyłki zostały skopiowane.");
+}
+</script>
 </body>
 </html>
