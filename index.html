@@ -8,6 +8,9 @@
   <meta name="keywords" content="serwis maszynek barberskich Polska, naprawa maszynek do strzyżenia Polska, konserwacja maszynek barber, czyszczenie maszynek, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis.png" />
   <style>
+    html {
+  scroll-behavior: smooth;
+}
     * {
       box-sizing: border-box;
     }
@@ -106,29 +109,28 @@
       background: #23232b;
     }
 
-    .hero {
-      min-height: 900px;
-      background-image:
-        linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.4)),
-        url("hero-barberserwis3.png");
-      background-size: 80%;
-      background-position: center 20px;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 20px;
-      position: relative;
-      overflow: hidden;
-    }
+   .hero {
+  min-height: 760px;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.72)),
+    url("hero-barberserwis.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+}
 
-    .hero-content {
-      max-width: 900px;
-      position: relative;
-      z-index: 2;
-      margin-top: -120px;
-    }
+.hero-content {
+  max-width: 900px;
+  position: relative;
+  z-index: 2;
+}
 
     .hero-badge {
       display: inline-block;
@@ -167,7 +169,13 @@
       gap: 14px;
       flex-wrap: wrap;
     }
-
+.hero-logo {
+  width: 120px;
+  max-width: 40%;
+  height: auto;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
+}
     .section {
       max-width: 1200px;
       margin: 0 auto;
@@ -380,22 +388,27 @@
 
     @media (max-width: 768px) {
       .hero {
-        min-height: 700px;
-        background-size: 120%;
-        background-position: center 40px;
-      }
+  min-height: 620px;
+  background-size: cover;
+  background-position: center;
+  padding: 60px 16px;
+}
 
-      .hero-content {
-        margin-top: -40px;
-      }
+.hero-content {
+  margin-top: 0;
+}
 
-      .hero h2 {
-        font-size: 34px;
-      }
+.hero h2 {
+  font-size: 34px;
+}
 
-      .hero p {
-        font-size: 16px;
-      }
+.hero p {
+  font-size: 16px;
+}
+
+.hero-logo {
+  width: 90px;
+}
 
       .contact-grid,
       .form-row {
@@ -429,20 +442,25 @@
 </div>
   </header>
 
-  <section class="hero">
-   <div class="logo-text">
-  <h1>BarberSerwis.com</h1>
-  <p>Naprawa i serwis maszynek do strzyżenia</p>
-</div>
-        Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia.
-        Profesjonalna obsługa dla barberów, barber shopów i klientów indywidualnych z całej Polski.
-      </p>
-      <div class="hero-buttons">
-       <a class="btn btn-dark" href="mailto:kontakt@barberserwis.com">kontakt@barberserwis.com</a>
-<a class="btn btn-gold" href="tel:+48782618575">Zadzwoń: +48 782 618 575</a>
-      </div>
+ <section class="hero">
+  <div class="hero-content">
+    <img src="logo-barberserwis.png" alt="BarberSerwis logo" class="hero-logo">
+
+    <div class="hero-badge">Cała Polska • Serwis wysyłkowy • BarberSerwis.com</div>
+
+    <h2>Naprawa i serwis maszynek barberskich na terenie całej Polski</h2>
+
+    <p>
+      Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia.
+      Obsługa barberów, barber shopów i klientów indywidualnych w modelu wysyłkowym.
+    </p>
+
+    <div class="hero-buttons">
+      <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń teraz</a>
+      <a class="btn btn-dark" href="#formularz">Zgłoś naprawę</a>
     </div>
-  </section>
+  </div>
+</section>
 
   <section class="section">
     <h3>Nasze usługi</h3>
@@ -574,8 +592,8 @@
     </div>
   </section>
 
-  <section class="section">
-    <h3>Formularz zgłoszenia problemu</h3>
+ <section class="section" id="formularz">
+  <h3>Formularz zgłoszenia problemu</h3>
     <p class="section-sub">
       Wypełnij formularz, a przygotuje się gotowa wiadomość e-mail ze zgłoszeniem.
     </p>
