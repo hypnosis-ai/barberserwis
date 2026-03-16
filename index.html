@@ -5,95 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BarberSerwis.com – Serwis maszynek barberskich Polska</title>
   <meta name="description" content="BarberSerwis.com – serwis maszynek barberskich na terenie całej Polski. Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia." />
+  <meta name="keywords" content="serwis maszynek barberskich Polska, naprawa maszynek do strzyżenia Polska, konserwacja maszynek barber, czyszczenie maszynek, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis.png" />
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0d0d10;
+      color: #ffffff;
       line-height: 1.6;
     }
 
     a {
-      color: inherit;
       text-decoration: none;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 20px;
+      color: inherit;
     }
 
     header {
-      background: #181818;
+      background: #111114;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 18px 0;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 1000;
     }
 
     .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       flex-wrap: wrap;
     }
 
-    .logo h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #d4a75c;
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .logo p {
-      margin: 4px 0 0;
+    .logo-box img {
+      height: 56px;
+      width: auto;
+      border-radius: 12px;
+      background: #000;
+      padding: 4px;
+    }
+
+    .logo-text h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #e0b36a;
+    }
+
+    .logo-text p {
+      margin: 2px 0 0;
+      font-size: 13px;
       color: #bbb;
-      font-size: 14px;
+    }
+
+    .top-contact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .btn {
       display: inline-block;
-      padding: 12px 18px;
+      padding: 12px 20px;
       border-radius: 10px;
       font-weight: bold;
-      transition: 0.2s;
+      transition: 0.2s ease;
+      cursor: pointer;
+      border: none;
     }
 
     .btn-gold {
-      background: #d4a75c;
+      background: #e0b36a;
       color: #111;
     }
 
     .btn-gold:hover {
-      background: #be944c;
+      background: #cfa458;
     }
 
     .btn-dark {
-      background: #222;
-      color: #fff;
+      background: #1a1a20;
       border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
     }
 
     .btn-dark:hover {
-      background: #2b2b2b;
-    }
-
-    .hero {
-      padding: 80px 0 60px;
-      text-align: center;
-      background: linear-gradient(180deg, #161616 0%, #111 100%);
-    }
-
-    .hero h2 {
-      margin: 0 0 16px;
-      font-size: 42px;
-      color: #fff;
+      background: #23232b;
     }
 
     .hero {
@@ -113,138 +123,298 @@
       overflow: hidden;
     }
 
+    .hero-content {
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+      margin-top: -120px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(224,179,106,0.15);
+      color: #f0c988;
+      border: 1px solid rgba(224,179,106,0.35);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 20px rgba(224,179,106,0.25);
+    }
+
+    .hero h2 {
+      font-size: 48px;
+      margin: 0 0 16px;
+      line-height: 1.1;
+      color: white;
+      text-shadow:
+        0 3px 10px rgba(0,0,0,0.9),
+        0 0 25px rgba(224,179,106,0.45),
+        0 0 60px rgba(224,179,106,0.25);
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #f1f1f1;
+      max-width: 760px;
+      margin: 0 auto 26px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
 
     .section {
-      padding: 60px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 70px 24px;
     }
 
     .section h3 {
+      font-size: 34px;
+      margin: 0 0 14px;
+      color: #e0b36a;
       text-align: center;
-      color: #d4a75c;
-      font-size: 30px;
-      margin-bottom: 14px;
     }
 
     .section-sub {
       text-align: center;
       color: #bbb;
       max-width: 760px;
-      margin: 0 auto 32px;
+      margin: 0 auto 36px;
     }
 
-    .grid {
+    .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
     }
 
-    .card,
-    .box {
-      background: #1b1b1b;
+    .card {
+      background: #18181d;
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 24px;
     }
 
-    .card h4,
-    .box h4 {
+    .card h4 {
       margin-top: 0;
+      margin-bottom: 10px;
       color: #fff;
+      font-size: 20px;
     }
 
-    .card p,
-    .box p,
-    .box li {
-      color: #ccc;
+    .card p {
+      margin: 0;
+      color: #bbb;
     }
 
-    .steps {
+    .pricing-list {
+      max-width: 850px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .price-row {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .price-row strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .price-row span {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .price {
+      color: #e0b36a;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .barbershop-box,
+    .steps-box,
+    .form-box {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .barbershop-box {
+      background: linear-gradient(135deg, #18181d, #111114);
+      border: 1px solid rgba(224,179,106,0.18);
+    }
+
+    .barbershop-box ul {
+      margin: 20px 0 0;
+      padding-left: 20px;
+      color: #ddd;
+    }
+
+    .barbershop-box li {
+      margin-bottom: 10px;
+    }
+
+    .steps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 18px;
+      margin-top: 20px;
     }
 
     .step {
-      background: #1b1b1b;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 22px;
+      background: #202028;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .num {
+    .step-number {
+      display: inline-block;
       width: 34px;
       height: 34px;
+      line-height: 34px;
+      text-align: center;
       border-radius: 50%;
-      background: #d4a75c;
+      background: #e0b36a;
       color: #111;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       font-weight: bold;
       margin-bottom: 12px;
     }
 
-    form {
+    .form-box form {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .row {
+    .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    input,
-    textarea {
+    .form-box input,
+    .form-box textarea,
+    .form-box select {
       width: 100%;
       padding: 14px;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.08);
-      background: #252525;
+      background: #202028;
       color: #fff;
       font-size: 15px;
     }
 
-    textarea {
+    .form-box textarea {
       min-height: 140px;
       resize: vertical;
     }
 
-    .buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 10px;
+    .form-note {
+      margin-top: 16px;
+      color: #bbb;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .contact-box {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 26px;
+    }
+
+    .contact-box h4 {
+      margin-top: 0;
+      color: #e0b36a;
+    }
+
+    .contact-box p {
+      margin: 10px 0;
+      color: #ddd;
+    }
+
+    .map-box iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      border: 0;
+      border-radius: 16px;
     }
 
     footer {
       text-align: center;
+      padding: 30px 20px;
       color: #888;
-      padding: 28px 20px;
       border-top: 1px solid rgba(255,255,255,0.06);
-      margin-top: 20px;
+      margin-top: 30px;
     }
 
     @media (max-width: 768px) {
+      .hero {
+        min-height: 700px;
+        background-size: 120%;
+        background-position: center 40px;
+      }
+
+      .hero-content {
+        margin-top: -40px;
+      }
+
       .hero h2 {
-        font-size: 32px;
+        font-size: 34px;
       }
 
       .hero p {
         font-size: 16px;
       }
 
-      .row {
+      .contact-grid,
+      .form-row {
         grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 14px 16px;
+      }
+
+      .section {
+        padding: 50px 16px;
       }
     }
   </style>
 </head>
 <body>
 
-    <header>
+  <header>
     <div class="topbar">
       <div class="logo-box">
         <img src="logo-barberserwis.png" alt="BarberSerwis logo">
@@ -262,152 +432,235 @@
   </header>
 
   <section class="hero">
-    <div class="container">
-      <h2>Wyślij maszynkę do naprawy</h2>
+    <div class="hero-content">
+      <div class="hero-badge">Cała Polska • Diagnostyka gratis • BarberSerwis.com</div>
+      <h2>Serwis maszynek barberskich na terenie całej Polski</h2>
       <p>
-        Oferuję serwis maszynek do strzyżenia w systemie wysyłkowym.
-        Naprawa, czyszczenie, konserwacja i usuwanie typowych usterek.
+        Czyszczenie, konserwacja, regulacja ostrzy i naprawa maszynek do strzyżenia.
+        Profesjonalna obsługa dla barberów, barber shopów i klientów indywidualnych z całej Polski.
       </p>
-      <div class="buttons" style="justify-content:center;">
-        <a class="btn btn-gold" href="#formularz">Zgłoś naprawę</a>
-        <a class="btn btn-dark" href="#wysylka">Jak wysłać</a>
+      <div class="hero-buttons">
+        <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń teraz</a>
+        <a class="btn btn-dark" href="mailto:hypnosis@barberserwis.com">Wyślij e-mail</a>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <h3>Zakres usług</h3>
-      <p class="section-sub">
-        Serwis obejmuje najczęstsze problemy występujące w maszynkach do strzyżenia.
-      </p>
+    <h3>Nasze usługi</h3>
+    <p class="section-sub">
+      BarberSerwis.com oferuje profesjonalny serwis maszynek barberskich na terenie całej Polski:
+      naprawa, czyszczenie, konserwacja i regulacja.
+    </p>
 
-      <div class="grid">
-        <div class="card">
-          <h4>Czyszczenie maszynki</h4>
-          <p>Usuwanie włosów, zabrudzeń i osadów z wnętrza urządzenia oraz okolic ostrza.</p>
-        </div>
+    <div class="cards">
+      <div class="card">
+        <h4>Czyszczenie maszynki</h4>
+        <p>Dokładne usuwanie włosów, kurzu i zabrudzeń z wnętrza i ostrzy.</p>
+      </div>
 
-        <div class="card">
-          <h4>Konserwacja</h4>
-          <p>Smarowanie, przygotowanie sprzętu do dalszej pracy i poprawa działania mechanizmu.</p>
-        </div>
+      <div class="card">
+        <h4>Konserwacja i smarowanie</h4>
+        <p>Przygotowanie sprzętu do dalszej pracy i poprawa płynności działania.</p>
+      </div>
 
-        <div class="card">
-          <h4>Regulacja ostrzy</h4>
-          <p>Ustawienie ostrzy, aby maszynka pracowała równo i nie szarpała podczas strzyżenia.</p>
-        </div>
+      <div class="card">
+        <h4>Regulacja ostrzy</h4>
+        <p>Ustawienie ostrzy tak, aby maszynka cięła równo i bez szarpania.</p>
+      </div>
 
-        <div class="card">
-          <h4>Naprawa usterek</h4>
-          <p>Usuwanie problemów po upadku, zacięć, blokad mechanizmu i usterek elektroniki.</p>
-        </div>
+      <div class="card">
+        <h4>Naprawa mechanizmu</h4>
+        <p>Usuwanie blokad, zacięć i problemów wynikających z zużycia lub zabrudzeń.</p>
+      </div>
 
-        <div class="card">
-          <h4>Diagnoza problemu</h4>
-          <p>Sprawdzenie przyczyny nieprawidłowej pracy i ocena stanu urządzenia.</p>
-        </div>
+      <div class="card">
+        <h4>Naprawa elektroniki</h4>
+        <p>Diagnoza i naprawa prostych usterek elektronicznych, jeśli jest to opłacalne.</p>
+      </div>
 
-        <div class="card">
-          <h4>Serwis po intensywnym użytkowaniu</h4>
-          <p>Przywrócenie sprawności sprzętu używanego regularnie w salonie lub w domu.</p>
-        </div>
+      <div class="card">
+        <h4>Serwis po upadku</h4>
+        <p>Sprawdzenie obudowy, mocowań, ostrzy i działania po uszkodzeniu.</p>
       </div>
     </div>
   </section>
 
-  <section class="section" id="wysylka">
-    <div class="container">
-      <h3>Jak wysłać maszynkę</h3>
+  <section class="section">
+    <h3>Cennik</h3>
+    <p class="section-sub">
+      Ceny netto. Do wszystkich cen należy doliczyć VAT 23% oraz koszt przesyłki kurierskiej.
+    </p>
 
-      <div class="steps">
+    <div class="pricing-list">
+      <div class="price-row">
+        <div>
+          <strong>Czyszczenie i konserwacja</strong>
+          <span>Podstawowy serwis maszynki</span>
+        </div>
+        <div class="price">60 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Regulacja ostrzy</strong>
+          <span>Poprawa cięcia i ustawienia</span>
+        </div>
+        <div class="price">70 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Kompleksowy serwis</strong>
+          <span>Czyszczenie, smarowanie i regulacja</span>
+        </div>
+        <div class="price">80 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Naprawa mechanizmu</strong>
+          <span>Blokady, zacinanie, słaba praca</span>
+        </div>
+        <div class="price">od 80 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Naprawa elektroniki</strong>
+          <span>Wycena po diagnozie</span>
+        </div>
+        <div class="price">od 100 zł netto</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <strong>Przesyłka kurierska</strong>
+          <span>Obsługa wysyłkowa na terenie całej Polski</span>
+        </div>
+        <div class="price">20 zł netto</div>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-top:24px;">
+      Do wszystkich cen należy doliczyć VAT 23%. W przypadku konieczności wymiany części koszt ustalany jest indywidualnie po wcześniejszym uzgodnieniu z klientem.
+    </p>
+  </section>
+
+  <section class="section">
+    <h3>Jak wysłać maszynkę do serwisu?</h3>
+    <p class="section-sub">
+      Obsługa działa wysyłkowo na terenie całej Polski. To proste i wygodne.
+    </p>
+
+    <div class="steps-box">
+      <div class="steps-grid">
         <div class="step">
-          <div class="num">1</div>
-          <h4>Wypełnij zgłoszenie</h4>
-          <p>Podaj swoje dane, model maszynki i opisz problem.</p>
+          <div class="step-number">1</div>
+          <h4>Skontaktuj się</h4>
+          <p>Zadzwoń lub napisz e-mail i opisz problem z maszynką.</p>
         </div>
 
         <div class="step">
-          <div class="num">2</div>
-          <h4>Zabezpiecz sprzęt</h4>
-          <p>Owiń maszynkę folią bąbelkową lub miękkim materiałem i włóż do kartonu.</p>
+          <div class="step-number">2</div>
+          <h4>Wyślij sprzęt</h4>
+          <p>Zapakuj maszynkę i wyślij ją kurierem do serwisu.</p>
         </div>
 
         <div class="step">
-          <div class="num">3</div>
-          <h4>Nadaj paczkę</h4>
-          <p>Wyślij przesyłkę do wskazanego paczkomatu lub na podany adres odbioru.</p>
-        </div>
-
-        <div class="step">
-          <div class="num">4</div>
-          <h4>Wyślij numer przesyłki</h4>
-          <p>Po nadaniu prześlij numer paczki, aby łatwo zidentyfikować zgłoszenie.</p>
+          <div class="step-number">3</div>
+          <h4>Odbierz po serwisie</h4>
+          <p>Po diagnozie i naprawie sprzęt wraca do Ciebie gotowy do pracy.</p>
         </div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <h3>Dane do nadania paczki</h3>
+    <h3>Formularz zgłoszenia problemu</h3>
+    <p class="section-sub">
+      Wypełnij formularz, a przygotuje się gotowa wiadomość e-mail ze zgłoszeniem.
+    </p>
 
-      <div class="box">
-        <p><strong>Odbiorca:</strong> BarberSerwis</p>
-        <p><strong>Telefon:</strong> +48 782 618 575</p>
-        <p><strong>Paczkomat:</strong> MRK03M</p>
-        <p><strong>Adres:</strong> ul. Sportowa 6, 55-095 Mirków</p>
-
-        <div class="buttons">
-          <button class="btn btn-gold" onclick="copyShipping()">Kopiuj dane</button>
-          <a class="btn btn-dark" href="https://inpost.pl/wysylam" target="_blank">Nadaj przesyłkę</a>
+    <div class="form-box">
+      <form onsubmit="sendMail(event)">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Imię i nazwisko" required>
+          <input type="tel" id="phone" placeholder="Telefon" required>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="section" id="formularz">
-    <div class="container">
-      <h3>Formularz zgłoszenia</h3>
-      <p class="section-sub">
-        Uzupełnij formularz, a po kliknięciu otworzy się gotowa wiadomość e-mail.
-      </p>
+        <div class="form-row">
+          <input type="text" id="city" placeholder="Miasto">
+          <input type="text" id="model" placeholder="Model maszynki">
+        </div>
 
-      <div class="box">
-        <form onsubmit="sendMail(event)">
-          <div class="row">
-            <input type="text" id="name" placeholder="Imię i nazwisko" required>
-            <input type="tel" id="phone" placeholder="Telefon" required>
-          </div>
+        <select id="issueType">
+          <option value="">Wybierz rodzaj problemu</option>
+          <option>Słabo tnie</option>
+          <option>Szarpie włosy</option>
+          <option>Nie włącza się</option>
+          <option>Problem z ostrzem</option>
+          <option>Problem po upadku</option>
+          <option>Naprawa elektroniki</option>
+          <option>Inny problem</option>
+        </select>
 
-          <div class="row">
-            <input type="text" id="city" placeholder="Miasto">
-            <input type="text" id="model" placeholder="Model maszynki">
-          </div>
+        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką" required></textarea>
 
-          <input type="text" id="tracking" placeholder="Numer przesyłki (opcjonalnie)">
-          <textarea id="problem" placeholder="Opisz problem z maszynką" required></textarea>
+        <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
+      </form>
 
-          <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
-        </form>
+      <div class="form-note">
+        Po kliknięciu otworzy się gotowa wiadomość e-mail na adres: hypnosis@barberserwis.com
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <h3>Kontakt</h3>
+    <h3>Oferta dla barber shopów</h3>
+    <p class="section-sub">
+      Stała współpraca z salonami to szybki serwis i sprawny sprzęt bez przestojów.
+    </p>
 
-      <div class="box">
-        <p><strong>Telefon:</strong> <a href="tel:+48782618575">+48 782 618 575</a></p>
-        <p><strong>E-mail:</strong> <a href="mailto:twojemail@example.com">twojemail@example.com</a></p>
-        <p><strong>Obsługa:</strong> wysyłkowo na terenie całej Polski</p>
+    <div class="barbershop-box">
+      <p>
+        Oferuję obsługę barber shopów na terenie całej Polski w modelu wysyłkowym.
+        Regularny serwis sprzętu pomaga utrzymać maszynki w dobrej kondycji i ogranicza ryzyko awarii w pracy.
+      </p>
+
+      <ul>
+        <li>regularne czyszczenie i konserwacja maszynek</li>
+        <li>bieżąca regulacja ostrzy</li>
+        <li>szybka diagnoza usterek</li>
+        <li>indywidualne warunki współpracy dla salonów</li>
+        <li>obsługa kilku urządzeń w jednym miejscu</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Kontakt</h3>
+    <p class="section-sub">
+      Serwis maszynek barberskich – cała Polska. Szybki kontakt telefoniczny i mailowy.
+    </p>
+
+    <div class="contact-grid">
+      <div class="contact-box">
+        <h4>BarberSerwis.com</h4>
+        <p>📍 Obsługa wysyłkowa – cała Polska</p>
+        <p>📞 <a href="tel:+48782618575" style="color:#e0b36a;">+48 782 618 575</a></p>
+        <p>📧 <a href="mailto:hypnosis@barberserwis.com" style="color:#e0b36a;">hypnosis@barberserwis.com</a></p>
+        <p>Na życzenie klienta możliwość wystawienia faktury VAT.</p>
+      </div>
+
+      <div class="map-box">
+        <iframe src="https://www.google.com/maps?q=Polska&output=embed" loading="lazy"></iframe>
       </div>
     </div>
   </section>
 
   <footer>
-    © Serwis maszynek – naprawa wysyłkowa
+    © BarberSerwis.com – Serwis maszynek barberskich Polska
   </footer>
 
   <script>
@@ -418,32 +671,22 @@
       const phone = document.getElementById("phone").value;
       const city = document.getElementById("city").value;
       const model = document.getElementById("model").value;
-      const tracking = document.getElementById("tracking").value;
+      const issueType = document.getElementById("issueType").value;
       const problem = document.getElementById("problem").value;
 
-      const subject = encodeURIComponent("Zgłoszenie naprawy maszynki");
+      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
       const body = encodeURIComponent(
         "Imię i nazwisko: " + name + "\n" +
         "Telefon: " + phone + "\n" +
         "Miasto: " + city + "\n" +
         "Model maszynki: " + model + "\n" +
-        "Numer przesyłki: " + tracking + "\n\n" +
-        "Opis problemu:\n" + problem
+        "Rodzaj problemu: " + issueType + "\n\n" +
+        "Opis problemu:\n" + problem + "\n\n" +
+        "Informacja: obsługa wysyłkowa na terenie całej Polski."
       );
 
       window.location.href =
-        "mailto:twojemail@example.com?subject=" + subject + "&body=" + body;
-    }
-
-    function copyShipping() {
-      const text =
-        "Odbiorca: BarberSerwis\n" +
-        "Telefon: +48 782 618 575\n" +
-        "Paczkomat: MRK03M\n" +
-        "Adres: ul. Sportowa 6, 55-095 Mirków";
-
-      navigator.clipboard.writeText(text);
-      alert("Dane do wysyłki skopiowane");
+        "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
     }
   </script>
 
