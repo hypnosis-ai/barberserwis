@@ -501,19 +501,71 @@
     <div class="hero-content">
       <img src="logo-barberserwis5.png" alt="BarberSerwis logo" class="hero-logo">
 
-      <div class="hero-badge">Cała Polska • Serwis wysyłkowy • BarberSerwis.com</div>
+      <div class="hero-badge">Cała Polska • Serwis wysyłkowy • Szybka diagnoza przed naprawą</div>
 
       <h2>Naprawa i serwis maszynek do strzyżenia na terenie całej Polski</h2>
 
       <p>
         Czyszczenie, konserwacja, regulacja ostrzy i naprawa usterek maszynek do strzyżenia.
-        Obsługa barberów i klientów indywidualnych w modelu wysyłkowym.
+        Najpierw nadajesz przesyłkę, potem zgłaszasz naprawę, a przed wykonaniem usługi otrzymujesz informację o zakresie prac.
       </p>
 
       <div class="hero-buttons">
         <a class="btn btn-gold" href="#wysylka">Nadaj przesyłkę</a>
         <a class="btn btn-dark" href="#formularz">Zgłoś naprawę</a>
         <a class="btn btn-dark" href="tel:+48782618575">Telefon</a>
+      </div>
+
+      <p style="margin-top:18px; color:#f0e2c9; font-size:16px;">
+        Szybki kontakt • Serwis wysyłkowy • Obsługa całej Polski
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Dlaczego warto skorzystać z BarberSerwis.com</h3>
+    <p class="section-sub">
+      Prosty proces zgłoszenia, jasna komunikacja i serwis wysyłkowy bez zbędnych formalności.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h4>Prosty proces</h4>
+        <p>Najpierw nadajesz przesyłkę, potem zgłaszasz naprawę i otrzymujesz informację o dalszych krokach.</p>
+      </div>
+
+      <div class="card">
+        <h4>Dokładna diagnoza</h4>
+        <p>Każda maszynka jest sprawdzana pod kątem mechaniki, ostrzy i elektroniki przed wykonaniem serwisu.</p>
+      </div>
+
+      <div class="card">
+        <h4>Obsługa całej Polski</h4>
+        <p>Nie musisz przyjeżdżać osobiście. Nadajesz paczkę i korzystasz z serwisu wysyłkowego.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Opinie klientów</h3>
+    <p class="section-sub">
+      Poniżej możesz dodać prawdziwe opinie klientów po wykonanych naprawach.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h4>Opinia klienta 1</h4>
+        <p>Tu wstaw krótką, prawdziwą opinię klienta, np. o szybkim kontakcie, skutecznej naprawie albo dokładnym serwisie.</p>
+      </div>
+
+      <div class="card">
+        <h4>Opinia klienta 2</h4>
+        <p>Tu wstaw drugą opinię klienta. Najlepiej krótką, konkretną i napisaną prostym językiem.</p>
+      </div>
+
+      <div class="card">
+        <h4>Opinia klienta 3</h4>
+        <p>Tu wstaw trzecią opinię klienta. Możesz dodać imię albo inicjały, jeśli klient wyraził zgodę.</p>
       </div>
     </div>
   </section>
@@ -658,7 +710,7 @@
   <section class="section" id="formularz">
     <h3>Zgłoś naprawę</h3>
     <p class="section-sub">
-      Po nadaniu przesyłki wypełnij formularz, aby przypisać paczkę do naprawy.
+      Po nadaniu przesyłki wypełnij formularz, aby przypisać paczkę do naprawy. To wygodna wersja strony pod ruch z reklam Google: szybki kontakt, jasne kroki i prosty formularz.
     </p>
 
     <div class="form-box">
@@ -681,16 +733,7 @@
         <p style="color:#bbb; text-align:center; margin: 6px 0 0;">
           Podaj adres, na który ma zostać odesłana naprawiona maszynka.
         </p>
-<label style="color:#bbb; display:flex; align-items:center; gap:8px;">
-  <input type="checkbox" id="invoiceToggle">
-  Chcę otrzymać fakturę VAT
-</label>
-    <div id="invoiceFields" style="display:none;">
-  <input type="text" id="companyName" placeholder="Nazwa firmy">
-  <input type="text" id="nip" placeholder="NIP">
-  <input type="text" id="companyAddress" placeholder="Adres firmy">
-  <input type="email" id="companyEmail" placeholder="E-mail do wysyłki faktury">
-</div>
+
         <input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica i numer)" required>
         <input type="text" id="returnCity" placeholder="Kod pocztowy i miasto" required>
 
@@ -729,7 +772,7 @@
         <p>📞 <a href="tel:+48782618575" style="color:#e0b36a;">+48 782 618 575</a></p>
         <p>📧 <a href="mailto:hypnosis@barberserwis.com" style="color:#e0b36a;">hypnosis@barberserwis.com</a></p>
         <p>📦 Paczkomaty: ul. Sportowa 6, 55-095 Mirków</p>
-        <p>🏪 Punkt: Żabka, ul. Sportowa 2/1, 55-095 Mirków</p>
+        <p>🏪 Punkt odbioru: Żabka, ul. Sportowa 2/1, 55-095 Mirków</p>
         <p>Na życzenie klienta możliwość wystawienia faktury VAT.</p>
       </div>
 
@@ -746,104 +789,53 @@
     © 2026 BarberSerwis.com – Naprawa i serwis maszynek do strzyżenia
   </footer>
 
-<script>
-  function sendMail(e) {
-    e.preventDefault();
+  <script>
+    function sendMail(e) {
+      e.preventDefault();
 
-    const invoiceChecked = document.getElementById("invoiceToggle").checked;
-    const nipValue = document.getElementById("nip").value;
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const city = document.getElementById("city").value;
+      const model = document.getElementById("model").value;
+      const tracking = document.getElementById("tracking").value;
+      const senderLocker = document.getElementById("senderLocker").value;
+      const returnAddress = document.getElementById("returnAddress").value;
+      const returnCity = document.getElementById("returnCity").value;
+      const issueType = document.getElementById("issueType").value;
+      const problem = document.getElementById("problem").value;
 
-    if (invoiceChecked) {
-      if (!isValidNIP(nipValue)) {
-        alert("Podaj poprawny numer NIP.");
-        return;
-      }
+      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
+      const body = encodeURIComponent(
+        "Imię i nazwisko: " + name + "\n" +
+        "Telefon: " + phone + "\n" +
+        "Miasto: " + city + "\n" +
+        "Model maszynki: " + model + "\n" +
+        "Numer przesyłki: " + tracking + "\n" +
+        "Punkt lub paczkomat nadawczy: " + senderLocker + "\n" +
+        "Rodzaj problemu: " + issueType + "\n\n" +
+        "--- DANE DO ZWROTU ---\n" +
+        "Adres do zwrotu: " + returnAddress + "\n" +
+        "Kod pocztowy i miasto: " + returnCity + "\n\n" +
+        "Opis problemu:\n" + problem + "\n\n" +
+        "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków"
+      );
+
+      window.location.href =
+        "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
     }
 
-    const name = document.getElementById("name").value;
-    const phone = document.getElementById("phone").value;
-    const city = document.getElementById("city").value;
-    const model = document.getElementById("model").value;
-    const tracking = document.getElementById("tracking").value;
-    const senderLocker = document.getElementById("senderLocker").value;
-    const returnAddress = document.getElementById("returnAddress").value;
-    const returnCity = document.getElementById("returnCity").value;
-    const issueType = document.getElementById("issueType").value;
-    const problem = document.getElementById("problem").value;
+    function copyShipping() {
+      const text =
+        "Odbiorca: BarberSerwis\n" +
+        "Telefon: +48 782 618 575\n" +
+        "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków";
 
-    const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
-    const body = encodeURIComponent(
-      "Imię i nazwisko: " + name + "\n" +
-      "Telefon: " + phone + "\n" +
-      "Miasto: " + city + "\n" +
-      "Model maszynki: " + model + "\n" +
-      "Numer przesyłki: " + tracking + "\n" +
-      "Punkt lub paczkomat nadawczy: " + senderLocker + "\n" +
-      "Rodzaj problemu: " + issueType + "\n\n" +
-      "--- DANE DO ZWROTU ---\n" +
-      "Adres do zwrotu: " + returnAddress + "\n" +
-      "Kod pocztowy i miasto: " + returnCity + "\n\n" +
-      "--- DANE DO FAKTURY ---\n" +
-      (document.getElementById("invoiceToggle").checked
-        ? "Nazwa firmy: " + document.getElementById("companyName").value + "\n" +
-          "NIP: " + document.getElementById("nip").value + "\n" +
-          "Adres firmy: " + document.getElementById("companyAddress").value + "\n" +
-          "E-mail do faktury: " + document.getElementById("companyEmail").value + "\n\n"
-        : "Brak faktury\n\n") +
-      "Opis problemu:\n" + problem + "\n\n" +
-      "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
-      "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków"
-    );
-
-    window.location.href =
-      "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
-  }
-
-  function copyShipping() {
-    const text =
-      "Odbiorca: BarberSerwis\n" +
-      "Telefon: +48 782 618 575\n" +
-      "Adres paczkomatów do odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
-      "Punkt: Żabka, ul. Sportowa 2/1, 55-095 Mirków";
-
-    navigator.clipboard.writeText(text);
-    alert("Dane do wysyłki zostały skopiowane.");
-  }
-
-  function isValidNIP(nip) {
-    nip = nip.replace(/-/g, "").trim();
-
-    if (nip.length !== 10 || !/^\d{10}$/.test(nip)) {
-      return false;
+      navigator.clipboard.writeText(text);
+      alert("Dane do wysyłki zostały skopiowane.");
     }
-
-    const weights = [6, 5, 7, 2, 3, 4, 5, 6, 7];
-    let sum = 0;
-
-    for (let i = 0; i < 9; i++) {
-      sum += parseInt(nip.charAt(i), 10) * weights[i];
-    }
-
-    const control = sum % 11;
-    return control === parseInt(nip.charAt(9), 10);
-  }
-
-  window.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.getElementById("invoiceToggle");
-    const fields = document.getElementById("invoiceFields");
-    const nip = document.getElementById("nip");
-
-    toggle.addEventListener("change", function() {
-      if (this.checked) {
-        fields.style.display = "block";
-        nip.required = true;
-      } else {
-        fields.style.display = "none";
-        nip.required = false;
-      }
-    });
-  });
-</script>
+  </script>
 
 </body>
 </html>
