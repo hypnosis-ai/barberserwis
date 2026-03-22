@@ -485,6 +485,21 @@
         padding: 18px;
       }
     }
+    .menu {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.menu a {
+  color: #cbb79c;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.menu a:hover {
+  color: #e0b36a;
+}
   </style>
 </head>
 <body>
@@ -499,11 +514,15 @@
         </div>
       </div>
 
-     <div class="top-contact">
-  <a class="btn btn-dark" href="https://furgonetka.pl" target="_blank" rel="noopener noreferrer">Nadaj przesyłkę</a>
-  <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń teraz – szybka diagnoza</a>
+    <div class="top-contact">
+  <nav class="menu">
+    <a href="#wysylka">Nadaj przesyłkę</a>
+    <a href="#formularz">Zgłoś naprawę</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+
+  <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a>
 </div>
-    </div>
   </header>
 
   <section class="hero">
@@ -757,7 +776,7 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="kontakt">
     <h3>Kontakt</h3>
     <p class="section-sub">
       Serwis maszynek do strzyżenia i trymerów – obsługa wysyłkowa na terenie całej Polski.
