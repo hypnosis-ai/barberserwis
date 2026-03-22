@@ -681,7 +681,15 @@
         <p style="color:#bbb; text-align:center; margin: 6px 0 0;">
           Podaj adres, na który ma zostać odesłana naprawiona maszynka.
         </p>
-
+<label style="color:#bbb; display:flex; align-items:center; gap:8px;">
+  <input type="checkbox" id="invoiceToggle">
+  Chcę otrzymać fakturę VAT
+</label>
+     <div id="invoiceFields" style="display:none;">
+  <input type="text" id="companyName" placeholder="Nazwa firmy">
+  <input type="text" id="nip" placeholder="NIP">
+  <input type="text" id="companyAddress" placeholder="Adres firmy">
+</div>   
         <input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica i numer)" required>
         <input type="text" id="returnCity" placeholder="Kod pocztowy i miasto" required>
 
@@ -764,6 +772,12 @@
         "--- DANE DO ZWROTU ---\n" +
         "Adres do zwrotu: " + returnAddress + "\n" +
         "Kod pocztowy i miasto: " + returnCity + "\n\n" +
+        "--- DANE DO FAKTURY ---\n" +
+(document.getElementById("invoiceToggle").checked
+  ? "Nazwa firmy: " + document.getElementById("companyName").value + "\n" +
+    "NIP: " + document.getElementById("nip").value + "\n" +
+    "Adres firmy: " + document.getElementById("companyAddress").value + "\n\n"
+  : "Brak faktury\n\n") +
         "Opis problemu:\n" + problem + "\n\n" +
         "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
         "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków"
@@ -783,6 +797,10 @@
       navigator.clipboard.writeText(text);
       alert("Dane do wysyłki zostały skopiowane.");
     }
+    document.getElementById("invoiceToggle").addEventListener("change", function() {
+  const fields = document.getElementById("invoiceFields");
+  fields.style.display = this.checked ? "block" : "none";
+});
   </script>
 
 </body>
