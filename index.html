@@ -17,11 +17,11 @@
       scroll-behavior: smooth;
     }
 
-   body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #2b1d12;
-  color: #222;
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #2b1d12;
+      color: #222;
       line-height: 1.6;
       overflow-x: hidden;
       word-break: break-word;
@@ -37,11 +37,12 @@
       color: inherit;
     }
 
- header {
-  background: #1e140c;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-}
+    header {
+      background: #1e140c;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+
     .topbar {
       max-width: 1200px;
       margin: 0 auto;
@@ -62,7 +63,7 @@
 
     .logo-box img {
       height: 80px;
-width: auto;
+      width: auto;
       border-radius: 12px;
       background: rgba(30,20,12,0.6);
       padding: 4px;
@@ -128,23 +129,18 @@ width: auto;
       background: #23232b;
     }
 
-   .hero {
-
-  min-height: 720px;
-
-  background-image: url("hero.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-  padding: 80px 20px;
-}
+    .hero {
+      min-height: 720px;
+      background-image: url("hero.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+    }
 
     .hero-content {
       max-width: 920px;
@@ -153,12 +149,12 @@ width: auto;
       z-index: 2;
     }
 
-   .hero-logo {
-  height: 450px;
-  width: auto;
-  margin: 0 auto 50px;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
-}
+    .hero-logo {
+      height: 450px;
+      width: auto;
+      margin: 0 auto 50px;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
+    }
 
     .hero-badge {
       display: inline-block;
@@ -169,7 +165,7 @@ width: auto;
       border-radius: 30px;
       font-size: 14px;
       line-height: 1.4;
-      margin-bottom:18px;
+      margin-bottom: 18px;
       box-shadow: 0 0 20px rgba(224,179,106,0.25);
     }
 
@@ -228,8 +224,8 @@ width: auto;
       gap: 20px;
     }
 
-   .card {
-  background: #3a281a;
+    .card {
+      background: #3a281a;
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 24px;
@@ -250,7 +246,6 @@ width: auto;
 
     .steps-box,
     .form-box,
-    .barbershop-box,
     .contact-box {
       background: #18181d;
       border: 1px solid rgba(255,255,255,0.06);
@@ -258,26 +253,6 @@ width: auto;
       padding: 30px;
       max-width: 1000px;
       margin: 0 auto;
-    }
-
-    .barbershop-box {
-      background: linear-gradient(135deg, #18181d, #111114);
-      border: 1px solid rgba(224,179,106,0.18);
-    }
-
-    .barbershop-box p,
-    .barbershop-box li {
-      color: #ddd;
-      line-height: 1.7;
-    }
-
-    .barbershop-box ul {
-      margin: 18px 0 0;
-      padding-left: 20px;
-    }
-
-    .barbershop-box li {
-      margin-bottom: 10px;
     }
 
     .steps-grid {
@@ -427,10 +402,10 @@ width: auto;
         padding: 60px 16px;
       }
 
-      .hero-logo{
-height:180px;
-width:auto;
-}
+      .hero-logo {
+        height: 180px;
+        width: auto;
+      }
 
       .hero-badge {
         font-size: 13px;
@@ -467,17 +442,13 @@ width:auto;
         width: 100%;
       }
 
-      .top-contact .btn {
-        width: 100%;
-      }
-
+      .top-contact .btn,
       .hero-buttons .btn {
         width: 100%;
       }
 
       .steps-box,
       .form-box,
-      .barbershop-box,
       .contact-box {
         padding: 22px;
       }
@@ -511,16 +482,13 @@ width:auto;
 
   <header>
     <div class="topbar">
-     <div class="logo-box">
-
-<img src="logo-barberserwis3.png" alt="BarberSerwis logo">
-
-<div class="logo-text">
-<h1>BarberSerwis.com</h1>
-<p>Serwis maszynek do strzyżenia – naprawa i konserwacja</p>
-</div>
-
-</div>
+      <div class="logo-box">
+        <img src="logo-barberserwis3.png" alt="BarberSerwis logo">
+        <div class="logo-text">
+          <h1>BarberSerwis.com</h1>
+          <p>Serwis maszynek do strzyżenia – naprawa i konserwacja</p>
+        </div>
+      </div>
 
       <div class="top-contact">
         <a class="btn btn-dark" href="mailto:hypnosis@barberserwis.com">hypnosis@barberserwis.com</a>
@@ -535,16 +503,17 @@ width:auto;
 
       <div class="hero-badge">Cała Polska • Serwis wysyłkowy • BarberSerwis.com</div>
 
-      <h2>Naprawa i serwis maszynek barberskich na terenie całej Polski</h2>
+      <h2>Naprawa i serwis maszynek do strzyżenia na terenie całej Polski</h2>
 
       <p>
         Czyszczenie, konserwacja, regulacja ostrzy i naprawa usterek maszynek do strzyżenia.
-        Obsługa barberów, barber shopów i klientów indywidualnych w modelu wysyłkowym.
+        Obsługa barberów i klientów indywidualnych w modelu wysyłkowym.
       </p>
 
       <div class="hero-buttons">
-        <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń teraz</a>
+        <a class="btn btn-gold" href="#wysylka">Nadaj przesyłkę</a>
         <a class="btn btn-dark" href="#formularz">Zgłoś naprawę</a>
+        <a class="btn btn-dark" href="tel:+48782618575">Telefon</a>
       </div>
     </div>
   </section>
@@ -626,37 +595,30 @@ width:auto;
     </div>
   </section>
 
-  <section class="section">
-    <h3>Jak wysłać maszynkę do punktu lub paczkomatu</h3>
+  <section class="section" id="wysylka">
+    <h3>Jak to działa</h3>
     <p class="section-sub">
-      Serwis działa wysyłkowo na terenie całej Polski. Maszynkę możesz nadać przez
-      InPost, Orlen Paczkę lub DPD Pickup.
+      To tylko 3 proste kroki: nadaj przesyłkę, zgłoś naprawę i w razie pytań zadzwoń.
     </p>
 
     <div class="steps-box">
       <div class="steps-grid">
         <div class="step">
           <div class="step-number">1</div>
-          <h4>Wypełnij zgłoszenie</h4>
-          <p>Podaj swoje dane, model maszynki i opisz problem w formularzu kontaktowym.</p>
+          <h4>Nadaj przesyłkę</h4>
+          <p>Zabezpiecz maszynkę i nadaj paczkę do punktu odbioru w Mirkowie.</p>
         </div>
 
         <div class="step">
           <div class="step-number">2</div>
-          <h4>Zabezpiecz maszynkę</h4>
-          <p>Owiń urządzenie folią bąbelkową lub miękkim materiałem i włóż do kartonu.</p>
+          <h4>Zgłoś naprawę</h4>
+          <p>Po nadaniu paczki wypełnij formularz i podaj numer przesyłki, adres do zwrotu oraz opis problemu.</p>
         </div>
 
         <div class="step">
           <div class="step-number">3</div>
-          <h4>Nadaj paczkę</h4>
-          <p>Wyślij maszynkę do paczkomatu przy ul. Sportowej 6 w Mirkowie.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">4</div>
-          <h4>Prześlij numer przesyłki</h4>
-          <p>Po nadaniu wyślij numer paczki, aby łatwo przypisać przesyłkę do zgłoszenia.</p>
+          <h4>Telefon</h4>
+          <p>Jeśli masz pytania dotyczące wysyłki lub naprawy, zadzwoń: +48 782 618 575.</p>
         </div>
       </div>
     </div>
@@ -665,17 +627,21 @@ width:auto;
   <section class="section">
     <h3>Dane do nadania przesyłki</h3>
     <p class="section-sub">
-      Maszynkę najlepiej wysłać przez paczkomat:
-      (InPost, Orlen Paczka, DPD Pickup).
+      Maszynkę można wysłać przez paczkomat lub punkt nadawczy
+      (InPost, Orlen Paczka, DPD Pickup, One Box).
     </p>
 
     <div class="steps-box shipping-details">
       <p><strong>Odbiorca:</strong> BarberSerwis</p>
       <p><strong>Telefon:</strong> +48 782 618 575</p>
-      <p><strong>E-mail:</strong> hypnosis@barberserwis.com</p>
 
-      <p><strong>Adres paczkomatów odbioru paczek:</strong><br>
+      <p><strong>Adres odbioru przesyłek:</strong><br>
       ul. Sportowa 6<br>
+      55-095 Mirków</p>
+
+      <p><strong>Punkt odbioru osobistego:</strong><br>
+      Sklep Żabka<br>
+      ul. Sportowa 2/1<br>
       55-095 Mirków</p>
 
       <div class="hero-buttons" style="margin-top: 24px;">
@@ -690,9 +656,9 @@ width:auto;
   </section>
 
   <section class="section" id="formularz">
-    <h3>Formularz zgłoszenia problemu</h3>
+    <h3>Zgłoś naprawę</h3>
     <p class="section-sub">
-      Uzupełnij zgłoszenie, aby łatwo połączyć przesyłkę z naprawą.
+      Po nadaniu przesyłki wypełnij formularz, aby przypisać paczkę do naprawy.
     </p>
 
     <div class="form-box">
@@ -701,9 +667,6 @@ width:auto;
           <input type="text" id="name" placeholder="Imię i nazwisko" required>
           <input type="tel" id="phone" placeholder="Telefon" required>
         </div>
-
-<input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica, nr domu/mieszkania)" required>
-<input type="text" id="returnCity" placeholder="Kod pocztowy" required>
 
         <div class="form-row">
           <input type="text" id="city" placeholder="Miasto">
@@ -714,6 +677,13 @@ width:auto;
           <input type="text" id="tracking" placeholder="Numer przesyłki">
           <input type="text" id="senderLocker" placeholder="Punkt lub paczkomat nadawczy (opcjonalnie)">
         </div>
+
+        <p style="color:#bbb; text-align:center; margin: 6px 0 0;">
+          Podaj adres, na który ma zostać odesłana naprawiona maszynka.
+        </p>
+
+        <input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica i numer)" required>
+        <input type="text" id="returnCity" placeholder="Kod pocztowy i miasto" required>
 
         <select id="issueType">
           <option value="">Wybierz rodzaj problemu</option>
@@ -732,11 +702,12 @@ width:auto;
       </form>
 
       <div class="form-note">
-        Po nadaniu paczki wyślij zgłoszenie z numerem przesyłki, aby łatwo przypisać ją do naprawy.
+        Po kliknięciu formularz otworzy wiadomość e-mail z gotowym zgłoszeniem.
       </div>
     </div>
   </section>
- <section class="section">
+
+  <section class="section">
     <h3>Kontakt</h3>
     <p class="section-sub">
       Serwis maszynek do strzyżenia – obsługa wysyłkowa na terenie całej Polski.
@@ -763,7 +734,7 @@ width:auto;
   </section>
 
   <footer>
-    © BarberSerwis.com – Naprawa i serwis maszynek do strzyżenia
+    © 2026 BarberSerwis.com – Naprawa i serwis maszynek do strzyżenia
   </footer>
 
   <script>
@@ -776,6 +747,8 @@ width:auto;
       const model = document.getElementById("model").value;
       const tracking = document.getElementById("tracking").value;
       const senderLocker = document.getElementById("senderLocker").value;
+      const returnAddress = document.getElementById("returnAddress").value;
+      const returnCity = document.getElementById("returnCity").value;
       const issueType = document.getElementById("issueType").value;
       const problem = document.getElementById("problem").value;
 
@@ -788,11 +761,12 @@ width:auto;
         "Numer przesyłki: " + tracking + "\n" +
         "Punkt lub paczkomat nadawczy: " + senderLocker + "\n" +
         "Rodzaj problemu: " + issueType + "\n\n" +
-         "--- DANE DO ZWROTU ---\n" +
-  "Adres: " + document.getElementById("returnAddress").value + "\n" +
-  "Miasto: " + document.getElementById("returnCity").value + "\n\n" +
+        "--- DANE DO ZWROTU ---\n" +
+        "Adres do zwrotu: " + returnAddress + "\n" +
+        "Kod pocztowy i miasto: " + returnCity + "\n\n" +
         "Opis problemu:\n" + problem + "\n\n" +
         "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków"
       );
 
       window.location.href =
