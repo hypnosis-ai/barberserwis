@@ -701,6 +701,13 @@ width:auto;
           <input type="text" id="name" placeholder="Imię i nazwisko" required>
           <input type="tel" id="phone" placeholder="Telefon" required>
         </div>
+        <div class="form-row">
+  <input type="text" id="returnName" placeholder="Imię i nazwisko do zwrotu" required>
+  <input type="text" id="returnPhone" placeholder="Telefon do zwrotu" required>
+</div>
+
+<input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica, nr domu/mieszkania)" required>
+<input type="text" id="returnCity" placeholder="Kod pocztowy i miasto" required>
 
         <div class="form-row">
           <input type="text" id="city" placeholder="Miasto">
@@ -785,9 +792,13 @@ width:auto;
         "Numer przesyłki: " + tracking + "\n" +
         "Punkt lub paczkomat nadawczy: " + senderLocker + "\n" +
         "Rodzaj problemu: " + issueType + "\n\n" +
+         "--- DANE DO ZWROTU ---\n" +
+  "Imię i nazwisko: " + document.getElementById("returnName").value + "\n" +
+  "Telefon: " + document.getElementById("returnPhone").value + "\n" +
+  "Adres: " + document.getElementById("returnAddress").value + "\n" +
+  "Miasto: " + document.getElementById("returnCity").value + "\n\n" +
         "Opis problemu:\n" + problem + "\n\n" +
         "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
-        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2/1, 55-095 Mirków"
       );
 
       window.location.href =
