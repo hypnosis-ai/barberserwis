@@ -667,8 +667,8 @@
   <section class="section">
     <h3>Dane do nadania przesyłki</h3>
     <p class="section-sub">
-      Maszynkę najlepiej wysłać do paczkomatu lub punktu odbioru z obsługą.
-      (Paczkomaty: InPost, Orlen Paczka, DPD Pickup, Punkt z obługą: Sklep Żabka).
+      Maszynkę lub trymer najlepiej wysłać do paczkomatu albo punktu odbioru z obsługą.
+(Paczkomaty: InPost, Orlen Paczka, DPD Pickup, punkt z obsługą: Sklep Żabka).
     </p>
 
     <div class="steps-box shipping-details">
@@ -722,7 +722,7 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
 
         <div class="form-row">
           <input type="text" id="city" placeholder="Miasto">
-          <input type="text" id="model" placeholder="Model maszynki">
+          <input type="text" id="model" placeholder="Model maszynki / trymera">
         </div>
 
         <div class="form-row">
@@ -747,7 +747,7 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
           <option>Inny problem</option>
         </select>
 
-        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką" required></textarea>
+        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką lub trymerem" required></textarea>
 
         <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
       </form>
@@ -802,7 +802,7 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
       const issueType = document.getElementById("issueType").value;
       const problem = document.getElementById("problem").value;
 
-      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki");
+      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki lub trymera");
       const body = encodeURIComponent(
         "Imię i nazwisko: " + name + "\n" +
         "Telefon: " + phone + "\n" +
@@ -822,16 +822,19 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
         "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
     }
 
-    function copyShipping() {
-      const text =
-        "Odbiorca: BarberSerwis\n" +
-        "Telefon: +48 782 618 575\n" +
-        "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
-        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2, 55-095 Mirków";
+   function copyShipping() {
+  const text =
+    "Odbiorca: BarberSerwis\n" +
+    "Telefon: +48 782 618 575\n" +
+    "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+    "InPost: MRK03M\n" +
+    "DPD Pickup: PL83482\n" +
+    "Orlen Paczka: 328169\n" +
+    "Punkt z obsługą DPD: Żabka, ul. Sportowa 2/1, 55-095 Mirków";
 
-      navigator.clipboard.writeText(text);
-      alert("Dane do wysyłki zostały skopiowane.");
-    }
+  navigator.clipboard.writeText(text);
+  alert("Dane do wysyłki zostały skopiowane.");
+}
   </script>
 
 </body>
