@@ -1,113 +1,915 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Naprawa maszynek do strzyżenia – BarberSerwis</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naprawa maszynek do strzyżenia i trymerów – BarberSerwis | Cała Polska</title>
+  <meta name="description" content="Naprawa maszynek do strzyżenia i trymerów – serwis wysyłkowy na terenie całej Polski. Czyszczenie, regulacja ostrzy, naprawa usterek. Szybka diagnoza.">
+  <meta name="keywords" content="serwis maszynek do strzyżenia Polska, naprawa maszynek barber, konserwacja maszynek, regulacja lub wymiana ostrzy, serwis wysyłkowy maszynek" />
+  <link rel="icon" type="image/png" href="logo-barberserwis.png" />
 
-<style>
-body {
-  margin:0;
-  font-family: Arial;
-  background:#1a120c;
-  color:#fff;
-  text-align:center;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #2b1d12;
+      color: #222;
+      line-height: 1.6;
+      overflow-x: hidden;
+      word-break: break-word;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header {
+      background: #1e140c;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo-box img {
+      height: 80px;
+      width: auto;
+      border-radius: 12px;
+      background: rgba(30,20,12,0.6);
+      padding: 4px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      min-width: 0;
+    }
+
+    .logo-text h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      color: #e0b36a;
+    }
+
+    .logo-text p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #cbb79c;
+    }
+
+    .top-contact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.2s ease;
+      cursor: pointer;
+      border: none;
+      line-height: 1.3;
+    }
+
+    .btn-gold {
+      background: #e0b36a;
+      color: #111;
+    }
+
+    .btn-gold:hover {
+      background: #cfa458;
+    }
+
+    .btn-dark {
+      background: #1a1a20;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+    }
+
+    .btn-dark:hover {
+      background: #23232b;
+    }
+
+    .hero {
+      min-height: 720px;
+      background-image: url("hero.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .hero-content {
+      max-width: 920px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-logo {
+      height: 450px;
+      width: auto;
+      margin: 0 auto 50px;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(224,179,106,0.15);
+      color: #f0c988;
+      border: 1px solid rgba(224,179,106,0.35);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 18px;
+      box-shadow: 0 0 20px rgba(224,179,106,0.25);
+    }
+
+    .hero h2 {
+      font-size: 48px;
+      line-height: 1.15;
+      margin: 0 0 18px;
+      color: white;
+      text-shadow:
+        0 3px 10px rgba(0,0,0,0.85),
+        0 0 25px rgba(224,179,106,0.30);
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #f1f1f1;
+      max-width: 760px;
+      margin: 0 auto 28px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.75);
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 70px 24px;
+    }
+
+    .section h3 {
+      font-size: 34px;
+      line-height: 1.2;
+      margin: 0 0 14px;
+      color: #e0b36a;
+      text-align: center;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: #bbb;
+      max-width: 760px;
+      line-height: 1.7;
+      margin: 0 auto 36px;
+    }
+
+    .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+  justify-content: center;
+  gap: 24px;
 }
 
-.container {
-  max-width:900px;
-  margin:auto;
-  padding:40px 20px;
+.card {
+  background: #3a281a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 26px;
+  min-height: 240px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-h1 {
-  color:#e0b36a;
-  font-size:36px;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+  border-color: rgba(224,179,106,0.22);
 }
 
-h2 {
-  font-size:28px;
+.card h4 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.3;
 }
 
-p {
-  color:#ddd;
-  line-height:1.6;
+.card p {
+  margin: 0;
+  color: #d2c6b6;
+  line-height: 1.8;
+}
+    .steps-box,
+    .form-box,
+    .contact-box {
+      background: #18181d;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .step {
+      background: #202028;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #e0b36a;
+      color: #111;
+      font-weight: bold;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .step h4 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      line-height: 1.3;
+      color: #fff;
+    }
+
+    .step p {
+      margin: 0;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    .form-box form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-box input,
+    .form-box textarea,
+    .form-box select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #202028;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.4;
+      font-family: inherit;
+    }
+
+    .form-box input::placeholder,
+    .form-box textarea::placeholder {
+      color: #a9a9a9;
+    }
+
+    .form-box textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-note {
+      margin-top: 16px;
+      color: #bbb;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .shipping-details p {
+      margin: 10px 0;
+      color: #ddd;
+      line-height: 1.7;
+    }
+
+    .shipping-note {
+      margin-top: 18px;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .contact-box h4 {
+      margin: 0 0 14px;
+      color: #e0b36a;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .contact-box p {
+      margin: 10px 0;
+      color: #ddd;
+      line-height: 1.7;
+    }
+
+    .map-box iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      border: 0;
+      border-radius: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #888;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 30px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .hero h2 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        min-height: 620px;
+        padding: 60px 16px;
+      }
+
+      .hero-logo {
+        height: 180px;
+        width: auto;
+      }
+
+      .hero-badge {
+        font-size: 13px;
+      }
+
+      .hero h2 {
+        font-size: 32px;
+        line-height: 1.2;
+      }
+
+      .hero p {
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .contact-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 14px 16px;
+      }
+
+      .section {
+        padding: 50px 16px;
+      }
+
+      .section h3 {
+        font-size: 28px;
+      }
+
+      .top-contact {
+        width: 100%;
+      }
+
+      .top-contact .btn,
+      .hero-buttons .btn {
+        width: 100%;
+      }
+
+      .steps-box,
+      .form-box,
+      .contact-box {
+        padding: 22px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-box {
+        align-items: flex-start;
+      }
+
+      .logo-text h1 {
+        font-size: 18px;
+      }
+
+      .hero h2 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .card,
+      .step {
+        padding: 18px;
+      }
+    }
+    .menu {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
-.btn {
-  display:inline-block;
-  margin:10px;
-  padding:15px 25px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
+.menu a {
+  color: #cbb79c;
+  font-size: 15px;
+  transition: 0.2s ease;
 }
 
-.btn-main {
-  background:#e0b36a;
-  color:#000;
+.menu a:hover {
+  color: #e0b36a;
 }
+  </style>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-.btn-dark {
-  background:#333;
-  color:#fff;
-}
+  gtag('config', 'AW-18034553646');
+</script>
+  <!-- Event snippet for Zakup conversion page -->
+<script>
+  gtag('event', 'conversion', {
+      'send_to': 'AW-18034553646/-Xi9COWA-44cEK7mxZdD',
+      'transaction_id': ''
+      // 'new_customer': true /* calculate dynamically, populate with true/false */,
+  });
+</script>
 
-.box {
-  background:#2b1d12;
-  padding:20px;
-  margin:20px 0;
-  border-radius:10px;
-}
-
-</style>
 </head>
-
 <body>
 
-<div class="container">
+  <header>
+    <div class="topbar">
+      <div class="logo-box">
+        <img src="logo-barberserwis3.png" alt="BarberSerwis logo">
+        <div class="logo-text">
+          <h1>BarberSerwis.com</h1>
+          <p>Serwis maszynek do strzyżenia i trymerów – naprawa i konserwacja</p>
+        </div>
+      </div>
 
-<h1>NAPRAWA MASZYNEK DO STRZYŻENIA</h1>
+    <div class="top-contact">
+  <nav class="menu">
+    <a href="#wysylka">Nadaj przesyłkę</a>
+    <a href="#formularz">Zgłoś naprawę</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
 
-<h2>Wyślij – naprawię – odeślę</h2>
+  <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a>
+</div>
+  </header>
 
-<p style="font-size:20px; color:#e0b36a;">
-Naprawa od 50 zł • 24–48h • Cała Polska
+  <section class="hero">
+    <div class="hero-content">
+      <img src="logo-barberserwis5.png" alt="BarberSerwis logo" class="hero-logo">
+
+      <div class="hero-badge">Cała Polska • Serwis wysyłkowy • Szybka diagnoza przed naprawą</div>
+
+      <h2>Naprawa maszynek do strzyżenia i trymerów na terenie całej Polski</h2>
+
+      <p>
+        Czyszczenie, konserwacja, regulacja lub wymiana ostrzy i naprawa usterek maszynek do strzyżenia i trymerów.
+        Najpierw nadajesz przesyłkę, potem zgłaszasz naprawę, a przed wykonaniem usługi otrzymujesz informację o zakresie prac.
+      </p>
+
+      <div class="hero-buttons">
+        <a class="btn btn-gold" href="#wysylka">Nadaj przesyłkę teraz</a>
+        <a class="btn btn-dark" href="#formularz">Zgłoś naprawę</a>
+        <a class="btn btn-dark" href="tel:+48782618575">Telefon</a>
+      </div>
+
+      <p style="margin-top:18px; color:#f0e2c9; font-size:16px;">
+        Szybki kontakt • Serwis wysyłkowy • Obsługa na terenie całej Polski
+      </p>
+      <p style="color:#ddd; text-align:center; max-width:700px; margin:20px auto 0;">
+Serwis i naprawa maszynek do strzyżenia oraz trymerów – Wrocław, Mirków i cała Polska.
+Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Panasonic i inne.
+</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Dlaczego warto skorzystać z BarberSerwis.com</h3>
+    <p class="section-sub">
+      Prosty proces zgłoszenia, jasna komunikacja i serwis wysyłkowy bez zbędnych formalności.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h4>Prosty proces</h4>
+        <p>Najpierw nadajesz przesyłkę, potem zgłaszasz naprawę i otrzymujesz informację o dalszych krokach.</p>
+      </div>
+
+      <div class="card">
+        <h4>Dokładna diagnoza</h4>
+        <p>Każda maszynka jest sprawdzana pod kątem mechaniki, ostrzy i elektroniki przed wykonaniem serwisu.</p>
+      </div>
+
+      <div class="card">
+        <h4>Obsługa na terenie całej Polski</h4>
+        <p>Nie musisz przyjeżdżać osobiście. Nadajesz paczkę i korzystasz z serwisu wysyłkowego.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
+    <p class="section-sub">
+  Wykonuję kompleksowy serwis maszynek do strzyżenia i trymerów używanych w barber shopach
+  i salonach fryzjerskich. Usuwam najczęstsze problemy z pracą urządzeń oraz
+  przywracam ich prawidłowe działanie.<br><br>
+  Naprawa maszynek i trymerów różnych marek – zarówno sprzętu barberskiego, jak i domowego.
 </p>
 
-<p>
-Naprawiam maszynki i trymery: Wahl, Andis, Babyliss i inne.
+    <div class="cards">
+      <div class="card">
+        <h4>Czyszczenie maszynki</h4>
+        <p>Dokładne czyszczenie wnętrza maszynki z włosów, kurzu i zabrudzeń, które mogą powodować słabą pracę urządzenia.</p>
+      </div>
+
+      <div class="card">
+        <h4>Konserwacja i smarowanie</h4>
+        <p>Konserwacja mechanizmu oraz smarowanie elementów ruchomych, które poprawia płynność pracy maszynki.</p>
+      </div>
+
+      <div class="card">
+        <h4>Regulacja lub wymiana ostrzy</h4>
+        <p>Precyzyjna regulacja ostrzy, aby maszynka cięła równo, bez szarpania i bez ciągnięcia włosów.
+        Wymiana ostrzy na nowe po stwierdzeniu braku ich naprawy.</p>
+      </div>
+
+      <div class="card">
+        <h4>Naprawa mechanizmu</h4>
+        <p>Naprawa problemów z pracą mechanizmu, zacięciami oraz blokadami spowodowanymi zużyciem lub zabrudzeniem.</p>
+      </div>
+
+      <div class="card">
+        <h4>Naprawa elektroniki</h4>
+        <p>Diagnoza problemów z zasilaniem i elektroniką oraz naprawa usterek, jeśli naprawa jest opłacalna.</p>
+      </div>
+
+      <div class="card">
+        <h4>Serwis po upadku</h4>
+        <p>Sprawdzenie maszynki po upadku – kontrola obudowy, ostrzy oraz elementów mechanicznych.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Jak wygląda serwis maszynki lub trymera</h3>
+    <p class="section-sub">
+      Każda maszynka trafiająca do serwisu przechodzi dokładną diagnozę.
+      Na tej podstawie określany jest zakres naprawy oraz koszt usługi.
+    </p>
+
+    <div class="steps-box">
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Diagnoza sprzętu</h4>
+          <p>Sprawdzam stan maszynki, ostrzy oraz mechanizmu.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Informacja o naprawie</h4>
+          <p>Informuję klienta o przyczynie problemu i zakresie naprawy.</p>
+        </div>
+ <div class="step">
+          <div class="step-number">3</div>
+          <h4>Wycena naprawy</h4>
+          <p>Wyceniamy koszt naprawy informujemy.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h4>Naprawa i serwis</h4>
+          <p>Po akceptacji wykonuję czyszczenie, regulację lub naprawę.</p>
+        </div>
+       
+ <div class="step">
+          <div class="step-number">5</div>
+          <h4>Odesłanie sprzętu</h4>
+          <p>Maszynka wraca do klienta gotowa do pracy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="wysylka">
+    <h3>Jak to działa</h3>
+    <p class="section-sub">
+      To tylko 3 proste kroki: nadaj przesyłkę, zgłoś naprawę i w razie pytań zadzwoń.
+    </p>
+
+    <div class="steps-box">
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Nadaj przesyłkę</h4>
+          <p>Zabezpiecz maszynkę i nadaj paczkę do paczkomatu lub punktu odbioru w Mirkowie.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Zgłoś naprawę</h4>
+          <p>Po nadaniu paczki wypełnij formularz i podaj numer przesyłki, adres do zwrotu oraz opis problemu.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h4>Telefon</h4>
+          <p>Jeśli masz pytania dotyczące wysyłki lub naprawy, zadzwoń: +48 782 618 575.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Dane do nadania przesyłki</h3>
+<p style="color:#ddd;">
+Maszynkę lub trymer najlepiej wysłać do paczkomatu albo punktu odbioru z obsługą przez Furgonetka.pl.
 </p>
 
-<a href="tel:+48782618575" class="btn btn-main">📞 Zadzwoń teraz</a>
-<a href="#wysylka" class="btn btn-dark">📦 Jak wysłać</a>
+<p style="color:#ddd;">
+Wejdź na stronę Furgonetka.pl i uzupełnij:
+<br>– kod pocztowy nadawcy (Twój),
+<br>– kod pocztowy odbiorcy: 55-095,
+<br>– wymiary przesyłki,
+<br>– wybierz firmę kurierską.
+</p>
 
-<div class="box">
-<h2>Jak to działa?</h2>
-<p>1. Wysyłasz maszynkę</p>
-<p>2. Sprawdzam i dzwonię z wyceną</p>
-<p>3. Naprawiam</p>
-<p>4. Odsyłam gotową</p>
-</div>
+<p style="color:#ddd;">
+Dostępne opcje:
+<br>– Paczkomaty: InPost, Orlen Paczka, DPD Pickup
+<br>– Punkt z obsługą: Sklep Żabka (DPD)
+</p>
 
-<div class="box">
-<h2>Co naprawiam?</h2>
-<p>✔ słabo tnie</p>
-<p>✔ szarpie włosy</p>
-<p>✔ nie włącza się</p>
-<p>✔ problem po upadku</p>
-</div>
+<p style="color:#ddd;">
+W sekcji „Nadanie” wybierz:
+<br>1) Sposób nadania – Automat lub Punkt z obsługą
+<br>2) Wybierz punkt:
+<br>&nbsp;&nbsp;&nbsp;– dla paczkomatów wpisz Nr paczkomatu lub adres
+<br>&nbsp;&nbsp;&nbsp;– dla punktu z obsługą wpisz adres (bez kodu punktu)
+<br>3) Pozostałe pola uzupełnij zgodnie z instrukcjami na stronie
+</p>
+     <p style="color:#ff4d4d;">
+Jeśli masz wątpliwości – zadzwoń, pomogę dobrać odpowiedni sposób wysyłki.
+</p>
+    
 
-<div class="box" id="wysylka">
-<h2>Dane do wysyłki</h2>
-<p>BarberSerwis</p>
-<p>tel: 782 618 575</p>
-<p>ul. Sportowa 6, Mirków</p>
-</div>
+    <div class="steps-box shipping-details">
+      <p><strong>Odbiorca:</strong> BarberSerwis</p>
+      <p><strong>Telefon:</strong> +48 782 618 575</p>
 
-<a href="tel:+48782618575" class="btn btn-main">📞 Zadzwoń teraz</a>
+      
+<p><strong>Paczkomaty:</strong><br> 
+<p><strong>InPost:</strong><br>
+Nr. Paczkomatu: MRK03M – ul. Sportowa 6, 55-095, Mirków</p>
 
-</div>
+<p><strong>DPD Pickup:</strong><br>
+Nr. Paczkomatu: PL83482 – ul. Sportowa 6, 55-095, Mirków</p>
+
+<p><strong>Orlen Paczka:</strong><br>
+Nr. Paczkomatu: 328169 – ul. Sportowa 6, 55-095, Mirków</p>
+
+<p style="margin-top:15px; color:#bbb;">
+Jeśli system wymaga kodu punktu – wpisz powyższy numer.  
+Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
+</p>
+      <p><strong>Punkt z obsługą DPD:</strong><br>
+      Sklep Żabka<br>
+      ul. Sportowa 2<br>
+      55-095 Mirków</p>
+
+      <div class="hero-buttons" style="margin-top: 24px;">
+        <button class="btn btn-gold" onclick="copyShipping()">Kopiuj dane do wysyłki</button>
+        <a class="btn btn-dark" href="https://furgonetka.pl" target="_blank" rel="noopener noreferrer">Nadaj przesyłkę</a>
+      </div>
+
+      <p class="shipping-note">
+        Po nadaniu paczki prześlij numer przesyłki w formularzu zgłoszenia lub wiadomości e-mail.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="formularz">
+    <h3>Zgłoś naprawę</h3>
+    <p class="section-sub">
+      Po nadaniu przesyłki wypełnij formularz, aby przypisać paczkę do naprawy.
+    </p>
+
+    <div class="form-box">
+      <form onsubmit="sendMail(event)">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Imię i nazwisko" required>
+          <input type="tel" id="phone" placeholder="Telefon" required>
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="city" placeholder="Miasto">
+          <input type="text" id="model" placeholder="Model maszynki / trymera">
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="tracking" placeholder="Numer przesyłki">
+        </div>
+
+        <p style="color:#bbb; text-align:center; margin: 6px 0 0;">
+          Podaj adres, na który ma zostać odesłana naprawiona maszynka.
+        </p>
+
+        <input type="text" id="returnAddress" placeholder="Adres do zwrotu (ulica i numer)" required>
+        <input type="text" id="returnCity" placeholder="Kod pocztowy i miasto" required>
+
+        <select id="issueType">
+          <option value="">Wybierz rodzaj problemu</option>
+          <option>Słabo tnie</option>
+          <option>Szarpie włosy</option>
+          <option>Nie włącza się</option>
+          <option>Problem z ostrzem</option>
+          <option>Problem po upadku</option>
+          <option>Naprawa elektroniki</option>
+          <option>Inny problem</option>
+        </select>
+
+        <textarea id="problem" placeholder="Opisz dokładnie problem z maszynką lub trymerem" required></textarea>
+
+<p style="font-size:13px; color:#bbb;">
+Po kliknięciu sprawdź czy dane w mailu są poprawne przed wysłaniem.
+</p>
+
+        <button class="btn btn-gold" type="submit">Wyślij zgłoszenie</button>
+      </form>
+
+      <div class="form-note">
+        Po kliknięciu formularz otworzy wiadomość e-mail z gotowym zgłoszeniem.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="kontakt">
+    <h3>Kontakt</h3>
+    <p class="section-sub">
+      Serwis maszynek do strzyżenia i trymerów – obsługa wysyłkowa na terenie całej Polski.
+    </p>
+
+    <div class="contact-grid">
+      <div class="contact-box">
+        <h4>BarberSerwis.com</h4>
+        <p>📍 Obsługa wysyłkowa – cała Polska</p>
+        <p>📞 <a href="tel:+48782618575" style="color:#e0b36a;">+48 782 618 575</a></p>
+        <p>📧 <a href="mailto:hypnosis@barberserwis.com" style="color:#e0b36a;">hypnosis@barberserwis.com</a></p>
+        <p>📦 Paczkomaty: ul. Sportowa 6, 55-095 Mirków</p>
+        <p>🏪 Punkt odbioru: Żabka, ul. Sportowa 2, 55-095 Mirków</p>
+        <p>Na życzenie klienta możliwość wystawienia faktury VAT.</p>
+      </div>
+
+      <div class="map-box">
+        <iframe
+          src="https://www.google.com/maps?q=Sportowa%206,%2055-095%20Mirk%C3%B3w&output=embed"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 BarberSerwis.com – Naprawa maszynek do strzyżenia i trymerów
+  </footer>
+
+  <script>
+    function sendMail(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const city = document.getElementById("city").value;
+      const model = document.getElementById("model").value;
+      const tracking = document.getElementById("tracking").value;
+      const returnAddress = document.getElementById("returnAddress").value;
+      const returnCity = document.getElementById("returnCity").value;
+      const issueType = document.getElementById("issueType").value;
+      const problem = document.getElementById("problem").value;
+
+      const subject = encodeURIComponent("Zgłoszenie serwisowe maszynki lub trymera");
+      const body = encodeURIComponent(
+        "Imię i nazwisko: " + name + "\n" +
+        "Telefon: " + phone + "\n" +
+        "Miasto: " + city + "\n" +
+        "Model maszynki: " + model + "\n" +
+        "Numer przesyłki: " + tracking + "\n" +
+        "Rodzaj problemu: " + issueType + "\n\n" +
+        "--- DANE DO ZWROTU ---\n" +
+        "Adres do zwrotu: " + returnAddress + "\n" +
+        "Kod pocztowy i miasto: " + returnCity + "\n\n" +
+        "Opis problemu:\n" + problem + "\n\n" +
+        "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+        "Punkt odbioru osobistego: Żabka, ul. Sportowa 2, 55-095 Mirków"
+      );
+
+      window.location.href =
+        "mailto:hypnosis@barberserwis.com?subject=" + subject + "&body=" + body;
+    }
+
+   function copyShipping() {
+  const text =
+    "Odbiorca: BarberSerwis\n" +
+    "Telefon: +48 782 618 575\n" +
+    "Adres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\n" +
+    "InPost: MRK03M\n" +
+    "DPD Pickup: PL83482\n" +
+    "Orlen Paczka: 328169\n" +
+    "Punkt z obsługą DPD: Żabka, ul. Sportowa 2/1, 55-095 Mirków";
+
+  navigator.clipboard.writeText(text);
+  alert("Dane do wysyłki zostały skopiowane.");
+}
+  </script>
 
 </body>
 </html>
