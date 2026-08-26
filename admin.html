@@ -3359,6 +3359,14 @@ function renderRepairs(data){
           Anuluj zgłoszenie
         </button>
 
+        <button
+          class="danger"
+          style="background:#8b1e1e;"
+          onclick="deleteRepairPermanently('${r.id}','${esc(r.ticket_no || "")}')"
+        >
+          Usuń całkowicie
+        </button>
+
       </div>
 
 
@@ -3629,6 +3637,56 @@ async function sendRepairEmail(id){
     "Zbiorczy e-mail do klienta wysłany ✅";
 }
 
+
+async function deleteRepairPermanently(id,ticketNo){
+  const first=confirm(
+    "UWAGA: to całkowicie usunie zgłoszenie " +
+    (ticketNo || "") +
+    " oraz wszystkie przypisane sprzęty, kosztorysy i dane diagnostyczne.\n\nCzy na pewno chcesz kontynuować?"
+  );
+
+  if(!first) return;
+
+  const typed=prompt(
+    "Aby potwierdzić trwałe usunięcie, wpisz dokładnie numer zgłoszenia:\n" +
+    (ticketNo || "")
+  );
+
+  if(typed === null) return;
+
+  if(String(typed).trim() !== String(ticketNo || "").trim()){
+    alert("Numer zgłoszenia nie jest zgodny. Nic nie zostało usunięte.");
+    return;
+  }
+
+  const second=confirm(
+    "Ostatnie potwierdzenie.\n\nUsunięcia nie można cofnąć. Usunąć zgłoszenie " +
+    (ticketNo || "") +
+    "?"
+  );
+
+  if(!second) return;
+
+  const msg=document.getElementById("msg-"+id);
+  if(msg) msg.textContent="Usuwanie zgłoszenia…";
+
+  const {error}=await sb.rpc(
+    "admin_delete_repair",
+    {
+      p_repair_id:id
+    }
+  );
+
+  if(error){
+    if(msg) msg.textContent="Błąd usuwania zgłoszenia: "+error.message;
+    return;
+  }
+
+  alert("Zgłoszenie "+(ticketNo || "")+" zostało całkowicie usunięte.");
+
+  allRepairs=allRepairs.filter(r=>String(r.id)!==String(id));
+  applyFilters();
+}
 
 async function cancelRepairAdmin(id){
 
