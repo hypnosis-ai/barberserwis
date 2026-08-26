@@ -1835,7 +1835,84 @@ function updateAccountUi(u){
       if(w==="complaints"){loadComplaintRepairs();loadComplaints();}
     }
     function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
-    async function loadCustomerProfile(){const c=getSb();if(!c||!currentUser)return;setProfileMessage("Wczytywanie danych…");const {data,error}=await c.from("customer_profiles").select("first_name,last_name,phone,return_address,return_postal_code,return_city").eq("user_id",currentUser.id).maybeSingle();if(error){setProfileMessage("Nie udało się pobrać danych: "+error.message,"err");return}const p=data||{};const m={profileFirstName:p.first_name||"",profileLastName:p.last_name||"",profilePhone:p.phone||"",profileReturnAddress:p.return_address||"",profilePostalCode:p.return_postal_code||"",profileCity:p.return_city||""};Object.entries(m).forEach(([id,x])=>{const e=document.getElementById(id);if(e)e.value=x});const em=document.getElementById("profileEmail");if(em)em.value=currentUser.email||"";fillRepairFormFromProfile(p);setProfileMessage(data?"Dane wczytane.":"Uzupełnij dane i kliknij „Zapisz moje dane”.")}
+    async function loadCustomerProfile(){
+      const c=getSb();
+      if(!c||!currentUser)return;
+
+      setProfileMessage("Wczytywanie danych…");
+
+      let {data,error}=await c
+        .from("customer_profiles")
+        .select("first_name,last_name,phone,return_address,return_postal_code,return_city")
+        .eq("user_id",currentUser.id)
+        .maybeSingle();
+
+      if(error){
+        setProfileMessage("Nie udało się pobrać danych: "+error.message,"err");
+        return;
+      }
+
+      // Jeżeli profil jeszcze nie istnieje, pobierz dane zapisane podczas rejestracji
+      // z Supabase Auth user_metadata i utwórz customer_profiles automatycznie.
+      if(!data){
+        const meta=currentUser.user_metadata || {};
+        const profileFromRegistration={
+          user_id:currentUser.id,
+          first_name:String(meta.first_name||"").trim(),
+          last_name:String(meta.last_name||"").trim(),
+          phone:String(meta.phone||"").trim(),
+          return_address:String(meta.return_address||"").trim(),
+          return_postal_code:String(meta.return_postal_code||"").trim(),
+          return_city:String(meta.return_city||"").trim(),
+          updated_at:new Date().toISOString()
+        };
+
+        const hasRegistrationData =
+          profileFromRegistration.first_name ||
+          profileFromRegistration.last_name ||
+          profileFromRegistration.phone ||
+          profileFromRegistration.return_address ||
+          profileFromRegistration.return_postal_code ||
+          profileFromRegistration.return_city;
+
+        if(hasRegistrationData){
+          const {error:saveError}=await c
+            .from("customer_profiles")
+            .upsert(profileFromRegistration,{onConflict:"user_id"});
+
+          if(saveError){
+            setProfileMessage("Nie udało się zapisać danych z rejestracji: "+saveError.message,"err");
+            return;
+          }
+
+          data=profileFromRegistration;
+        }
+      }
+
+      const p=data||{};
+      const m={
+        profileFirstName:p.first_name||"",
+        profileLastName:p.last_name||"",
+        profilePhone:p.phone||"",
+        profileReturnAddress:p.return_address||"",
+        profilePostalCode:p.return_postal_code||"",
+        profileCity:p.return_city||""
+      };
+
+      Object.entries(m).forEach(([id,x])=>{
+        const e=document.getElementById(id);
+        if(e)e.value=x;
+      });
+
+      const em=document.getElementById("profileEmail");
+      if(em)em.value=currentUser.email||"";
+
+      fillRepairFormFromProfile(p);
+
+      setProfileMessage(
+        data ? "Dane wczytane." : "Uzupełnij dane i kliknij „Zapisz moje dane”."
+      );
+    }
     async function saveCustomerProfile(){const c=getSb();if(!c||!currentUser)return;const b=document.getElementById("profileSaveBtn");const p={user_id:currentUser.id,first_name:document.getElementById("profileFirstName").value.trim(),last_name:document.getElementById("profileLastName").value.trim(),phone:document.getElementById("profilePhone").value.trim(),return_address:document.getElementById("profileReturnAddress").value.trim(),return_postal_code:document.getElementById("profilePostalCode").value.trim(),return_city:document.getElementById("profileCity").value.trim(),updated_at:new Date().toISOString()};b.disabled=true;b.textContent="Zapisywanie…";const {error}=await c.from("customer_profiles").upsert(p,{onConflict:"user_id"});b.disabled=false;b.textContent="Zapisz moje dane";if(error){setProfileMessage("Nie udało się zapisać danych: "+error.message,"err");return}fillRepairFormFromProfile(p);setProfileMessage("Dane zostały zapisane ✅","ok")}
 
     function setDevicesMessage(m,t=""){
