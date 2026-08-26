@@ -7,6 +7,9 @@
   <meta name="description" content="Naprawa maszynek do strzyżenia i trymerów – serwis wysyłkowy na terenie całej Polski. Czyszczenie, regulacja ostrzy, naprawa usterek. Szybka diagnoza.">
   <meta name="keywords" content="serwis maszynek do strzyżenia Polska, naprawa maszynek barber, konserwacja maszynek, regulacja lub wymiana ostrzy, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis7.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <meta name="theme-color" content="#1e140c" />
 
   <style>
     * {
@@ -2894,5 +2897,16 @@ document.addEventListener("keydown", function(e){
 });
 
 </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./service-worker.js")
+        .catch(function (error) {
+          console.error("Service Worker registration failed:", error);
+        });
+    });
+  }
+</script>
+
 </body>
 </html>
