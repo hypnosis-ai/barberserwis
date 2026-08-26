@@ -552,6 +552,13 @@
 
 
     /* ===== Workflow zlecenia ===== */
+    .workflow-version{
+      margin:8px 0 10px;
+      color:#86e6a4;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.4px;
+    }
     .workflow-status-box{
       margin-top:14px;
       padding:16px;
@@ -3219,7 +3226,11 @@ function renderRepairs(data){
               <strong>Decyzja klienta:</strong>
               ${decisionText(item.quote_decision)}
 
-              <div class="item-edit-grid">
+              <div
+                class="item-edit-grid ${["Diagnostyka w toku","Diagnoza / wycena","Akceptacja"].includes(r.status) ? "" : "workflow-section-hidden"}"
+                data-repair-id="${r.id}"
+                data-workflow="device-edit"
+              >
 
                 <div style="grid-column:1/-1;">
                   <div class="workflow-device-head">
@@ -3573,6 +3584,7 @@ function renderRepairs(data){
       ${invoiceHtml}
 
       <div class="workflow-status-box">
+        <div class="workflow-version">BARBERSERWIS ADMIN · WORKFLOW V2</div>
         <div class="workflow-title">Etap całego zlecenia</div>
         <label>Status zlecenia</label>
         <select
@@ -3629,7 +3641,11 @@ function renderRepairs(data){
         }
       </div>
 
-      <div class="payment-admin-box">
+      <div
+        class="payment-admin-box ${["Akceptacja","Naprawa","Przygotowano do wysyłki","Wysłano"].includes(r.status) ? "" : "workflow-section-hidden"}"
+        data-repair-id="${r.id}"
+        data-workflow="payment"
+      >
         <div class="payment-admin-title">Płatność</div>
 
         <div class="payment-admin-grid">
@@ -3793,6 +3809,15 @@ function renderRepairs(data){
 
     `;
 
+
+    // WORKFLOW V2: status całego zlecenia zawsze na samej górze karty.
+    const workflowBox = div.querySelector(".workflow-status-box");
+    const repairHead = div.querySelector(".repair-head");
+    if(workflowBox && repairHead){
+      repairHead.insertAdjacentElement("afterend", workflowBox);
+    }
+
+    updateRepairWorkflowVisibility(r.id, r.status || "Nowe zgłoszenie");
 
     box.appendChild(div);
 
@@ -3962,23 +3987,30 @@ async function setQuickItemStatus(itemId,status){
 
 
 function updateRepairWorkflowVisibility(repairId,status){
+  const diagnosisVisible =
+    ["Diagnostyka w toku","Diagnoza / wycena","Akceptacja"].includes(status);
+
+  const quoteVisible =
+    ["Diagnoza / wycena","Akceptacja"].includes(status);
+
+  const paymentVisible =
+    ["Akceptacja","Naprawa","Przygotowano do wysyłki","Wysłano"].includes(status);
+
+  document
+    .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="device-edit"]`)
+    .forEach(el=>el.classList.toggle("workflow-section-hidden",!diagnosisVisible));
+
   document
     .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="diagnostic"]`)
-    .forEach(el=>{
-      el.classList.toggle(
-        "workflow-section-hidden",
-        !["Diagnostyka w toku","Diagnoza / wycena","Akceptacja"].includes(status)
-      );
-    });
+    .forEach(el=>el.classList.toggle("workflow-section-hidden",!diagnosisVisible));
 
   document
     .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="quote"]`)
-    .forEach(el=>{
-      el.classList.toggle(
-        "workflow-section-hidden",
-        !["Diagnoza / wycena","Akceptacja"].includes(status)
-      );
-    });
+    .forEach(el=>el.classList.toggle("workflow-section-hidden",!quoteVisible));
+
+  document
+    .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="payment"]`)
+    .forEach(el=>el.classList.toggle("workflow-section-hidden",!paymentVisible));
 }
 
 async function setRepairWorkflowStatus(repairId,status){
