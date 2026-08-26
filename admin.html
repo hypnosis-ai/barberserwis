@@ -1440,29 +1440,32 @@ async function saveDiagnosticNote(itemId){
   const note=document.getElementById("diagnostic-note-"+itemId)?.value.trim() || "";
   const msg=document.getElementById("item-msg-"+itemId);
 
-  msg.textContent="Zapisywanie szczegółów diagnostyki…";
+  if(msg) msg.textContent="Zapisywanie diagnostyki…";
+
+  const completedAt=new Date().toISOString();
 
   const {error}=await sb
     .from("repair_items")
     .update({
       diagnostic_note:note || null,
-      diagnostic_completed_at:new Date().toISOString()
+      diagnostic_completed_at:completedAt
     })
     .eq("id",itemId);
 
   if(error){
-    msg.textContent="Błąd zapisu diagnostyki: "+error.message;
-    return;
+    if(msg) msg.textContent="Błąd zapisu diagnostyki: "+error.message;
+    return false;
   }
 
   const repair=getRepairByItemId(itemId);
   const localItem=repair?.items?.find(x=>String(x.id)===String(itemId));
   if(localItem){
     localItem.diagnostic_note=note || null;
-    localItem.diagnostic_completed_at=new Date().toISOString();
+    localItem.diagnostic_completed_at=completedAt;
   }
 
-  msg.textContent="Szczegóły diagnostyki zapisane ✅";
+  if(msg) msg.textContent="Diagnostyka zapisana ✅";
+  return true;
 }
 
 
@@ -4163,7 +4166,8 @@ async function sendWorkflowSummary(repairId,itemId,notificationType,label){
 }
 
 async function sendDiagnosticSummary(repairId,itemId){
-  await saveDiagnosticNote(itemId);
+  const saved = await saveDiagnosticNote(itemId);
+  if(!saved) return;
   await sendWorkflowSummary(repairId,itemId,"diagnostic_summary","Podsumowanie diagnostyki");
 }
 
@@ -4174,7 +4178,8 @@ async function sendQuoteSummary(repairId,itemId){
 }
 
 async function sendDiagnosisAndQuote(repairId,itemId){
-  await saveDiagnosticNote(itemId);
+  const saved = await saveDiagnosticNote(itemId);
+  if(!saved) return;
   const ok = await saveQuoteLines(itemId);
   if(!ok) return;
   await sendWorkflowSummary(repairId,itemId,"diagnosis_and_quote","Diagnoza i wycena");
