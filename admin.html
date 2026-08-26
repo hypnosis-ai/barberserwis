@@ -1734,7 +1734,7 @@ function printDiagnosticReport(itemId){
     <div><strong>E-mail:</strong> ${esc(repair.email||"—")}</div>
     <div><strong>Sprzęt:</strong> ${esc(item.device_name||"—")}</div>
     <div><strong>Model:</strong> ${esc(item.model||"—")}</div>
-    <div><strong>Status zlecenia:</strong> ${esc(repair.status||"—")}</div>
+    
   </div>
 
   <div class="box">
@@ -4392,8 +4392,7 @@ function printQuoteReport(itemId){
   <div class="meta">
     <strong>Numer zgłoszenia:</strong> ${esc(repair.ticket_no || "—")}<br>
     <strong>Klient:</strong> ${esc(repair.name || "—")}<br>
-    <strong>Sprzęt:</strong> ${esc(item.device_name || "—")} ${esc(item.model || "")}<br>
-    <strong>Status zlecenia:</strong> ${esc(repair.status || "—")}
+    <strong>Sprzęt:</strong> ${esc(item.device_name || "—")} ${esc(item.model || "")}
   </div>
   <table><thead><tr><th>Pozycja</th><th style="text-align:right">Cena</th></tr></thead>
   <tbody>${rows}</tbody></table>
