@@ -1776,7 +1776,7 @@ function printDiagnosticReport(itemId){
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:40px;
-    margin-top:34px;
+    margin-top:180px;
     page-break-inside:avoid;
   ">
     <div>
@@ -4525,10 +4525,6 @@ function printQuoteReport(itemId){
           <div class="signature-box">Podpis klienta</div>
           <div class="signature-box">Podpis / pieczątka serwisu</div>
         </div>
-
-        <div class="actions">
-          <button onclick="window.print()">Drukuj / Zapisz jako PDF</button>
-        </div>
       </div>
     </body>
     </html>
@@ -4536,6 +4532,9 @@ function printQuoteReport(itemId){
 
   win.document.close();
   win.focus();
+  setTimeout(() => {
+    win.print();
+  }, 350);
 }
 
 async function sendWorkflowSummary(repairId,itemId,notificationType,label){
