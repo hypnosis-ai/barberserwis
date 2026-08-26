@@ -1437,34 +1437,58 @@ async function deleteDiagnosticIssue(itemId,issueId){
 }
 
 async function saveDiagnosticNote(itemId){
-  const note=document.getElementById("diagnostic-note-"+itemId)?.value.trim() || "";
-  const msg=document.getElementById("item-msg-"+itemId);
+  const note =
+    document.getElementById("diagnostic-note-"+itemId)?.value.trim() || "";
 
-  if(msg) msg.textContent="Zapisywanie diagnostyki…";
+  const msg = document.getElementById("item-msg-"+itemId);
+  const repair = getRepairByItemId(itemId);
 
-  const completedAt=new Date().toISOString();
-
-  const {error}=await sb
-    .from("repair_items")
-    .update({
-      diagnostic_note:note || null,
-      diagnostic_completed_at:completedAt
-    })
-    .eq("id",itemId);
-
-  if(error){
-    if(msg) msg.textContent="Błąd zapisu diagnostyki: "+error.message;
+  if(!repair){
+    if(msg) msg.textContent = "Błąd: nie znaleziono zgłoszenia.";
     return false;
   }
 
-  const repair=getRepairByItemId(itemId);
-  const localItem=repair?.items?.find(x=>String(x.id)===String(itemId));
-  if(localItem){
-    localItem.diagnostic_note=note || null;
-    localItem.diagnostic_completed_at=completedAt;
+  if(msg) msg.textContent = "Zapisywanie diagnostyki…";
+
+  const {data,error} =
+    await sb.functions.invoke("swift-responder",{
+      body:{
+        repair_id:repair.id,
+        repair_item_id:itemId,
+        notification_type:"save_diagnostic",
+        diagnostic_note:note
+      }
+    });
+
+  if(error){
+    console.error("Błąd zapisu diagnostyki:",error,data);
+    if(msg){
+      msg.textContent =
+        "Błąd zapisu diagnostyki: " +
+        (error.message || "nieznany błąd");
+    }
+    return false;
   }
 
-  if(msg) msg.textContent="Diagnostyka zapisana ✅";
+  if(!data?.success){
+    if(msg){
+      msg.textContent =
+        "Błąd zapisu diagnostyki: " +
+        (data?.error || "brak potwierdzenia zapisu");
+    }
+    return false;
+  }
+
+  const localItem =
+    repair.items?.find(x => String(x.id) === String(itemId));
+
+  if(localItem){
+    localItem.diagnostic_note = note || null;
+    localItem.diagnostic_completed_at =
+      data.diagnostic_completed_at || new Date().toISOString();
+  }
+
+  if(msg) msg.textContent = "Diagnostyka zapisana ✅";
   return true;
 }
 
