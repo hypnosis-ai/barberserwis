@@ -1739,41 +1739,50 @@ function updateAccountUi(u){
         return;
       }
 
-      // Jeżeli profil jeszcze nie istnieje, pobierz dane zapisane podczas rejestracji
-      // z Supabase Auth user_metadata i utwórz customer_profiles automatycznie.
-      if(!data){
-        const meta=currentUser.user_metadata || {};
-        const profileFromRegistration={
-          user_id:currentUser.id,
-          first_name:String(meta.first_name||"").trim(),
-          last_name:String(meta.last_name||"").trim(),
-          phone:String(meta.phone||"").trim(),
-          return_address:String(meta.return_address||"").trim(),
-          return_postal_code:String(meta.return_postal_code||"").trim(),
-          return_city:String(meta.return_city||"").trim(),
-          updated_at:new Date().toISOString()
-        };
+      // Pobierz dane zapisane podczas rejestracji z Supabase Auth.
+      // Użyj ich, gdy profil nie istnieje ALBO istnieje, ale jego pola są puste.
+      const meta=currentUser.user_metadata || {};
+      const profileFromRegistration={
+        user_id:currentUser.id,
+        first_name:String(meta.first_name||"").trim(),
+        last_name:String(meta.last_name||"").trim(),
+        phone:String(meta.phone||"").trim(),
+        return_address:String(meta.return_address||"").trim(),
+        return_postal_code:String(meta.return_postal_code||"").trim(),
+        return_city:String(meta.return_city||"").trim(),
+        updated_at:new Date().toISOString()
+      };
 
-        const hasRegistrationData =
-          profileFromRegistration.first_name ||
-          profileFromRegistration.last_name ||
-          profileFromRegistration.phone ||
-          profileFromRegistration.return_address ||
-          profileFromRegistration.return_postal_code ||
-          profileFromRegistration.return_city;
+      const hasRegistrationData =
+        profileFromRegistration.first_name ||
+        profileFromRegistration.last_name ||
+        profileFromRegistration.phone ||
+        profileFromRegistration.return_address ||
+        profileFromRegistration.return_postal_code ||
+        profileFromRegistration.return_city;
 
-        if(hasRegistrationData){
-          const {error:saveError}=await c
-            .from("customer_profiles")
-            .upsert(profileFromRegistration,{onConflict:"user_id"});
+      const profileIsEmpty =
+        !data ||
+        !(
+          String(data.first_name||"").trim() ||
+          String(data.last_name||"").trim() ||
+          String(data.phone||"").trim() ||
+          String(data.return_address||"").trim() ||
+          String(data.return_postal_code||"").trim() ||
+          String(data.return_city||"").trim()
+        );
 
-          if(saveError){
-            setProfileMessage("Nie udało się zapisać danych z rejestracji: "+saveError.message,"err");
-            return;
-          }
+      if(profileIsEmpty && hasRegistrationData){
+        const {error:saveError}=await c
+          .from("customer_profiles")
+          .upsert(profileFromRegistration,{onConflict:"user_id"});
 
-          data=profileFromRegistration;
+        if(saveError){
+          setProfileMessage("Nie udało się przenieść danych z rejestracji: "+saveError.message,"err");
+          return;
         }
+
+        data=profileFromRegistration;
       }
 
       const p=data||{};
