@@ -1,0 +1,3767 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <script>
+    // Przy zwykłym wejściu/odświeżeniu panel zawsze zaczyna od góry.
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Serwisu – BarberSerwis</title>
+
+  <style>
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#2b1b10;
+      color:#f5f5f5
+    }
+
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      padding:28px 18px 60px
+    }
+
+    h1{
+      color:#e9b45e;
+      margin:0 0 8px;
+      text-align:center
+    }
+
+    .sub{
+      color:#c8c8c8;
+      text-align:center;
+      margin:0 0 26px
+    }
+
+    .panel,.repair{
+      background:#18191f;
+      border:1px solid #2e3038;
+      border-radius:16px;
+      padding:20px;
+      margin-bottom:18px
+    }
+
+    .login-row,.top-row,.grid{
+      display:grid;
+      gap:12px
+    }
+
+    .login-row{
+      grid-template-columns:1fr 1fr auto
+    }
+
+    .top-row{
+      grid-template-columns:1fr auto auto;
+      align-items:center
+    }
+
+    .grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-top:14px
+    }
+
+    input,textarea,select{
+      width:100%;
+      background:#202129;
+      color:#fff;
+      border:1px solid #3a3c46;
+      border-radius:9px;
+      padding:11px 12px;
+      font:inherit
+    }
+
+    textarea{
+      min-height:95px;
+      resize:vertical
+    }
+
+    label{
+      font-size:12px;
+      color:#c6c6c6;
+      display:block;
+      margin-bottom:5px
+    }
+
+    button{
+      border:0;
+      border-radius:9px;
+      padding:11px 16px;
+      font-weight:700;
+      cursor:pointer
+    }
+
+    .gold{
+      background:#e9b45e;
+      color:#17120b
+    }
+
+    .dark{
+      background:#262832;
+      color:#fff;
+      border:1px solid #3a3c46
+    }
+
+    .danger{
+      background:#5f2b2b;
+      color:#fff
+    }
+
+    .ticket{
+      font-weight:800;
+      color:#e9b45e;
+      font-size:17px
+    }
+
+    .muted{
+      color:#a8a8aa;
+      font-size:13px
+    }
+
+    .decision-ok{color:#7fd59a}
+    .decision-no{color:#ff9a9a}
+
+    .msg{
+      margin-top:10px;
+      font-size:14px
+    }
+
+    .hidden{
+      display:none
+    }
+
+    .repair-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:15px
+    }
+
+    .client-info{
+      line-height:1.7;
+      margin-top:10px
+    }
+
+    .items-box{
+      margin-top:14px;
+      padding:14px;
+      background:#202129;
+      border:1px solid #343640;
+      border-radius:12px;
+    }
+
+    .items-title{
+      color:#e9b45e;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .item-row{
+      padding:10px 0;
+      border-top:1px solid #343640;
+      line-height:1.6;
+    }
+
+    .item-row:first-of-type{
+      border-top:0;
+      padding-top:0;
+    }
+
+    .item-edit-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .item-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .item-msg{
+      margin-top:8px;
+      font-size:13px;
+      color:#cfcfcf;
+    }
+
+    @media(max-width:760px){
+      .item-edit-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    /* STATYSTYKI */
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:18px
+    }
+
+    .stat{
+      background:#18191f;
+      border:1px solid #2e3038;
+      border-radius:14px;
+      padding:16px;
+      text-align:center
+    }
+
+    .stat-number{
+      display:block;
+      font-size:26px;
+      font-weight:800;
+      color:#e9b45e;
+      margin-bottom:4px
+    }
+
+    .stat-label{
+      font-size:12px;
+      color:#aaa
+    }
+
+    /* FILTRY */
+
+    .filters{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr;
+      gap:12px
+    }
+
+    .results-info{
+      margin-top:12px;
+      color:#aaa;
+      font-size:13px
+    }
+
+    /* STATUSY */
+
+    .status-pill{
+      display:inline-block;
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap
+    }
+
+    .status-new{
+      background:#343740;
+      color:#ddd
+    }
+
+    .status-received{
+      background:#293c55;
+      color:#9dcaff
+    }
+
+    .status-diagnosis{
+      background:#564321;
+      color:#ffd77e
+    }
+
+    .status-accept{
+      background:#493566;
+      color:#d9adff
+    }
+
+    .status-repair{
+      background:#17465a;
+      color:#82dfff
+    }
+
+    .status-ready{
+      background:#205134;
+      color:#86e6a4
+    }
+
+    .status-sent{
+      background:#354c23;
+      color:#b8eb83
+    }
+
+    .status-cancelled{
+      background:#5a2a2a;
+      color:#ffaaaa
+    }
+
+    @media(max-width:760px){
+
+      .login-row,
+      .top-row,
+      .grid,
+      .filters{
+        grid-template-columns:1fr
+      }
+
+      .stats{
+        grid-template-columns:repeat(2,1fr)
+      }
+
+      .repair-head{
+        align-items:flex-start;
+        flex-direction:column
+      }
+    }
+  
+    .invoice-admin-box{
+      margin-top:12px;
+      padding:12px 14px;
+      background:#202129;
+      border:1px solid #343640;
+      border-radius:10px;
+      line-height:1.65;
+    }
+    .invoice-admin-yes{color:#86e6a4;font-weight:800}
+    .invoice-admin-no{color:#aaa;font-weight:700}
+
+
+    /* ===== Płatności ===== */
+    .payment-admin-box{
+      margin-top:14px;
+      padding:14px;
+      background:#171b18;
+      border:1px solid #35513d;
+      border-radius:12px;
+    }
+    .payment-admin-title{
+      color:#86e6a4;
+      font-weight:800;
+      font-size:16px;
+      margin-bottom:10px;
+    }
+    .payment-admin-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      align-items:end;
+    }
+    .payment-admin-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .payment-paid{
+      color:#86e6a4;
+      font-weight:800;
+    }
+    .payment-waiting{
+      color:#ffd77e;
+      font-weight:800;
+    }
+    @media(max-width:760px){
+      .payment-admin-grid{grid-template-columns:1fr}
+    }
+
+    /* ===== Galeria administratora ===== */
+    .gallery-admin-panel{margin-top:18px}
+    .gallery-upload-grid{
+      display:grid;
+      grid-template-columns:1.2fr 1fr auto;
+      gap:12px;
+      align-items:end;
+    }
+    .gallery-admin-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+    .gallery-admin-card{
+      border:1px solid #343640;
+      background:#202128;
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .gallery-admin-media{width:100%;aspect-ratio:4/3;object-fit:cover;background:#111;display:block}
+    .gallery-admin-body{padding:12px}
+    .gallery-admin-caption{color:#ddd;font-size:14px;min-height:22px;margin-bottom:10px}
+    .gallery-admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .gallery-admin-actions button{padding:8px 10px}
+    .gallery-hidden-badge{color:#ffcf76;font-weight:700;font-size:12px}
+    .gallery-admin-caption-edit{
+      width:100%;
+      margin-bottom:10px;
+      background:#18191f;
+    }
+    .gallery-crop-modal{
+      position:fixed;
+      inset:0;
+      z-index:20000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.82);
+    }
+    .gallery-crop-modal.hidden{display:none}
+    .gallery-crop-dialog{
+      width:min(920px,96vw);
+      max-height:94vh;
+      overflow:auto;
+      background:#18191f;
+      border:1px solid #3a3c46;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 16px 60px rgba(0,0,0,.55);
+    }
+    .gallery-crop-dialog h3{
+      margin:0 0 8px;
+      color:#e9b45e;
+    }
+    .gallery-crop-help{
+      margin:0 0 14px;
+      color:#bbb;
+      font-size:13px;
+    }
+    .gallery-crop-stage{
+      width:100%;
+      min-height:320px;
+      max-height:65vh;
+      background:#0d0e12;
+      overflow:hidden;
+      border-radius:10px;
+    }
+    .gallery-crop-stage img{
+      display:block;
+      max-width:100%;
+    }
+    .gallery-crop-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      margin-top:14px;
+    }
+    @media(max-width:800px){
+      .gallery-upload-grid{grid-template-columns:1fr}
+      .gallery-admin-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:520px){.gallery-admin-grid{grid-template-columns:1fr}}
+
+
+    /* ===== Uporządkowany panel administratora ===== */
+    .admin-nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .admin-nav a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid rgba(224,179,106,.28);
+      background:#202028;
+      color:#f0c988;
+      font-weight:700;
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .admin-nav a:hover{
+      border-color:rgba(224,179,106,.65);
+      background:#272731;
+    }
+    .admin-section-title{
+      margin:28px 0 12px;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(224,179,106,.22);
+      color:#f0c988;
+      font-size:24px;
+    }
+    .admin-section-note{
+      color:#aaa;
+      margin:-4px 0 16px;
+      font-size:14px;
+    }
+    #repairsSection,
+    #gallerySection{
+      scroll-margin-top:18px;
+    }
+
+
+    .scroll-top-btn{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:9999;
+      width:48px;
+      height:48px;
+      border:none;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:24px;
+      font-weight:700;
+      line-height:48px;
+      text-align:center;
+      box-shadow:0 4px 14px rgba(0,0,0,.28);
+      opacity:.9;
+    }
+    .scroll-top-btn:hover{opacity:1}
+
+
+    /* ===== Kosztorys naprawy ===== */
+    .quote-builder{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid #3a3c46;
+      border-radius:12px;
+      background:#17181e;
+    }
+    .quote-builder-title{
+      color:#e9b45e;
+      font-weight:800;
+      font-size:15px;
+      margin-bottom:10px;
+    }
+    .quote-lines{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .quote-line{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) 130px 44px;
+      gap:8px;
+      align-items:center;
+    }
+    .quote-line-total{
+      text-align:right;
+      color:#f0c988;
+      font-weight:800;
+      font-size:13px;
+      padding-right:2px;
+    }
+    .quote-add-grid{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) 130px auto auto;
+      gap:8px;
+      align-items:end;
+      margin-top:10px;
+    }
+    .quote-custom-grid{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) 130px auto;
+      gap:8px;
+      align-items:end;
+      margin-top:8px;
+    }
+    .quote-summary{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:10px;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid #343640;
+      font-size:16px;
+    }
+    .quote-summary strong{
+      color:#e9b45e;
+      font-size:19px;
+    }
+    .quote-help{
+      color:#aaa;
+      font-size:12px;
+      margin-top:8px;
+      line-height:1.5;
+    }
+    @media(max-width:760px){
+      .quote-line{
+        grid-template-columns:1fr 110px 42px;
+      }
+      .quote-line .quote-line-total{
+        grid-column:1/-1;
+        text-align:left;
+      }
+      .quote-add-grid,
+      .quote-custom-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    /* ===== Szczegóły diagnostyki ===== */
+    .diagnostic-box{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid #4b4030;
+      border-radius:12px;
+      background:#1b1916;
+    }
+    .diagnostic-title{
+      color:#e9b45e;
+      font-weight:800;
+      font-size:16px;
+      margin-bottom:10px;
+    }
+    .diagnostic-grid{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) auto;
+      gap:8px;
+      align-items:end;
+      margin-bottom:10px;
+    }
+    .diagnostic-list{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin:10px 0;
+    }
+    .diagnostic-issue{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:9px 10px;
+      background:#202129;
+      border:1px solid #343640;
+      border-radius:9px;
+    }
+    .diagnostic-issue span{line-height:1.4}
+    .diagnostic-note{min-height:105px}
+    .diagnostic-help{
+      color:#aaa;
+      font-size:12px;
+      line-height:1.5;
+      margin-top:8px;
+    }
+    @media(max-width:760px){
+      .diagnostic-grid{grid-template-columns:1fr}
+    }
+
+</style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <h1>Panel Serwisu – BarberSerwis</h1>
+  <p class="sub">
+    Obsługa zgłoszeń, wycen, statusów i informacji dla klienta.
+  </p>
+
+  <!-- LOGOWANIE -->
+
+  <div class="panel" id="loginPanel">
+
+    <div class="login-row">
+
+      <input
+        type="email"
+        id="adminEmail"
+        placeholder="E-mail administratora"
+      >
+
+      <input
+        type="password"
+        id="adminPassword"
+        placeholder="Hasło"
+      >
+
+      <button
+        class="gold"
+        onclick="adminLogin()"
+      >
+        Zaloguj
+      </button>
+
+    </div>
+
+    <div id="loginMsg" class="msg"></div>
+
+  </div>
+
+
+  <!-- PANEL ADMINA -->
+
+  <div class="panel hidden" id="adminPanel">
+
+    <div class="top-row">
+
+      <div id="adminStatus">
+        Zalogowano
+      </div>
+
+      <button
+        class="dark"
+        onclick="loadAllRepairs()"
+      >
+        Odśwież zgłoszenia
+      </button>
+
+      <button
+        class="dark"
+        onclick="adminLogout()"
+      >
+        Wyloguj
+      </button>
+
+    </div>
+
+    <div class="admin-nav">
+      <a href="#repairsSection">Zgłoszenia</a>
+      <a href="#gallerySection">Galeria</a>
+    </div>
+
+  </div>
+
+
+  <!-- ZGŁOSZENIA / STATYSTYKI / FILTRY -->
+
+<!-- STATYSTYKI -->
+
+  <div id="statsPanel" class="stats hidden">
+
+    <div class="stat">
+      <span class="stat-number" id="countAll">0</span>
+      <span class="stat-label">Wszystkie</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-number" id="countNew">0</span>
+      <span class="stat-label">Nowe</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-number" id="countRepair">0</span>
+      <span class="stat-label">W naprawie</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-number" id="countReady">0</span>
+      <span class="stat-label">Gotowe</span>
+    </div>
+
+  </div>
+
+
+  <!-- WYSZUKIWANIE / FILTRY -->
+
+  <div id="filtersPanel" class="panel hidden">
+
+    <div class="filters">
+
+      <div>
+
+        <label>Wyszukaj zgłoszenie</label>
+
+        <input
+          id="searchRepair"
+          type="text"
+          placeholder="Numer zgłoszenia, klient, telefon, e-mail, nazwa sprzętu, model..."
+          oninput="applyFilters()"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>Status</label>
+
+        <select
+          id="statusFilter"
+          onchange="applyFilters()"
+        >
+
+          <option value="">Wszystkie statusy</option>
+
+          <option value="Nowe zgłoszenie">
+            Nowe zgłoszenie
+          </option>
+
+          <option value="Przyjęto">
+            Przyjęto
+          </option>
+
+          <option value="Diagnoza / wycena">
+            Diagnoza / wycena
+          </option>
+
+          <option value="Akceptacja">
+            Akceptacja
+          </option>
+
+          <option value="Naprawa">
+            Naprawa
+          </option>
+
+          <option value="Gotowe">
+            Gotowe
+          </option>
+
+          <option value="Odesłano">
+            Odesłano
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div>
+
+        <label>Sortowanie</label>
+
+        <select
+          id="sortRepairs"
+          onchange="applyFilters()"
+        >
+
+          <option value="newest">
+            Najnowsze
+          </option>
+
+          <option value="oldest">
+            Najstarsze
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div style="margin-top:14px;display:grid;grid-template-columns:minmax(0,260px) auto;gap:10px;align-items:end;">
+      <div>
+        <label>Wpłaty z wybranego dnia</label>
+        <input id="paymentDateFilter" type="date" onchange="applyFilters()">
+      </div>
+      <button type="button" class="dark" onclick="clearPaymentDateFilter()">Pokaż wszystkie</button>
+    </div>
+
+    <div
+      id="resultsInfo"
+      class="results-info"
+    ></div>
+
+  </div>
+
+
+  <!-- ZGŁOSZENIA -->
+
+  <div id="repairs"></div>
+
+  <div id="gallerySection">
+    <h2 class="admin-section-title">Galeria strony</h2>
+    <p class="admin-section-note">Dodawaj, ukrywaj, porządkuj i usuwaj zdjęcia oraz filmy widoczne na stronie głównej.</p>
+  </div>
+
+<div id="galleryAdminPanel" class="panel hidden gallery-admin-panel">
+    <div class="gallery-upload-grid">
+      <div>
+        <label>Zdjęcie lub film</label>
+        <input id="galleryFile" type="file" accept="image/*,video/mp4,video/webm,video/quicktime">
+      </div>
+      <div>
+        <label>Podpis (opcjonalnie)</label>
+        <input id="galleryCaption" type="text" maxlength="180" placeholder="np. Naprawa Wahl Senior">
+      </div>
+      <button class="gold" id="galleryUploadBtn" onclick="uploadGalleryMedia()">Dodaj do galerii</button>
+    </div>
+
+    <div id="galleryMsg" class="msg"></div>
+    <div id="galleryAdminGrid" class="gallery-admin-grid"></div>
+  </div>
+
+  <div id="galleryCropModal" class="gallery-crop-modal hidden" aria-hidden="true">
+    <div class="gallery-crop-dialog">
+      <h3>Przytnij zdjęcie</h3>
+      <p class="gallery-crop-help">
+        Przesuwaj zdjęcie i ramkę. Zapisany kadr będzie miał proporcje 4:3,
+        takie jak zdjęcia w galerii.
+      </p>
+      <div class="gallery-crop-stage">
+        <img id="galleryCropImage" alt="Zdjęcie do przycięcia">
+      </div>
+      <div class="gallery-crop-actions">
+        <button type="button" class="dark" onclick="closeGalleryCrop()">Anuluj</button>
+        <button type="button" class="gold" id="galleryCropSaveBtn" onclick="saveGalleryCrop()">Zapisz przycięcie</button>
+      </div>
+      <div id="galleryCropMsg" class="msg"></div>
+    </div>
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+
+<script>
+
+const SUPABASE_URL =
+  "https://smimabuumtdjkymxpheq.supabase.co";
+
+const SUPABASE_PUBLIC_KEY =
+  "sb_publishable_hv64LFqZTVbVk6Tza29s9w_dXytRVyr";
+
+const sb =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLIC_KEY
+  );
+
+
+
+let allRepairs = [];
+let servicePriceList = [];
+let quoteLinesByItem = {};
+let diagnosticIssueCatalog = [];
+let diagnosticIssuesByItem = {};
+
+function quoteLineKey(){
+  return "ql-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function getQuoteLines(itemId){
+  return Array.isArray(quoteLinesByItem[itemId]) ? quoteLinesByItem[itemId] : [];
+}
+
+function quoteItemTotal(itemId){
+  return getQuoteLines(itemId).reduce((sum,line)=>{
+    const price = Number(line.unit_price ?? 0);
+    return sum + (Number.isFinite(price) ? price : 0);
+  },0);
+}
+
+function priceListOptions(){
+  const rows = servicePriceList.filter(x=>x.active !== false);
+  return `
+    <option value="">Wybierz pozycję z cennika</option>
+    ${rows.map(x=>`
+      <option value="${esc(x.id)}">
+        ${esc(x.name)}${x.default_price != null ? " – " + Number(x.default_price).toFixed(2) + " zł" : ""}
+      </option>
+    `).join("")}
+  `;
+}
+
+function renderQuoteLines(itemId){
+  const box = document.getElementById("quote-lines-"+itemId);
+  const totalBox = document.getElementById("quote-total-"+itemId);
+  const oldQuoteInput = document.getElementById("item-quote-"+itemId);
+
+  if(!box) return;
+
+  const lines = getQuoteLines(itemId);
+
+  if(!lines.length){
+    box.innerHTML = '<div class="muted">Brak pozycji kosztorysu.</div>';
+  }else{
+    box.innerHTML = lines.map(line=>{
+      const key = line._key || line.id || quoteLineKey();
+      line._key = key;
+
+      const price = Number(line.unit_price ?? 0);
+
+      return `
+        <div class="quote-line" data-key="${esc(key)}">
+          <input
+            type="text"
+            value="${esc(line.description || "")}"
+            oninput="updateQuoteLine('${itemId}','${key}','description',this.value)"
+            placeholder="Pozycja kosztorysu"
+          >
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value="${Number.isFinite(price) ? price.toFixed(2) : "0.00"}"
+            oninput="updateQuoteLine('${itemId}','${key}','unit_price',this.value)"
+            title="Cena"
+          >
+
+          <button
+            type="button"
+            class="danger"
+            style="padding:9px 10px;"
+            onclick="removeQuoteLine('${itemId}','${key}')"
+            title="Usuń pozycję"
+          >×</button>
+
+          <div class="quote-line-total">
+            Cena pozycji: ${Number.isFinite(price) ? price.toFixed(2) : "0.00"} zł
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  const total = quoteItemTotal(itemId);
+
+  if(totalBox){
+    totalBox.textContent = total.toFixed(2) + " zł";
+  }
+
+  if(oldQuoteInput){
+    oldQuoteInput.value = total.toFixed(2);
+  }
+
+  const repair = getRepairByItemId(itemId);
+  if(repair){
+    const totalInput = document.getElementById("quote-"+repair.id);
+    if(totalInput){
+      const repairTotal = repair.items.reduce((sum,item)=>{
+        return sum + quoteItemTotal(item.id);
+      },0);
+      totalInput.value = repairTotal.toFixed(2) + " zł";
+    }
+  }
+}
+
+function updateQuoteLine(itemId,key,field,value){
+  const line = getQuoteLines(itemId).find(x => String(x._key || x.id) === String(key));
+  if(!line) return;
+
+  if(field === "unit_price"){
+    const n = Number(value);
+    line[field] = Number.isFinite(n) ? n : 0;
+  }else{
+    line[field] = value;
+  }
+
+  renderQuoteLines(itemId);
+}
+
+function removeQuoteLine(itemId,key){
+  quoteLinesByItem[itemId] = getQuoteLines(itemId).filter(
+    x => String(x._key || x.id) !== String(key)
+  );
+  renderQuoteLines(itemId);
+}
+
+function addPriceListLine(itemId){
+  const select = document.getElementById("quote-price-select-"+itemId);
+  const priceInput = document.getElementById("quote-price-"+itemId);
+
+  const priceId = select?.value || "";
+  if(!priceId){
+    alert("Wybierz pozycję z cennika.");
+    return;
+  }
+
+  const service = servicePriceList.find(x => String(x.id) === String(priceId));
+  if(!service){
+    alert("Nie znaleziono pozycji cennika.");
+    return;
+  }
+
+  let price = Number(priceInput?.value);
+  if(!Number.isFinite(price)){
+    price = Number(service.default_price ?? 0);
+  }
+
+  getQuoteLines(itemId).push({
+    _key: quoteLineKey(),
+    id: null,
+    repair_item_id: itemId,
+    price_list_id: service.id,
+    description: service.name,
+    quantity: 1,
+    unit_price: price,
+    sort_order: getQuoteLines(itemId).length * 10
+  });
+
+  if(select) select.value = "";
+  if(priceInput) priceInput.value = "";
+
+  renderQuoteLines(itemId);
+}
+
+function fillPriceFromList(itemId){
+  const select = document.getElementById("quote-price-select-"+itemId);
+  const priceInput = document.getElementById("quote-price-"+itemId);
+  const service = servicePriceList.find(x => String(x.id) === String(select?.value));
+
+  if(priceInput){
+    priceInput.value =
+      service && service.default_price != null
+        ? Number(service.default_price).toFixed(2)
+        : "";
+  }
+}
+
+function addCustomQuoteLine(itemId){
+  const descEl = document.getElementById("quote-custom-desc-"+itemId);
+  const priceEl = document.getElementById("quote-custom-price-"+itemId);
+
+  const description = descEl?.value.trim() || "";
+  const price = Number(priceEl?.value);
+
+  if(!description){
+    alert("Wpisz nazwę własnej pozycji.");
+    return;
+  }
+
+  if(!Number.isFinite(price) || price < 0){
+    alert("Wpisz prawidłową cenę.");
+    return;
+  }
+
+  getQuoteLines(itemId).push({
+    _key: quoteLineKey(),
+    id: null,
+    repair_item_id: itemId,
+    price_list_id: null,
+    description,
+    quantity: 1,
+    unit_price: price,
+    sort_order: getQuoteLines(itemId).length * 10
+  });
+
+  if(descEl) descEl.value = "";
+  if(priceEl) priceEl.value = "";
+
+  renderQuoteLines(itemId);
+}
+
+async function saveQuoteLines(itemId){
+  const msg = document.getElementById("item-msg-"+itemId);
+  const lines = getQuoteLines(itemId);
+
+  if(msg) msg.textContent = "Zapisywanie kosztorysu…";
+
+  const {error:deleteError} =
+    await sb
+      .from("repair_item_quote_lines")
+      .delete()
+      .eq("repair_item_id",itemId);
+
+  if(deleteError){
+    if(msg) msg.textContent = "Błąd usuwania starego kosztorysu: " + deleteError.message;
+    return false;
+  }
+
+  if(lines.length){
+    const rows = lines.map((line,index)=>({
+      repair_item_id:itemId,
+      price_list_id:line.price_list_id || null,
+      description:String(line.description || "").trim(),
+      quantity:1,
+      unit_price:Number(line.unit_price ?? 0) || 0,
+      sort_order:index * 10
+    }));
+
+    const {error:insertError} =
+      await sb
+        .from("repair_item_quote_lines")
+        .insert(rows);
+
+    if(insertError){
+      if(msg) msg.textContent = "Błąd zapisu kosztorysu: " + insertError.message;
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+
+
+/* =============================
+   DIAGNOSTYKA SPRZĘTU
+============================= */
+
+function diagnosticCatalogOptions(){
+  const rows = diagnosticIssueCatalog.filter(x=>x.active !== false);
+  return `
+    <option value="">Wybierz wykryty problem</option>
+    ${rows.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}
+  `;
+}
+
+function getDiagnosticIssues(itemId){
+  return Array.isArray(diagnosticIssuesByItem[itemId]) ? diagnosticIssuesByItem[itemId] : [];
+}
+
+function renderDiagnosticIssues(itemId){
+  const box=document.getElementById("diagnostic-list-"+itemId);
+  if(!box) return;
+
+  const rows=getDiagnosticIssues(itemId);
+  box.innerHTML=rows.length
+    ? rows.map(row=>`
+        <div class="diagnostic-issue">
+          <span>${esc(row.description || "—")}</span>
+          <button
+            type="button"
+            class="danger"
+            style="padding:7px 10px;"
+            onclick="deleteDiagnosticIssue('${itemId}','${row.id}')"
+            title="Usuń problem"
+          >×</button>
+        </div>
+      `).join("")
+    : '<div class="muted">Nie dodano jeszcze wyników diagnostyki.</div>';
+}
+
+async function addDiagnosticIssueFromList(itemId){
+  const select=document.getElementById("diagnostic-select-"+itemId);
+  const catalogId=select?.value || "";
+  if(!catalogId) return;
+
+  const issue=diagnosticIssueCatalog.find(x=>String(x.id)===String(catalogId));
+  if(!issue) return;
+
+  const existing=getDiagnosticIssues(itemId).some(
+    x=>String(x.description||"").trim().toLowerCase()===String(issue.name||"").trim().toLowerCase()
+  );
+
+  if(existing){
+    select.value="";
+    document.getElementById("item-msg-"+itemId).textContent="Ten problem jest już dodany.";
+    return;
+  }
+
+  const msg=document.getElementById("item-msg-"+itemId);
+  msg.textContent="Zapisywanie problemu diagnostycznego…";
+
+  const {data,error}=await sb
+    .from("repair_item_diagnostic_issues")
+    .insert({
+      repair_item_id:itemId,
+      issue_catalog_id:issue.id,
+      description:issue.name,
+      sort_order:getDiagnosticIssues(itemId).length*10
+    })
+    .select("id,repair_item_id,issue_catalog_id,description,sort_order,created_at")
+    .single();
+
+  if(error){
+    msg.textContent="Błąd zapisu problemu: "+error.message;
+    return;
+  }
+
+  (diagnosticIssuesByItem[itemId] ||= []).push(data);
+  select.value="";
+  renderDiagnosticIssues(itemId);
+  msg.textContent="Problem zapisany automatycznie ✅";
+}
+
+async function addCustomDiagnosticIssue(itemId){
+  const input=document.getElementById("diagnostic-custom-"+itemId);
+  const description=input?.value.trim() || "";
+  const msg=document.getElementById("item-msg-"+itemId);
+
+  if(!description){
+    alert("Wpisz własny problem diagnostyczny.");
+    return;
+  }
+
+  msg.textContent="Zapisywanie problemu diagnostycznego…";
+
+  const {data,error}=await sb
+    .from("repair_item_diagnostic_issues")
+    .insert({
+      repair_item_id:itemId,
+      issue_catalog_id:null,
+      description,
+      sort_order:getDiagnosticIssues(itemId).length*10
+    })
+    .select("id,repair_item_id,issue_catalog_id,description,sort_order,created_at")
+    .single();
+
+  if(error){
+    msg.textContent="Błąd zapisu problemu: "+error.message;
+    return;
+  }
+
+  (diagnosticIssuesByItem[itemId] ||= []).push(data);
+  input.value="";
+  renderDiagnosticIssues(itemId);
+  msg.textContent="Własny problem zapisany ✅";
+}
+
+async function deleteDiagnosticIssue(itemId,issueId){
+  if(!confirm("Usunąć ten problem z diagnostyki?")) return;
+
+  const msg=document.getElementById("item-msg-"+itemId);
+  const {error}=await sb
+    .from("repair_item_diagnostic_issues")
+    .delete()
+    .eq("id",issueId);
+
+  if(error){
+    msg.textContent="Błąd usuwania problemu: "+error.message;
+    return;
+  }
+
+  diagnosticIssuesByItem[itemId]=getDiagnosticIssues(itemId).filter(x=>String(x.id)!==String(issueId));
+  renderDiagnosticIssues(itemId);
+  msg.textContent="Problem usunięty.";
+}
+
+async function saveDiagnosticNote(itemId){
+  const note=document.getElementById("diagnostic-note-"+itemId)?.value.trim() || "";
+  const msg=document.getElementById("item-msg-"+itemId);
+
+  msg.textContent="Zapisywanie szczegółów diagnostyki…";
+
+  const {error}=await sb
+    .from("repair_items")
+    .update({
+      diagnostic_note:note || null,
+      diagnostic_completed_at:new Date().toISOString()
+    })
+    .eq("id",itemId);
+
+  if(error){
+    msg.textContent="Błąd zapisu diagnostyki: "+error.message;
+    return;
+  }
+
+  const repair=getRepairByItemId(itemId);
+  const localItem=repair?.items?.find(x=>String(x.id)===String(itemId));
+  if(localItem){
+    localItem.diagnostic_note=note || null;
+    localItem.diagnostic_completed_at=new Date().toISOString();
+  }
+
+  msg.textContent="Szczegóły diagnostyki zapisane ✅";
+}
+
+
+const BARBERSERWIS_LOGO_DATA =
+  new URL("logo-barberserwis7.png", window.location.href).href;
+
+function moneyPl(value){
+  const n=Number(value);
+  return Number.isFinite(n)
+    ? n.toFixed(2).replace(".",",")+" zł"
+    : "—";
+}
+
+function reportDecisionText(value){
+  if(value==="accepted") return "Zaakceptowana";
+  if(value==="rejected") return "Odrzucona";
+  return "Brak decyzji";
+}
+
+function printDiagnosticReport(itemId){
+  const repair=getRepairByItemId(itemId);
+  if(!repair){
+    alert("Nie znaleziono zgłoszenia dla tego sprzętu.");
+    return;
+  }
+
+  const item=(repair.items||[]).find(x=>String(x.id)===String(itemId));
+  if(!item){
+    alert("Nie znaleziono sprzętu.");
+    return;
+  }
+
+  const issues=getDiagnosticIssues(itemId);
+  const quoteLines=getQuoteLines(itemId);
+  const diagnosticNote=
+    document.getElementById("diagnostic-note-"+itemId)?.value.trim()
+    || item.diagnostic_note
+    || "";
+
+  const reportDate=new Date().toLocaleString("pl-PL");
+
+  const issuesHtml=issues.length
+    ? `<ul style="margin:8px 0 0 20px;padding:0;">
+        ${issues.map(x=>`<li style="margin:4px 0;">${esc(x.description||"—")}</li>`).join("")}
+       </ul>`
+    : `<div style="color:#666;">Brak zapisanych problemów diagnostycznych.</div>`;
+
+  const quoteHtml=quoteLines.length
+    ? `
+      <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;border-bottom:2px solid #222;padding:7px 5px;">Pozycja</th>
+            <th style="text-align:right;border-bottom:2px solid #222;padding:7px 5px;width:130px;">Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${quoteLines.map(line=>`
+            <tr>
+              <td style="border-bottom:1px solid #ddd;padding:7px 5px;">${esc(line.description||"—")}</td>
+              <td style="border-bottom:1px solid #ddd;padding:7px 5px;text-align:right;font-weight:700;">
+                ${moneyPl(line.unit_price)}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>`
+    : `<div style="color:#666;">Brak pozycji kosztorysu.</div>`;
+
+  const total=quoteItemTotal(itemId);
+
+  const reportHtml=`<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Raport diagnostyczny - ${esc(repair.ticket_no||"")}</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#fff;
+    color:#111;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .page{
+    width:210mm;
+    min-height:297mm;
+    margin:0 auto;
+    padding:13mm 15mm 15mm;
+  }
+  .header{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    border-bottom:2px solid #b9822f;
+    padding-bottom:10px;
+    margin-bottom:16px;
+  }
+  .logo{
+    width:145px;
+    height:auto;
+    display:block;
+  }
+  .header-title{
+    flex:1;
+  }
+  h1{
+    margin:0;
+    font-size:21px;
+    color:#6b3f0c;
+  }
+  .subtitle{
+    color:#555;
+    margin-top:4px;
+  }
+  .meta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px 22px;
+    margin:14px 0 18px;
+  }
+  .box{
+    border:1px solid #ccc;
+    border-radius:8px;
+    padding:12px;
+    margin:0 0 13px;
+    break-inside:avoid;
+  }
+  .box h2{
+    margin:0 0 8px;
+    font-size:16px;
+    color:#7a4b13;
+  }
+  .total{
+    text-align:right;
+    font-size:18px;
+    font-weight:800;
+    margin-top:12px;
+  }
+  .footer{
+    margin-top:24px;
+    padding-top:10px;
+    border-top:1px solid #ccc;
+    font-size:11px;
+    color:#666;
+  }
+  @media print{
+    @page{size:A4;margin:0}
+    body{background:#fff}
+    .page{margin:0}
+    .no-print{display:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <img class="logo" src="${BARBERSERWIS_LOGO_DATA}" alt="BarberSerwis">
+    <div class="header-title">
+      <h1>PROTOKÓŁ DIAGNOSTYCZNY URZĄDZENIA</h1>
+      <div class="subtitle">BarberSerwis.com — dokument serwisowy</div>
+    </div>
+  </div>
+
+  <div class="meta">
+    <div><strong>Numer zgłoszenia:</strong> ${esc(repair.ticket_no||"—")}</div>
+    <div><strong>Data sporządzenia:</strong> ${esc(reportDate)}</div>
+    <div><strong>Klient:</strong> ${esc(repair.name||"—")}</div>
+    <div><strong>Telefon:</strong> ${esc(repair.phone||"—")}</div>
+    <div><strong>E-mail:</strong> ${esc(repair.email||"—")}</div>
+    <div><strong>Sprzęt:</strong> ${esc(item.device_name||"—")}</div>
+    <div><strong>Model:</strong> ${esc(item.model||"—")}</div>
+    <div><strong>Status:</strong> ${esc(normalizeItemStatus(item.status)||"—")}</div>
+  </div>
+
+  <div class="box">
+    <h2>Dane zgłoszonej usterki</h2>
+    <div><strong>Rodzaj:</strong> ${esc(item.issue_type||"—")}</div>
+    <div style="margin-top:5px;"><strong>Opis klienta:</strong> ${esc(item.problem||"—")}</div>
+  </div>
+
+  <div class="box">
+    <h2>Wynik przeprowadzonej diagnostyki</h2>
+    ${issuesHtml}
+    <div style="margin-top:12px;">
+      <strong>Szczegóły diagnostyki:</strong><br>
+      ${diagnosticNote ? esc(diagnosticNote).replaceAll("\\n","<br>") : "—"}
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Podsumowanie diagnostyki</h2>
+    <div>
+      Na podstawie przeprowadzonej diagnostyki określono stan techniczny urządzenia
+      oraz zidentyfikowano wskazane powyżej nieprawidłowości.
+    </div>
+    <div style="margin-top:10px;">
+      <strong>Status urządzenia:</strong> ${esc(normalizeItemStatus(item.status)||"—")}
+    </div>
+  </div>
+
+  ${
+    item.admin_note
+      ? `<div class="box">
+           <h2>Uwagi serwisowe</h2>
+           ${esc(item.admin_note).replaceAll("\\n","<br>")}
+         </div>`
+      : ""
+  }
+
+  <div style="
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:34px;
+    page-break-inside:avoid;
+  ">
+    <div>
+      <div style="border-top:1px solid #777;padding-top:6px;text-align:center;font-size:11px;color:#555;">
+        Podpis / pieczęć serwisu
+      </div>
+    </div>
+    <div>
+      <div style="border-top:1px solid #777;padding-top:6px;text-align:center;font-size:11px;color:#555;">
+        Data
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    BarberSerwis.com — protokół diagnostyczny urządzenia.<br>
+    Dokument dotyczy sprzętu przypisanego do zgłoszenia ${esc(repair.ticket_no||"—")}.
+  </div>
+</div>
+<script>
+  window.addEventListener("load",()=>{
+    setTimeout(()=>window.print(),250);
+  });
+<\/script>
+</body>
+</html>`;
+
+  const w=window.open("","_blank");
+  if(!w){
+    alert("Przeglądarka zablokowała nowe okno. Zezwól na wyskakujące okna dla BarberSerwis.");
+    return;
+  }
+
+  w.document.open();
+  w.document.write(reportHtml);
+  w.document.close();
+}
+
+
+/* =============================
+   PŁATNOŚCI
+============================= */
+
+async function savePayment(repairId){
+  const method=document.getElementById("payment-method-"+repairId)?.value || null;
+  const status=document.getElementById("payment-status-"+repairId)?.value || "Oczekuje";
+  const amountRaw=document.getElementById("payment-amount-"+repairId)?.value ?? "";
+  const msg=document.getElementById("payment-msg-"+repairId);
+
+  const amount=amountRaw==="" ? null : Number(amountRaw);
+  if(amount !== null && (!Number.isFinite(amount) || amount < 0)){
+    if(msg) msg.textContent="Wpisz prawidłową kwotę.";
+    return;
+  }
+
+  if(msg) msg.textContent="Zapisywanie płatności…";
+
+  const current=allRepairs.find(r=>String(r.id)===String(repairId));
+  const paidAt =
+    status==="Opłacono"
+      ? (current?.payment_paid_at || new Date().toISOString())
+      : null;
+
+  const {error}=await sb.rpc(
+    "admin_update_payment",
+    {
+      p_repair_id:repairId,
+      p_payment_method:method,
+      p_payment_status:status,
+      p_payment_amount:amount,
+      p_payment_paid_at:paidAt
+    }
+  );
+
+  if(error){
+    if(msg) msg.textContent="Błąd zapisu płatności: "+error.message;
+    return;
+  }
+
+  if(current){
+    current.payment_method=method;
+    current.payment_status=status;
+    current.payment_amount=amount;
+    current.payment_paid_at=paidAt;
+  }
+
+  if(msg) msg.textContent="Płatność zapisana ✅";
+  renderRepairs(allRepairs);
+}
+
+async function markPaymentPaid(repairId){
+  const method=document.getElementById("payment-method-"+repairId)?.value || null;
+  const amountRaw=document.getElementById("payment-amount-"+repairId)?.value ?? "";
+  const msg=document.getElementById("payment-msg-"+repairId);
+  const amount=amountRaw==="" ? null : Number(amountRaw);
+
+  if(!method){
+    alert("Najpierw wybierz metodę płatności.");
+    return;
+  }
+
+  if(amount === null || !Number.isFinite(amount) || amount < 0){
+    alert("Wpisz prawidłową kwotę płatności.");
+    return;
+  }
+
+  const paidAt=new Date().toISOString();
+  if(msg) msg.textContent="Potwierdzanie płatności…";
+
+  const {error}=await sb.rpc(
+    "admin_update_payment",
+    {
+      p_repair_id:repairId,
+      p_payment_method:method,
+      p_payment_status:"Opłacono",
+      p_payment_amount:amount,
+      p_payment_paid_at:paidAt
+    }
+  );
+
+  if(error){
+    if(msg) msg.textContent="Błąd potwierdzenia płatności: "+error.message;
+    return;
+  }
+
+  const current=allRepairs.find(r=>String(r.id)===String(repairId));
+  if(current){
+    current.payment_method=method;
+    current.payment_status="Opłacono";
+    current.payment_amount=amount;
+    current.payment_paid_at=paidAt;
+  }
+
+  renderRepairs(allRepairs);
+}
+
+function clearPaymentDateFilter(){
+  const el=document.getElementById("paymentDateFilter");
+  if(el) el.value="";
+  applyFilters();
+}
+
+function matchesPaymentDate(repair,dateValue){
+  if(!dateValue) return true;
+  if(repair.payment_status!=="Opłacono" || !repair.payment_paid_at) return false;
+
+  const d=new Date(repair.payment_paid_at);
+  if(Number.isNaN(d.getTime())) return false;
+
+  const localDate=[
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+
+  return localDate===dateValue;
+}
+
+/* =============================
+   GALERIA ADMINISTRATORA
+============================= */
+
+let galleryCropper = null;
+let galleryCropPath = "";
+let galleryCropObjectUrl = "";
+
+async function loadGalleryAdmin(){
+  const box=document.getElementById("galleryAdminGrid");
+  if(!box) return;
+
+  const {data,error}=await sb
+    .from("gallery_media")
+    .select("id,media_type,storage_path,caption,is_visible,sort_order,created_at")
+    .order("sort_order",{ascending:true})
+    .order("created_at",{ascending:false});
+
+  if(error){
+    box.innerHTML='<div class="msg">Błąd galerii: '+esc(error.message)+'</div>';
+    return;
+  }
+
+  if(!data?.length){
+    box.innerHTML='<div class="msg">Galeria jest pusta.</div>';
+    return;
+  }
+
+  const cacheBust=Date.now();
+
+  box.innerHTML=data.map(item=>{
+    const {data:urlData}=sb.storage.from("gallery").getPublicUrl(item.storage_path);
+    const baseUrl=urlData?.publicUrl||"";
+    const url=baseUrl ? `${baseUrl}?v=${cacheBust}` : "";
+    const isVideo=item.media_type==="video";
+
+    const media=isVideo
+      ? `<video class="gallery-admin-media" controls preload="metadata"><source src="${esc(url)}"></video>`
+      : `<img class="gallery-admin-media" src="${esc(url)}" alt="">`;
+
+    return `<div class="gallery-admin-card">
+      ${media}
+      <div class="gallery-admin-body">
+
+        <label>Podpis</label>
+        <input
+          class="gallery-admin-caption-edit"
+          id="gallery-caption-${item.id}"
+          type="text"
+          maxlength="180"
+          value="${esc(item.caption||"")}"
+          placeholder="Bez podpisu"
+          oninput="scheduleGalleryCaptionSave('${item.id}')"
+        >
+
+        ${item.is_visible?"":'<div class="gallery-hidden-badge">UKRYTE NA STRONIE</div>'}
+
+        <div class="gallery-admin-actions">
+          ${isVideo ? "" : `<button class="dark" onclick="openGalleryCrop('${esc(item.storage_path)}')">Przytnij zdjęcie</button>`}
+          <button class="dark" onclick="toggleGalleryVisibility('${item.id}',${!item.is_visible})">${item.is_visible?"Ukryj":"Pokaż"}</button>
+          <button class="dark" onclick="moveGalleryItem('${item.id}',-1)">↑</button>
+          <button class="dark" onclick="moveGalleryItem('${item.id}',1)">↓</button>
+          <button class="danger" onclick="deleteGalleryMedia('${item.id}','${esc(item.storage_path)}')">Usuń</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+const galleryCaptionTimers = {};
+
+function scheduleGalleryCaptionSave(id){
+  clearTimeout(galleryCaptionTimers[id]);
+
+  const msg=document.getElementById("galleryMsg");
+  if(msg) msg.textContent="Zapisywanie podpisu…";
+
+  galleryCaptionTimers[id]=setTimeout(()=>{
+    saveGalleryCaption(id);
+  },700);
+}
+
+async function saveGalleryCaption(id){
+  const input=document.getElementById("gallery-caption-"+id);
+  if(!input) return;
+
+  const caption=input.value.trim() || null;
+
+  const {error}=await sb
+    .from("gallery_media")
+    .update({caption})
+    .eq("id",id);
+
+  const msg=document.getElementById("galleryMsg");
+
+  if(error){
+    if(msg) msg.textContent="Błąd zapisu podpisu: "+error.message;
+    return;
+  }
+
+  if(msg) msg.textContent="Podpis zapisany automatycznie ✅";
+}
+
+async function uploadGalleryMedia(){
+  const fileInput=document.getElementById("galleryFile");
+  const caption=document.getElementById("galleryCaption").value.trim();
+  const msg=document.getElementById("galleryMsg");
+  const btn=document.getElementById("galleryUploadBtn");
+  const file=fileInput.files?.[0];
+
+  if(!file){msg.textContent="Wybierz zdjęcie albo film.";return;}
+  const isImage=file.type.startsWith("image/");
+  const isVideo=file.type.startsWith("video/");
+  if(!isImage&&!isVideo){msg.textContent="Dozwolone są tylko zdjęcia i filmy.";return;}
+  if(file.size>50*1024*1024){msg.textContent="Plik jest za duży. Maksymalnie 50 MB.";return;}
+
+  btn.disabled=true;
+  msg.textContent="Wysyłanie pliku…";
+
+  const ext=(file.name.split(".").pop()|| (isImage?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
+  const path=`${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+  const {error:uploadError}=await sb.storage.from("gallery").upload(path,file,{
+    upsert:false,
+    contentType:file.type
+  });
+
+  if(uploadError){
+    msg.textContent="Błąd wysyłania: "+uploadError.message;
+    btn.disabled=false;
+    return;
+  }
+
+  const {data:maxData}=await sb
+    .from("gallery_media")
+    .select("sort_order")
+    .order("sort_order",{ascending:false})
+    .limit(1);
+
+  const nextOrder=(maxData?.[0]?.sort_order??0)+10;
+
+  const {error:insertError}=await sb.from("gallery_media").insert({
+    media_type:isVideo?"video":"image",
+    storage_path:path,
+    caption:caption||null,
+    is_visible:true,
+    sort_order:nextOrder
+  });
+
+  if(insertError){
+    await sb.storage.from("gallery").remove([path]);
+    msg.textContent="Błąd zapisu galerii: "+insertError.message;
+    btn.disabled=false;
+    return;
+  }
+
+  fileInput.value="";
+  document.getElementById("galleryCaption").value="";
+  msg.textContent="Dodano do galerii ✅";
+  btn.disabled=false;
+  await loadGalleryAdmin();
+}
+
+async function toggleGalleryVisibility(id,visible){
+  const {error}=await sb.from("gallery_media").update({is_visible:visible}).eq("id",id);
+  if(error){alert("Błąd: "+error.message);return;}
+  await loadGalleryAdmin();
+}
+
+async function openGalleryCrop(path){
+  const modal=document.getElementById("galleryCropModal");
+  const img=document.getElementById("galleryCropImage");
+  const msg=document.getElementById("galleryCropMsg");
+
+  if(typeof Cropper==="undefined"){
+    alert("Edytor przycinania nie został załadowany. Odśwież stronę i spróbuj ponownie.");
+    return;
+  }
+
+  msg.textContent="Ładowanie zdjęcia…";
+  galleryCropPath=path;
+
+  if(galleryCropper){
+    galleryCropper.destroy();
+    galleryCropper=null;
+  }
+
+  if(galleryCropObjectUrl){
+    URL.revokeObjectURL(galleryCropObjectUrl);
+    galleryCropObjectUrl="";
+  }
+
+  const {data,error}=await sb.storage.from("gallery").download(path);
+
+  if(error || !data){
+    msg.textContent="Nie udało się pobrać zdjęcia: "+(error?.message||"nieznany błąd");
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden","false");
+    return;
+  }
+
+  galleryCropObjectUrl=URL.createObjectURL(data);
+  img.src=galleryCropObjectUrl;
+
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden","false");
+  msg.textContent="";
+
+  img.onload=()=>{
+    galleryCropper=new Cropper(img,{
+      aspectRatio:4/3,
+      viewMode:1,
+      autoCropArea:0.92,
+      dragMode:"move",
+      responsive:true,
+      background:false,
+      guides:true,
+      center:true,
+      movable:true,
+      zoomable:true,
+      cropBoxMovable:true,
+      cropBoxResizable:true
+    });
+  };
+}
+
+function closeGalleryCrop(){
+  const modal=document.getElementById("galleryCropModal");
+  const img=document.getElementById("galleryCropImage");
+
+  if(galleryCropper){
+    galleryCropper.destroy();
+    galleryCropper=null;
+  }
+
+  if(galleryCropObjectUrl){
+    URL.revokeObjectURL(galleryCropObjectUrl);
+    galleryCropObjectUrl="";
+  }
+
+  galleryCropPath="";
+  img.removeAttribute("src");
+  document.getElementById("galleryCropMsg").textContent="";
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden","true");
+}
+
+function galleryCropMimeFromPath(path){
+  const ext=(path.split(".").pop()||"").toLowerCase();
+  if(ext==="png") return "image/png";
+  if(ext==="webp") return "image/webp";
+  return "image/jpeg";
+}
+
+function galleryCropExtension(path){
+  const ext=(path.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+  return ["jpg","jpeg","png","webp"].includes(ext) ? ext : "jpg";
+}
+
+async function canvasToBlob(canvas,mime){
+  return await new Promise((resolve)=>{
+    if(mime==="image/png"){
+      canvas.toBlob(resolve,mime);
+    }else{
+      canvas.toBlob(resolve,mime,0.92);
+    }
+  });
+}
+
+async function saveGalleryCrop(){
+  if(!galleryCropper || !galleryCropPath) return;
+
+  const btn=document.getElementById("galleryCropSaveBtn");
+  const msg=document.getElementById("galleryCropMsg");
+  btn.disabled=true;
+  msg.textContent="Zapisywanie przyciętego zdjęcia…";
+
+  try{
+    const canvas=galleryCropper.getCroppedCanvas({
+      width:1600,
+      height:1200,
+      imageSmoothingEnabled:true,
+      imageSmoothingQuality:"high"
+    });
+
+    if(!canvas){
+      throw new Error("Nie udało się utworzyć przyciętego obrazu.");
+    }
+
+    const mime=galleryCropMimeFromPath(galleryCropPath);
+    const ext=galleryCropExtension(galleryCropPath);
+    const blob=await canvasToBlob(canvas,mime);
+
+    if(!blob){
+      throw new Error("Nie udało się przygotować pliku.");
+    }
+
+    const newPath=`${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+    const {error:uploadError}=await sb.storage
+      .from("gallery")
+      .upload(newPath,blob,{
+        upsert:false,
+        contentType:mime
+      });
+
+    if(uploadError){
+      throw new Error("Błąd wysyłania przyciętego zdjęcia: "+uploadError.message);
+    }
+
+    const {error:updateError}=await sb
+      .from("gallery_media")
+      .update({storage_path:newPath})
+      .eq("storage_path",galleryCropPath);
+
+    if(updateError){
+      await sb.storage.from("gallery").remove([newPath]);
+      throw new Error("Błąd zapisu zdjęcia w galerii: "+updateError.message);
+    }
+
+    const oldPath=galleryCropPath;
+    await sb.storage.from("gallery").remove([oldPath]);
+
+    closeGalleryCrop();
+    document.getElementById("galleryMsg").textContent="Zdjęcie przycięte i zapisane ✅";
+    await loadGalleryAdmin();
+
+  }catch(err){
+    msg.textContent=err instanceof Error ? err.message : String(err);
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+async function deleteGalleryMedia(id,path){
+  if(!confirm("Usunąć ten element z galerii?")) return;
+
+  const {error:storageError}=await sb.storage.from("gallery").remove([path]);
+  if(storageError){
+    alert("Nie udało się usunąć pliku: "+storageError.message);
+    return;
+  }
+
+  const {error}=await sb.from("gallery_media").delete().eq("id",id);
+
+  if(error){
+    alert("Plik usunięto, ale błąd wpisu galerii: "+error.message);
+    return;
+  }
+
+  await loadGalleryAdmin();
+}
+
+async function moveGalleryItem(id,direction){
+  const {data,error}=await sb.from("gallery_media")
+    .select("id,sort_order")
+    .order("sort_order",{ascending:true})
+    .order("created_at",{ascending:false});
+
+  if(error||!data) return;
+
+  const index=data.findIndex(x=>x.id===id);
+  const otherIndex=index+direction;
+
+  if(index<0||otherIndex<0||otherIndex>=data.length) return;
+
+  const current=data[index];
+  const other=data[otherIndex];
+  const a=current.sort_order??index*10;
+  const b=other.sort_order??otherIndex*10;
+
+  const r1=await sb.from("gallery_media").update({sort_order:b}).eq("id",current.id);
+  if(r1.error){
+    alert("Błąd zmiany kolejności: "+r1.error.message);
+    return;
+  }
+
+  const r2=await sb.from("gallery_media").update({sort_order:a}).eq("id",other.id);
+  if(r2.error){
+    alert("Błąd zmiany kolejności: "+r2.error.message);
+    return;
+  }
+
+  await loadGalleryAdmin();
+}
+
+
+/* =============================
+   BEZPIECZNY TEKST
+============================= */
+
+function esc(v){
+
+  return String(v ?? "")
+    .replace(/[&<>'"]/g, ch => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      "'":"&#39;",
+      '"':"&quot;"
+    })[ch]);
+
+}
+
+
+/* =============================
+   DECYZJA KLIENTA
+============================= */
+
+function decisionText(v){
+
+  if(v === "accepted"){
+
+    return `
+      <span class="decision-ok">
+        Zaakceptowana ✅
+      </span>
+    `;
+
+  }
+
+  if(v === "rejected"){
+
+    return `
+      <span class="decision-no">
+        Odrzucona ❌
+      </span>
+    `;
+
+  }
+
+  return "Brak decyzji";
+
+}
+
+
+/* =============================
+   KOLOR STATUSU
+============================= */
+
+
+function normalizeItemStatus(status){
+  const s = String(status || "").trim();
+
+  if(s === "Przyjęto" || s === "Przyjęto / diagnostyka"){
+    return "Przyjęto – oczekuje na diagnostykę";
+  }
+
+  if(s === "Diagnoza / wycena"){
+    return "Sprzęt jest w trakcie diagnostyki";
+  }
+
+  if(s === "Akceptacja"){
+    return "Wycena";
+  }
+
+  return s || "Nowe zgłoszenie";
+}
+
+function statusClass(status){
+
+  switch(status){
+
+    case "Nowe zgłoszenie":
+      return "status-new";
+
+    case "Przyjęto":
+    case "Przyjęto / diagnostyka":
+    case "Przyjęto – oczekuje na diagnostykę":
+      return "status-received";
+
+    case "Diagnoza / wycena":
+    case "Sprzęt jest w trakcie diagnostyki":
+    case "Wycena":
+      return "status-diagnosis";
+
+    case "Akceptacja":
+      return "status-accept";
+
+    case "Naprawa":
+      return "status-repair";
+
+    case "Gotowe":
+      return "status-ready";
+
+    case "Odesłano":
+      return "status-sent";
+
+    case "Bez naprawy / do odesłania":
+      return "status-cancelled";
+
+    case "Anulowane":
+      return "status-cancelled";
+
+    default:
+      return "status-new";
+
+  }
+
+}
+
+
+/* =============================
+   LOGOWANIE
+============================= */
+
+async function adminLogin(){
+
+  const email =
+    document
+      .getElementById("adminEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("adminPassword")
+      .value;
+
+  const m =
+    document.getElementById("loginMsg");
+
+  m.textContent = "Logowanie…";
+
+
+  const {error} =
+    await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+
+
+  if(error){
+
+    m.textContent =
+      "Nie udało się zalogować: "
+      + error.message;
+
+    return;
+
+  }
+
+  m.textContent = "";
+
+  await checkSession();
+
+}
+
+
+/* =============================
+   WYLOGOWANIE
+============================= */
+
+async function adminLogout(){
+
+  await sb.auth.signOut();
+
+  allRepairs = [];
+
+  document
+    .getElementById("repairs")
+    .innerHTML = "";
+
+  await checkSession();
+
+}
+
+
+/* =============================
+   SESJA
+============================= */
+
+async function checkSession(){
+
+  const {data} =
+    await sb.auth.getSession();
+
+  const user =
+    data?.session?.user || null;
+
+
+  document
+    .getElementById("loginPanel")
+    .classList
+    .toggle("hidden", !!user);
+
+
+  document
+    .getElementById("adminPanel")
+    .classList
+    .toggle("hidden", !user);
+
+
+  document
+    .getElementById("statsPanel")
+    .classList
+    .toggle("hidden", !user);
+
+
+  document
+    .getElementById("filtersPanel")
+    .classList
+    .toggle("hidden", !user);
+
+  document
+    .getElementById("galleryAdminPanel")
+    .classList
+    .toggle("hidden", !user);
+
+
+  if(user){
+
+    document
+      .getElementById("adminStatus")
+      .textContent =
+      "Zalogowano: " + user.email;
+
+    await loadAllRepairs();
+    await loadGalleryAdmin();
+
+  }
+
+}
+
+
+/* =============================
+   POBIERANIE ZGŁOSZEŃ
+============================= */
+
+async function loadAllRepairs(){
+
+  const box =
+    document.getElementById("repairs");
+
+  box.innerHTML =
+    '<div class="panel">Ładowanie zgłoszeń…</div>';
+
+  const {data:priceData,error:priceError} =
+    await sb
+      .from("service_price_list")
+      .select("id,name,default_price,active,sort_order")
+      .eq("active",true)
+      .order("sort_order",{ascending:true})
+      .order("name",{ascending:true});
+
+  if(priceError){
+    box.innerHTML =
+      '<div class="panel">Nie udało się pobrać cennika: '
+      + esc(priceError.message)
+      + '</div>';
+    return;
+  }
+
+  servicePriceList = Array.isArray(priceData) ? priceData : [];
+
+  const {data:diagnosticCatalogData,error:diagnosticCatalogError} =
+    await sb
+      .from("diagnostic_issue_catalog")
+      .select("id,name,active,sort_order")
+      .eq("active",true)
+      .order("sort_order",{ascending:true})
+      .order("name",{ascending:true});
+
+  if(diagnosticCatalogError){
+    box.innerHTML =
+      '<div class="panel">Nie udało się pobrać listy problemów diagnostycznych: '
+      + esc(diagnosticCatalogError.message)
+      + '</div>';
+    return;
+  }
+
+  diagnosticIssueCatalog = Array.isArray(diagnosticCatalogData)
+    ? diagnosticCatalogData
+    : [];
+
+
+  const {data,error} =
+    await sb.rpc("admin_list_repairs");
+
+
+  if(error){
+
+    box.innerHTML =
+      '<div class="panel">'
+      +
+      'Brak dostępu do panelu administratora albo błąd: '
+      +
+      esc(error.message)
+      +
+      '</div>';
+
+    return;
+
+  }
+
+
+  allRepairs =
+    Array.isArray(data)
+      ? data
+      : [];
+
+  // Uzupełnij zgłoszenia o zapis zgody na wcześniejsze rozpoczęcie diagnostyki.
+  // Jeśli kolumny nie są jeszcze zwracane przez admin_list_repairs, pobieramy je osobno.
+  const consentRepairIds = allRepairs.map(r => r.id).filter(Boolean);
+
+  if(consentRepairIds.length){
+    const {data:consentData,error:consentError} =
+      await sb
+        .from("repairs")
+        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note")
+        .in("id",consentRepairIds);
+
+    if(consentError){
+      console.warn("Nie udało się pobrać danych zgody diagnostycznej:", consentError.message);
+    }else{
+      const consentByRepair = Object.fromEntries(
+        (consentData || []).map(row => [String(row.id), row])
+      );
+
+      allRepairs.forEach(repair => {
+        const consent = consentByRepair[String(repair.id)];
+        if(consent){
+          repair.diagnostic_consent = consent.diagnostic_consent === true;
+          repair.diagnostic_consent_at = consent.diagnostic_consent_at || null;
+          repair.payment_method = consent.payment_method || null;
+          repair.payment_status = consent.payment_status || "Oczekuje";
+          repair.payment_amount = consent.payment_amount ?? null;
+          repair.payment_paid_at = consent.payment_paid_at || null;
+          repair.payment_note = consent.payment_note || null;
+        }
+      });
+    }
+  }
+
+  // Pobierz wszystkie sprzęty należące do zgłoszeń.
+  const repairIds = allRepairs.map(r => r.id).filter(Boolean);
+
+  if(repairIds.length){
+    const {data:itemsData,error:itemsError} =
+      await sb
+        .from("repair_items")
+        .select("id,repair_id,item_no,device_name,model,issue_type,problem,status,quote_amount,admin_note,quote_decision,diagnostic_note,diagnostic_completed_at")
+        .in("repair_id",repairIds)
+        .order("item_no",{ascending:true});
+
+    if(itemsError){
+      box.innerHTML =
+        '<div class="panel">Nie udało się pobrać sprzętów: '
+        + esc(itemsError.message)
+        + '</div>';
+      return;
+    }
+
+    allRepairs.forEach(r => {
+      r.items = (itemsData || []).filter(item =>
+        String(item.repair_id) === String(r.id)
+      );
+    });
+
+    const itemIds = (itemsData || []).map(x=>x.id).filter(Boolean);
+
+    quoteLinesByItem = {};
+
+    if(itemIds.length){
+      const {data:quoteLinesData,error:quoteLinesError} =
+        await sb
+          .from("repair_item_quote_lines")
+          .select("id,repair_item_id,price_list_id,description,quantity,unit_price,line_total,sort_order")
+          .in("repair_item_id",itemIds)
+          .order("sort_order",{ascending:true})
+          .order("created_at",{ascending:true});
+
+      if(quoteLinesError){
+        box.innerHTML =
+          '<div class="panel">Nie udało się pobrać kosztorysów: '
+          + esc(quoteLinesError.message)
+          + '</div>';
+        return;
+      }
+
+      itemIds.forEach(id => quoteLinesByItem[id] = []);
+
+      (quoteLinesData || []).forEach(line=>{
+        line._key = line.id || quoteLineKey();
+        (quoteLinesByItem[line.repair_item_id] ||= []).push(line);
+      });
+
+      diagnosticIssuesByItem = {};
+      itemIds.forEach(id => diagnosticIssuesByItem[id] = []);
+
+      const {data:diagnosticIssuesData,error:diagnosticIssuesError} =
+        await sb
+          .from("repair_item_diagnostic_issues")
+          .select("id,repair_item_id,issue_catalog_id,description,sort_order,created_at")
+          .in("repair_item_id",itemIds)
+          .order("sort_order",{ascending:true})
+          .order("created_at",{ascending:true});
+
+      if(diagnosticIssuesError){
+        box.innerHTML =
+          '<div class="panel">Nie udało się pobrać szczegółów diagnostyki: '
+          + esc(diagnosticIssuesError.message)
+          + '</div>';
+        return;
+      }
+
+      (diagnosticIssuesData || []).forEach(row=>{
+        (diagnosticIssuesByItem[row.repair_item_id] ||= []).push(row);
+      });
+
+      // Kompatybilność ze starymi wycenami:
+      // jeśli sprzęt ma starą quote_amount, ale nie ma jeszcze pozycji kosztorysu,
+      // pokazujemy ją jako jedną tymczasową pozycję "Dotychczasowa wycena".
+      (itemsData || []).forEach(item=>{
+        const lines = quoteLinesByItem[item.id] || [];
+        if(
+          !lines.length &&
+          item.quote_amount != null &&
+          Number.isFinite(Number(item.quote_amount)) &&
+          Number(item.quote_amount) > 0
+        ){
+          quoteLinesByItem[item.id] = [{
+            _key:quoteLineKey(),
+            id:null,
+            repair_item_id:item.id,
+            price_list_id:null,
+            description:"Dotychczasowa wycena",
+            quantity:1,
+            unit_price:Number(item.quote_amount),
+            sort_order:0
+          }];
+        }
+      });
+    }
+  }else{
+    allRepairs.forEach(r => r.items = []);
+    quoteLinesByItem = {};
+    diagnosticIssuesByItem = {};
+  }
+
+
+  updateStats();
+
+  applyFilters();
+
+}
+
+
+/* =============================
+   LICZNIKI
+============================= */
+
+function updateStats(){
+
+  const all =
+    allRepairs.length;
+
+  const nowe =
+    allRepairs.filter(r =>
+      r.status === "Nowe zgłoszenie"
+    ).length;
+
+  const naprawa =
+    allRepairs.filter(r =>
+      r.status === "Naprawa"
+    ).length;
+
+  const gotowe =
+    allRepairs.filter(r =>
+      r.status === "Gotowe"
+    ).length;
+
+
+  document
+    .getElementById("countAll")
+    .textContent = all;
+
+  document
+    .getElementById("countNew")
+    .textContent = nowe;
+
+  document
+    .getElementById("countRepair")
+    .textContent = naprawa;
+
+  document
+    .getElementById("countReady")
+    .textContent = gotowe;
+
+}
+
+
+/* =============================
+   FILTROWANIE
+============================= */
+
+function applyFilters(){
+  const paymentDateValue=document.getElementById("paymentDateFilter")?.value || "";
+
+
+  const search =
+    document
+      .getElementById("searchRepair")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const status =
+    document
+      .getElementById("statusFilter")
+      .value;
+
+  const sort =
+    document
+      .getElementById("sortRepairs")
+      .value;
+
+
+  let filtered =
+    [...allRepairs];
+
+
+  if(search){
+
+    filtered =
+      filtered.filter(r => {
+
+        const text = [
+          r.ticket_no,
+          r.name,
+          r.phone,
+          r.email,
+          r.model,
+          r.issue_type,
+          r.problem,
+          ...(r.items || []).flatMap(item => [
+            item.device_name,
+            item.model,
+            item.issue_type,
+            item.problem
+          ]),
+          r.return_address,
+          r.return_city,
+          r.tracking,
+          r.invoice_company_name,
+          r.invoice_nip,
+          r.invoice_address,
+          r.invoice_postal_code,
+          r.invoice_city
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        return text.includes(search);
+
+      });
+
+  }
+
+
+  if(status){
+
+    filtered =
+      filtered.filter(r =>
+        r.status === status
+      );
+
+  }
+
+
+  if(paymentDateValue){
+    filtered = filtered.filter(r=>matchesPaymentDate(r,paymentDateValue));
+  }
+
+  filtered.sort((a,b) => {
+
+    const dateA =
+      new Date(a.created_at || 0).getTime();
+
+    const dateB =
+      new Date(b.created_at || 0).getTime();
+
+    if(sort === "oldest"){
+
+      return dateA - dateB;
+
+    }
+
+    return dateB - dateA;
+
+  });
+
+
+  document
+    .getElementById("resultsInfo")
+    .textContent =
+    "Wyświetlono "
+    + filtered.length
+    + " z "
+    + allRepairs.length
+    + " zgłoszeń";
+
+
+  renderRepairs(filtered);
+
+}
+
+
+/* =============================
+   WYŚWIETLANIE
+============================= */
+
+function renderRepairs(data){
+
+  const box =
+    document.getElementById("repairs");
+
+
+  if(!data.length){
+
+    box.innerHTML =
+      '<div class="panel">Brak zgłoszeń spełniających kryteria.</div>';
+
+    return;
+
+  }
+
+
+  box.innerHTML = "";
+
+
+  data.forEach(r => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "repair";
+
+
+    const created =
+      r.created_at
+      ?
+      new Date(r.created_at)
+        .toLocaleString("pl-PL")
+      :
+      "—";
+
+
+    const items = Array.isArray(r.items) ? r.items : [];
+
+    const invoiceHtml = r.wants_invoice
+      ? `
+        <div class="invoice-admin-box">
+          <div class="invoice-admin-yes">Faktura VAT: TAK</div>
+          <strong>Nazwa firmy:</strong> ${esc(r.invoice_company_name || "—")}<br>
+          <strong>NIP:</strong> ${esc(r.invoice_nip || "—")}<br>
+          <strong>Adres firmy:</strong> ${esc(r.invoice_address || "—")}<br>
+          <strong>Kod pocztowy:</strong> ${esc(r.invoice_postal_code || "—")}<br>
+          <strong>Miasto:</strong> ${esc(r.invoice_city || "—")}
+        </div>
+      `
+      : `
+        <div class="invoice-admin-box">
+          <span class="invoice-admin-no">Faktura VAT: NIE</span>
+        </div>
+      `;
+
+    const itemsHtml = items.length
+      ? `
+        <div class="items-box">
+          <div class="items-title">Sprzęt do naprawy (${items.length})</div>
+
+          ${items.map((item,index) => `
+            <div class="item-row">
+
+              <strong>Sprzęt ${esc(item.item_no || index + 1)}:</strong>
+              ${esc(item.device_name || "—")}<br>
+
+              <strong>Model:</strong>
+              ${esc(item.model || "—")}<br>
+
+              <strong>Problem:</strong>
+              ${esc(item.issue_type || "—")} – ${esc(item.problem || "—")}<br>
+
+              <strong>Decyzja klienta:</strong>
+              ${decisionText(item.quote_decision)}
+
+              <div class="item-edit-grid">
+
+                <div>
+                  <label>Status sprzętu</label>
+                  <select id="item-status-${item.id}" onchange="autoSaveRepairItemStatus('${item.id}')">
+                    ${[
+                      "Nowe zgłoszenie",
+                      "Przyjęto – oczekuje na diagnostykę",
+                      "Sprzęt jest w trakcie diagnostyki",
+                      "Wycena",
+                      "Naprawa",
+                      "Gotowe",
+                      "Bez naprawy / do odesłania",
+                      "Odesłano",
+                      "Anulowane"
+                    ].map(s => {
+                      const label = s === "Wycena"
+                        ? "Szczegóły diagnostyki i wycena"
+                        : s;
+                      return `<option value="${esc(s)}" ${s === normalizeItemStatus(item.status) ? "selected" : ""}>${esc(label)}</option>`;
+                    }).join("")}
+                  </select>
+                </div>
+
+                <div>
+                  <label>Łączna wycena sprzętu (zł)</label>
+                  <input
+                    id="item-quote-${item.id}"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="${quoteItemTotal(item.id).toFixed(2)}"
+                    readonly
+                  >
+                </div>
+
+                <div style="grid-column:1/-1;">
+                  <label>Informacja dla klienta o tym sprzęcie</label>
+                  <textarea
+                    id="item-note-${item.id}"
+                    placeholder="Np. Wymagana wymiana silnika"
+                  >${esc(item.admin_note || "")}</textarea>
+                </div>
+
+              </div>
+
+              <div class="diagnostic-box">
+                <div class="diagnostic-title">
+                  Szczegóły diagnostyki i wycena
+                </div>
+
+                <div class="diagnostic-grid">
+                  <div>
+                    <label>Wykryty problem</label>
+                    <select
+                      id="diagnostic-select-${item.id}"
+                      onchange="addDiagnosticIssueFromList('${item.id}')"
+                    >
+                      ${diagnosticCatalogOptions()}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label>&nbsp;</label>
+                    <span class="muted">Wybór z listy zapisuje się automatycznie.</span>
+                  </div>
+                </div>
+
+                <div
+                  class="diagnostic-list"
+                  id="diagnostic-list-${item.id}"
+                >
+                  ${getDiagnosticIssues(item.id).length
+                    ? getDiagnosticIssues(item.id).map(row=>`
+                        <div class="diagnostic-issue">
+                          <span>${esc(row.description || "—")}</span>
+                          <button
+                            type="button"
+                            class="danger"
+                            style="padding:7px 10px;"
+                            onclick="deleteDiagnosticIssue('${item.id}','${row.id}')"
+                            title="Usuń problem"
+                          >×</button>
+                        </div>
+                      `).join("")
+                    : '<div class="muted">Nie dodano jeszcze wyników diagnostyki.</div>'
+                  }
+                </div>
+
+                <div class="diagnostic-grid">
+                  <div>
+                    <label>Własny wykryty problem</label>
+                    <input
+                      id="diagnostic-custom-${item.id}"
+                      type="text"
+                      placeholder="Np. Pęknięte mocowanie ostrza"
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="addCustomDiagnosticIssue('${item.id}')"
+                  >
+                    Dodaj problem
+                  </button>
+                </div>
+
+                <div>
+                  <label>Szczegóły / wynik diagnostyki</label>
+                  <textarea
+                    class="diagnostic-note"
+                    id="diagnostic-note-${item.id}"
+                    placeholder="Opisz stan sprzętu, wykonane pomiary, wykryte uszkodzenia i zalecenia."
+                  >${esc(item.diagnostic_note || "")}</textarea>
+                </div>
+
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="gold"
+                    onclick="saveDiagnosticNote('${item.id}')"
+                  >
+                    Zapisz szczegóły diagnostyki
+                  </button>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="printDiagnosticReport('${item.id}')"
+                  >
+                    Raport diagnostyczny / Drukuj
+                  </button>
+                </div>
+
+                <div class="diagnostic-help">
+                  Diagnostyka jest częścią kosztorysu. Pozycję „Diagnostyka – 30 zł”
+                  dodajesz z cennika poniżej. Cena i kosztorys nadal wymagają ręcznego zapisu.
+                </div>
+              </div>
+
+              <div class="quote-builder">
+                <div class="quote-builder-title">
+                  Kosztorys naprawy
+                </div>
+
+                <div
+                  class="quote-lines"
+                  id="quote-lines-${item.id}"
+                ></div>
+
+                <div class="quote-add-grid">
+                  <div>
+                    <label>Pozycja z cennika</label>
+                    <select
+                      id="quote-price-select-${item.id}"
+                      onchange="fillPriceFromList('${item.id}')"
+                    >
+                      ${priceListOptions()}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label>Cena (zł)</label>
+                    <input
+                      id="quote-price-${item.id}"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="Cena"
+                    >
+                  </div>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="addPriceListLine('${item.id}')"
+                  >
+                    Dodaj z cennika
+                  </button>
+
+                  <button
+                    type="button"
+                    class="gold"
+                    onclick="saveRepairItem('${item.id}')"
+                  >
+                    Zapisz kosztorys
+                  </button>
+                </div>
+
+                <div class="quote-custom-grid">
+                  <div>
+                    <label>Własna pozycja</label>
+                    <input
+                      id="quote-custom-desc-${item.id}"
+                      type="text"
+                      placeholder="Np. Naprawa mocowania ostrza"
+                    >
+                  </div>
+
+                  <div>
+                    <label>Cena (zł)</label>
+                    <input
+                      id="quote-custom-price-${item.id}"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    >
+                  </div>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="addCustomQuoteLine('${item.id}')"
+                  >
+                    Dodaj własną pozycję
+                  </button>
+                </div>
+
+                <div class="quote-summary">
+                  Razem dla sprzętu:
+                  <strong id="quote-total-${item.id}">
+                    ${quoteItemTotal(item.id).toFixed(2)} zł
+                  </strong>
+                </div>
+
+                <div class="quote-help">
+                  Możesz zmienić cenę pozycji z cennika, dodać kilka usług
+                  albo wpisać własną pozycję ręcznie. Pozycje nie wysyłają
+                  e-maila automatycznie.
+                </div>
+              </div>
+
+              <div class="item-actions">
+                <button
+                  class="gold"
+                  type="button"
+                  onclick="saveRepairItem('${item.id}')"
+                >
+                  Zapisz sprzęt
+                </button>
+
+                <button
+                  class="dark"
+                  type="button"
+                  onclick="setQuickItemStatus('${item.id}','Naprawa')"
+                >
+                  Ustaw: Naprawa
+                </button>
+
+                <button
+                  class="dark"
+                  type="button"
+                  onclick="setQuickItemStatus('${item.id}','Gotowe')"
+                >
+                  Ustaw: Gotowe
+                </button>
+
+                <button
+                  class="dark"
+                  type="button"
+                  onclick="setQuickItemStatus('${item.id}','Bez naprawy / do odesłania')"
+                >
+                  Ustaw: Bez naprawy / do odesłania
+                </button>
+
+                <button
+                  class="dark"
+                  type="button"
+                  onclick="setQuickItemStatus('${item.id}','Odesłano')"
+                >
+                  Ustaw: Odesłano
+                </button>
+
+                <button
+                  class="danger"
+                  type="button"
+                  onclick="setQuickItemStatus('${item.id}','Anulowane')"
+                >
+                  Ustaw: Anulowane
+                </button>
+              </div>
+
+              <div
+                class="item-msg"
+                id="item-msg-${item.id}"
+              ></div>
+
+            </div>
+          `).join("")}
+        </div>
+      `
+      : `
+        <div class="items-box">
+          <div class="items-title">Sprzęt do naprawy</div>
+          <div class="item-row">
+            <strong>Nazwa sprzętu:</strong> —<br>
+            <strong>Model:</strong> ${esc(r.model || "—")}<br>
+            <strong>Problem:</strong>
+            ${esc(r.issue_type || "—")} – ${esc(r.problem || "—")}
+          </div>
+        </div>
+      `;
+
+    div.innerHTML = `
+
+      <div class="repair-head">
+
+        <div>
+
+          <div class="ticket">
+            ${esc(r.ticket_no)}
+          </div>
+
+          <div class="muted">
+            Zgłoszono: ${created}
+          </div>
+
+        </div>
+
+        <span class="status-pill ${statusClass(r.status)}">
+          ${esc(r.status || "Nowe zgłoszenie")}
+        </span>
+
+      </div>
+
+
+      <div class="client-info">
+
+        <strong>Klient:</strong>
+        ${esc(r.name)}
+        <br>
+
+        <strong>Telefon:</strong>
+        ${esc(r.phone)}
+
+        &nbsp; | &nbsp;
+
+        <strong>E-mail:</strong>
+        ${esc(r.email)}
+        <br>
+
+        <strong>Adres zwrotny:</strong>
+        ${esc(r.return_address || "—")},
+        ${esc(r.return_city || "—")}
+        <br>
+
+      </div>
+
+      ${invoiceHtml}
+
+      <div class="invoice-admin-box">
+        ${
+          r.diagnostic_consent
+            ? `
+              <div class="invoice-admin-yes">
+                Zgoda na rozpoczęcie odpłatnej diagnostyki przed upływem 14 dni: TAK
+              </div>
+              <div style="margin-top:5px;">
+                <strong>Data zgody:</strong>
+                ${
+                  r.diagnostic_consent_at
+                    ? esc(new Date(r.diagnostic_consent_at).toLocaleString("pl-PL"))
+                    : "—"
+                }
+              </div>
+            `
+            : `
+              <div class="invoice-admin-no">
+                Zgoda na rozpoczęcie odpłatnej diagnostyki przed upływem 14 dni: NIE / BRAK ZAPISU
+              </div>
+            `
+        }
+      </div>
+
+      <div class="payment-admin-box">
+        <div class="payment-admin-title">Płatność</div>
+
+        <div class="payment-admin-grid">
+          <div>
+            <label>Metoda płatności</label>
+            <select id="payment-method-${r.id}">
+              <option value="">Wybierz metodę</option>
+              <option value="Przelew" ${r.payment_method==="Przelew"?"selected":""}>Przelew</option>
+              <option value="BLIK" ${r.payment_method==="BLIK"?"selected":""}>BLIK</option>
+              <option value="Pobranie" ${r.payment_method==="Pobranie"?"selected":""}>Pobranie</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Kwota płatności (zł)</label>
+            <input
+              id="payment-amount-${r.id}"
+              type="number"
+              min="0"
+              step="0.01"
+              value="${r.payment_amount != null ? Number(r.payment_amount).toFixed(2) : ""}"
+              placeholder="np. 180.00"
+            >
+          </div>
+
+          <div>
+            <label>Status</label>
+            <select id="payment-status-${r.id}">
+              <option value="Oczekuje" ${(!r.payment_status || r.payment_status==="Oczekuje")?"selected":""}>Oczekuje</option>
+              <option value="Opłacono" ${r.payment_status==="Opłacono"?"selected":""}>Opłacono</option>
+              <option value="Pobranie" ${r.payment_status==="Pobranie"?"selected":""}>Pobranie</option>
+              <option value="Anulowano" ${r.payment_status==="Anulowano"?"selected":""}>Anulowano</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          ${
+            r.payment_status==="Opłacono"
+              ? `<span class="payment-paid">OPŁACONO</span>
+                 ${r.payment_paid_at ? ` • ${esc(new Date(r.payment_paid_at).toLocaleString("pl-PL"))}` : ""}`
+              : `<span class="payment-waiting">${esc(r.payment_status || "Oczekuje")}</span>`
+          }
+        </div>
+
+        <div class="payment-admin-actions">
+          <button type="button" class="dark" onclick="savePayment('${r.id}')">Zapisz płatność</button>
+          <button type="button" class="gold" onclick="markPaymentPaid('${r.id}')">Oznacz jako opłacone</button>
+        </div>
+
+        <div id="payment-msg-${r.id}" class="item-msg"></div>
+      </div>
+
+      ${itemsHtml}
+
+      <div class="grid">
+
+        <div>
+
+          <label>Status</label>
+
+          <select id="status-${r.id}">
+
+            ${[
+              "Nowe zgłoszenie",
+              "Przyjęto",
+              "Diagnoza / wycena",
+              "Akceptacja",
+              "Naprawa",
+              "Gotowe",
+              "Odesłano",
+              "Anulowane"
+            ]
+
+            .map(s =>
+              `<option
+                ${s === r.status ? "selected" : ""}
+              >
+                ${s}
+              </option>`
+            )
+
+            .join("")}
+
+          </select>
+
+        </div>
+
+
+        <div>
+
+          <label>Łączna wycena wszystkich sprzętów (zł)</label>
+
+          <input
+            id="quote-${r.id}"
+            type="text"
+            value="${items.reduce((sum,item)=>sum + quoteItemTotal(item.id),0).toFixed(2)} zł"
+            readonly
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>Numer przesyłki</label>
+
+          <input
+            id="tracking-${r.id}"
+            value="${esc(r.tracking || "")}"
+            placeholder="Numer przesyłki"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>Informacja dla klienta</label>
+
+          <textarea
+            id="note-${r.id}"
+            placeholder="Np. Wymagana wymiana silnika"
+          >${esc(r.admin_note || "")}</textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          class="gold"
+          onclick="saveRepair('${r.id}')"
+        >
+          Zapisz zmiany
+        </button>
+
+
+        <button
+          class="dark"
+          onclick="sendRepairEmail('${r.id}')"
+        >
+          Wyślij e-mail do klienta
+        </button>
+
+
+        <button
+          class="dark"
+          onclick="setQuickStatus('${r.id}','Naprawa')"
+        >
+          Ustaw: Naprawa
+        </button>
+
+
+        <button
+          class="dark"
+          onclick="setQuickStatus('${r.id}','Gotowe')"
+        >
+          Ustaw: Gotowe
+        </button>
+
+
+        <button
+          class="dark"
+          onclick="setQuickStatus('${r.id}','Odesłano')"
+        >
+          Ustaw: Odesłano
+        </button>
+
+        <button
+          class="danger"
+          onclick="cancelRepairAdmin('${r.id}')"
+        >
+          Anuluj zgłoszenie
+        </button>
+
+      </div>
+
+
+      <div
+        class="msg"
+        id="msg-${r.id}"
+      ></div>
+
+    `;
+
+
+    box.appendChild(div);
+
+    items.forEach(item=>{
+      renderQuoteLines(item.id);
+    });
+
+  });
+
+}
+
+
+
+function getRepairByItemId(itemId){
+  return allRepairs.find(r =>
+    Array.isArray(r.items) &&
+    r.items.some(item => String(item.id) === String(itemId))
+  ) || null;
+}
+
+function calculateRepairTotalFromDom(repair){
+  if(!repair || !Array.isArray(repair.items)) return 0;
+
+  return repair.items.reduce((sum,item)=>{
+    return sum + quoteItemTotal(item.id);
+  },0);
+}
+
+/* =============================
+   ZAPIS POJEDYNCZEGO SPRZĘTU
+============================= */
+
+async function saveRepairItem(itemId){
+
+  const status =
+    document.getElementById("item-status-"+itemId).value;
+
+  const quoteTotal = quoteItemTotal(itemId);
+
+  const quote =
+    getQuoteLines(itemId).length ? quoteTotal : null;
+
+  const note =
+    document.getElementById("item-note-"+itemId).value.trim() || null;
+
+  const msg =
+    document.getElementById("item-msg-"+itemId);
+
+  msg.textContent = "Zapisywanie…";
+
+  const quoteLinesSaved = await saveQuoteLines(itemId);
+  if(!quoteLinesSaved){
+    return;
+  }
+
+  const repair = getRepairByItemId(itemId);
+
+  if(!repair){
+    msg.textContent = "Błąd: nie znaleziono zgłoszenia dla tego sprzętu.";
+    return;
+  }
+
+  const oldItem = repair.items.find(item => String(item.id) === String(itemId));
+  const oldStatus = oldItem?.status || "";
+  const statusChanged = oldStatus !== status;
+
+  const {error} =
+    await sb.rpc("admin_update_repair_item",{
+      p_item_id:itemId,
+      p_status:status,
+      p_quote_amount:quote,
+      p_admin_note:note
+    });
+
+  if(error){
+    msg.textContent = "Błąd: " + error.message;
+    return;
+  }
+
+  // Aktualizujemy dane lokalne przed policzeniem sumy.
+  const localItem = repair.items.find(item => String(item.id) === String(itemId));
+  if(localItem){
+    localItem.status = status;
+    localItem.quote_amount = quote;
+    localItem.admin_note = note;
+  }
+
+  const totalQuote = calculateRepairTotalFromDom(repair);
+
+  // Synchronizacja łącznej wyceny w głównym zgłoszeniu
+  const {error:syncError} =
+    await sb.rpc("admin_update_repair",{
+      p_id:repair.id,
+      p_status:repair.status || "Nowe zgłoszenie",
+      p_quote_amount:totalQuote,
+      p_admin_note:repair.admin_note || null,
+      p_tracking:repair.tracking || null
+    });
+
+  if(syncError){
+    msg.textContent =
+      "Sprzęt zapisany, ale nie udało się zaktualizować łącznej wyceny: "
+      + syncError.message;
+    return;
+  }
+
+  msg.textContent = "Sprzęt zapisany ✅ E-mail nie został wysłany.";
+
+  // Nie przeładowujemy całej listy po zapisie sprzętu.
+  // Dzięki temu panel pozostaje dokładnie w miejscu, w którym pracuje administrator.
+  const totalInput = document.getElementById("quote-"+repair.id);
+  if(totalInput){
+    totalInput.value = totalQuote.toFixed(2) + " zł";
+  }
+}
+
+async function autoSaveRepairItemStatus(itemId){
+  const select=document.getElementById("item-status-"+itemId);
+  const msg=document.getElementById("item-msg-"+itemId);
+  if(!select || !msg) return;
+
+  const status=select.value;
+  msg.textContent="Zapisywanie statusu…";
+
+  const {error}=await sb.rpc("admin_update_repair_item",{
+    p_item_id:itemId,
+    p_status:status,
+    p_quote_amount:undefined,
+    p_admin_note:undefined
+  });
+
+  // Jeżeli RPC wymaga wszystkich parametrów, używamy aktualnych,
+  // ale nie zapisujemy niezapisanych zmian z formularza.
+  if(error){
+    const repair=getRepairByItemId(itemId);
+    const oldItem=repair?.items?.find(item=>String(item.id)===String(itemId));
+
+    if(!oldItem){
+      msg.textContent="Błąd zapisu statusu: "+error.message;
+      return;
+    }
+
+    const retry=await sb.rpc("admin_update_repair_item",{
+      p_item_id:itemId,
+      p_status:status,
+      p_quote_amount:oldItem.quote_amount ?? null,
+      p_admin_note:oldItem.admin_note ?? null
+    });
+
+    if(retry.error){
+      msg.textContent="Błąd zapisu statusu: "+retry.error.message;
+      return;
+    }
+  }
+
+  const repair=getRepairByItemId(itemId);
+  const localItem=repair?.items?.find(item=>String(item.id)===String(itemId));
+  if(localItem) localItem.status=status;
+
+  msg.textContent="Status zapisany automatycznie ✅";
+}
+
+async function setQuickItemStatus(itemId,status){
+  document.getElementById("item-status-"+itemId).value = status;
+  await saveRepairItem(itemId);
+}
+
+
+/* =============================
+   ZAPIS
+============================= */
+
+async function saveRepair(id){
+
+  const status =
+    document.getElementById("status-"+id).value;
+
+  const repairForTotal =
+    allRepairs.find(r => String(r.id) === String(id));
+
+  const quote =
+    calculateRepairTotalFromDom(repairForTotal);
+
+  const note =
+    document.getElementById("note-"+id).value.trim() || null;
+
+  const tracking =
+    document.getElementById("tracking-"+id).value.trim() || null;
+
+  const msg =
+    document.getElementById("msg-"+id);
+
+  msg.textContent = "Zapisywanie…";
+
+  const {error} =
+    await sb.rpc("admin_update_repair",{
+      p_id:id,
+      p_status:status,
+      p_quote_amount:quote,
+      p_admin_note:note,
+      p_tracking:tracking
+    });
+
+  if(error){
+    msg.textContent = "Błąd: " + error.message;
+    return;
+  }
+
+  const localRepair =
+    allRepairs.find(r => String(r.id) === String(id));
+
+  if(localRepair){
+    localRepair.status = status;
+    localRepair.quote_amount = quote;
+    localRepair.admin_note = note;
+    localRepair.tracking = tracking;
+  }
+
+  msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
+
+  setTimeout(loadAllRepairs,500);
+}
+
+
+async function sendRepairEmail(id){
+
+  const repair =
+    allRepairs.find(r => String(r.id) === String(id));
+
+  if(!repair){
+    alert("Nie znaleziono zgłoszenia.");
+    return;
+  }
+
+  const msg =
+    document.getElementById("msg-"+id);
+
+  if(!confirm("Wysłać klientowi jeden zbiorczy e-mail z aktualnym stanem całego zgłoszenia?")){
+    return;
+  }
+
+  msg.textContent = "Wysyłanie e-maila…";
+
+  const {error} =
+    await sb.functions.invoke("swift-responder",{
+      body:{
+        repair_id:id
+      }
+    });
+
+  if(error){
+    msg.textContent =
+      "Nie udało się wysłać e-maila: " + error.message;
+    return;
+  }
+
+  msg.textContent =
+    "Zbiorczy e-mail do klienta wysłany ✅";
+}
+
+
+async function cancelRepairAdmin(id){
+
+  if(!confirm("Czy na pewno anulować całe zgłoszenie?")){
+    return;
+  }
+
+  const repair =
+    allRepairs.find(r => String(r.id) === String(id));
+
+  if(!repair){
+    alert("Nie znaleziono zgłoszenia.");
+    return;
+  }
+
+  const totalQuote =
+    calculateRepairTotalFromDom(repair);
+
+  const {error} =
+    await sb.rpc("admin_update_repair",{
+      p_id:id,
+      p_status:"Anulowane",
+      p_quote_amount:totalQuote,
+      p_admin_note:repair.admin_note || null,
+      p_tracking:repair.tracking || null
+    });
+
+  if(error){
+    alert("Nie udało się anulować zgłoszenia: " + error.message);
+    return;
+  }
+
+  if(Array.isArray(repair.items)){
+    for(const item of repair.items){
+      const {error:itemError} =
+        await sb.rpc("admin_update_repair_item",{
+          p_item_id:item.id,
+          p_status:"Anulowane",
+          p_quote_amount:item.quote_amount ?? null,
+          p_admin_note:item.admin_note || null
+        });
+
+      if(itemError){
+        alert("Zgłoszenie anulowano, ale nie udało się zaktualizować jednego sprzętu: " + itemError.message);
+        break;
+      }
+    }
+  }
+
+  const {error:mailError} =
+    await sb.functions.invoke("swift-responder",{
+      body:{
+        repair_id:id
+      }
+    });
+
+  if(mailError){
+    alert("Zgłoszenie anulowano, ale e-mail nie został wysłany: " + mailError.message);
+  }else{
+    alert("Zgłoszenie anulowano ✅");
+  }
+
+  await loadAllRepairs();
+}
+
+
+/* =============================
+   SZYBKI STATUS
+============================= */
+
+async function setQuickStatus(id,status){
+
+  document
+    .getElementById("status-"+id)
+    .value = status;
+
+  await saveRepair(id);
+
+}
+
+
+/* =============================
+   START
+============================= */
+
+let initialAdminLoad = true;
+
+async function startAdminPanel(){
+  // Po odświeżeniu nie pozwalamy staremu #gallerySection
+  // ani zapisanej pozycji przewijania przenieść panelu na dół.
+  if (location.hash === "#gallerySection" || location.hash === "#repairsSection") {
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  await checkSession();
+
+  if (initialAdminLoad) {
+    initialAdminLoad = false;
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      setTimeout(() => window.scrollTo(0, 0), 50);
+    });
+  }
+}
+
+sb.auth.onAuthStateChange(() => {
+  // Zmiana sesji po starcie nadal odświeża panel,
+  // ale nie przewija administratora podczas normalnej pracy.
+  if (!initialAdminLoad) {
+    checkSession();
+  }
+});
+
+window.addEventListener("DOMContentLoaded", startAdminPanel);
+
+window.addEventListener("pageshow", function () {
+  if (initialAdminLoad) {
+    window.scrollTo(0, 0);
+  }
+});
+
+</script>
+
+
+<button
+  type="button"
+  class="scroll-top-btn"
+  title="Przewiń do góry"
+  aria-label="Przewiń do góry"
+  onclick="window.scrollTo({top:0,behavior:'smooth'})"
+>↑</button>
+
+
+
+</body>
+</html>
