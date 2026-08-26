@@ -681,6 +681,27 @@
       .diagnostic-grid{grid-template-columns:1fr}
     }
 
+
+    /* ===== Reklamacje administratora ===== */
+    .complaints-admin-panel{margin-top:18px}
+    .complaints-admin-grid{display:grid;gap:14px}
+    .complaint-admin-card{background:#18191f;border:1px solid #3a3c46;border-radius:14px;padding:16px}
+    .complaint-admin-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .complaint-admin-no{color:#e9b45e;font-size:18px;font-weight:800}
+    .complaint-admin-meta{color:#aaa;font-size:13px;margin-top:4px}
+    .complaint-admin-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin-top:14px;line-height:1.55}
+    .complaint-admin-description{margin-top:14px;padding:12px;background:#202129;border:1px solid #343640;border-radius:10px;white-space:pre-wrap}
+    .complaint-admin-photos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+    .complaint-admin-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:9px;border:1px solid #3a3c46;background:#111;cursor:pointer}
+    .complaint-admin-controls{display:grid;grid-template-columns:220px 1fr auto;gap:10px;align-items:end;margin-top:14px}
+    .complaint-admin-note{min-height:80px}
+    .complaint-admin-msg{margin-top:8px;color:#cfcfcf;font-size:13px}
+    #complaintsSection{scroll-margin-top:18px}
+    @media(max-width:760px){
+      .complaint-admin-info,.complaint-admin-controls{grid-template-columns:1fr}
+      .complaint-admin-photos{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
 </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
 </head>
@@ -754,6 +775,7 @@
 
     <div class="admin-nav">
       <a href="#repairsSection">Zgłoszenia</a>
+      <a href="#complaintsSection">Reklamacje</a>
       <a href="#gallerySection">Galeria</a>
     </div>
 
@@ -895,6 +917,21 @@
   <!-- ZGŁOSZENIA -->
 
   <div id="repairs"></div>
+
+
+  <div id="complaintsSection">
+    <h2 class="admin-section-title">Reklamacje</h2>
+    <p class="admin-section-note">Reklamacje złożone przez klientów wraz ze zdjęciami, statusem i odpowiedzią serwisu.</p>
+  </div>
+
+  <div id="complaintsAdminPanel" class="panel hidden complaints-admin-panel">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+      <div id="complaintsAdminCount" class="muted">Reklamacje: 0</div>
+      <button type="button" class="dark" onclick="loadAdminComplaints()">Odśwież reklamacje</button>
+    </div>
+    <div id="complaintsAdminMsg" class="msg"></div>
+    <div id="complaintsAdminGrid" class="complaints-admin-grid"></div>
+  </div>
 
   <div id="gallerySection">
     <h2 class="admin-section-title">Galeria strony</h2>
@@ -1765,6 +1802,149 @@ function matchesPaymentDate(repair,dateValue){
   return localDate===dateValue;
 }
 
+
+/* =============================
+   REKLAMACJE ADMINISTRATORA
+============================= */
+
+let allComplaintsAdmin = [];
+
+function complaintStatusOptions(current){
+  const statuses=["Nowa","W trakcie","Uznana","Odrzucona","Zakończona"];
+  return statuses.map(x=>`<option value="${esc(x)}" ${String(current||"Nowa")===x?"selected":""}>${esc(x)}</option>`).join("");
+}
+
+async function complaintSignedUrl(path){
+  if(!path) return "";
+  const {data,error}=await sb.storage
+    .from("complaint-attachments")
+    .createSignedUrl(path,3600);
+  return error ? "" : (data?.signedUrl || "");
+}
+
+async function loadAdminComplaints(){
+  const box=document.getElementById("complaintsAdminGrid");
+  const msg=document.getElementById("complaintsAdminMsg");
+  const count=document.getElementById("complaintsAdminCount");
+  if(!box) return;
+
+  box.innerHTML='<div class="muted">Ładowanie reklamacji…</div>';
+  if(msg) msg.textContent="";
+
+  const {data,error}=await sb
+    .from("complaints")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    box.innerHTML="";
+    if(msg) msg.textContent="Nie udało się pobrać reklamacji: "+error.message;
+    return;
+  }
+
+  allComplaintsAdmin=Array.isArray(data)?data:[];
+  if(count) count.textContent="Reklamacje: "+allComplaintsAdmin.length;
+
+  if(!allComplaintsAdmin.length){
+    box.innerHTML='<div class="muted">Brak reklamacji.</div>';
+    return;
+  }
+
+  const repairIds=[...new Set(allComplaintsAdmin.map(x=>x.repair_id).filter(Boolean))];
+  const itemIds=[...new Set(allComplaintsAdmin.map(x=>x.repair_item_id).filter(Boolean))];
+  const userIds=[...new Set(allComplaintsAdmin.map(x=>x.user_id).filter(Boolean))];
+  const complaintIds=allComplaintsAdmin.map(x=>x.id).filter(Boolean);
+
+  const [repairsRes,itemsRes,profilesRes,attachmentsRes]=await Promise.all([
+    repairIds.length ? sb.from("repairs").select("id,ticket_no,name,email,phone").in("id",repairIds) : Promise.resolve({data:[]}),
+    itemIds.length ? sb.from("repair_items").select("id,device_name,model,serial_number").in("id",itemIds) : Promise.resolve({data:[]}),
+    userIds.length ? sb.from("customer_profiles").select("user_id,first_name,last_name,phone").in("user_id",userIds) : Promise.resolve({data:[]}),
+    complaintIds.length ? sb.from("complaint_attachments").select("id,complaint_id,storage_path,file_name,created_at").in("complaint_id",complaintIds) : Promise.resolve({data:[]})
+  ]);
+
+  const repairs=repairsRes.data||[];
+  const items=itemsRes.data||[];
+  const profiles=profilesRes.data||[];
+  const attachments=attachmentsRes.data||[];
+
+  const photoMap={};
+  for(const a of attachments){
+    const url=await complaintSignedUrl(a.storage_path);
+    (photoMap[a.complaint_id] ||= []).push({...a,url});
+  }
+
+  box.innerHTML=allComplaintsAdmin.map(c=>{
+    const repair=repairs.find(r=>String(r.id)===String(c.repair_id))||{};
+    const item=items.find(i=>String(i.id)===String(c.repair_item_id))||{};
+    const profile=profiles.find(p=>String(p.user_id)===String(c.user_id))||{};
+    const clientName=[profile.first_name,profile.last_name].filter(Boolean).join(" ") || repair.name || "—";
+    const clientPhone=profile.phone || repair.phone || "—";
+    const photos=photoMap[c.id]||[];
+
+    return `<div class="complaint-admin-card">
+      <div class="complaint-admin-head">
+        <div>
+          <div class="complaint-admin-no">${esc(c.complaint_no||"Reklamacja")}</div>
+          <div class="complaint-admin-meta">${esc(new Date(c.created_at).toLocaleString("pl-PL"))}</div>
+        </div>
+        <span class="status-pill status-new">${esc(c.status||"Nowa")}</span>
+      </div>
+
+      <div class="complaint-admin-info">
+        <div><strong>Klient:</strong> ${esc(clientName)}</div>
+        <div><strong>Telefon:</strong> ${esc(clientPhone)}</div>
+        <div><strong>E-mail:</strong> ${esc(repair.email||"—")}</div>
+        <div><strong>Zgłoszenie:</strong> ${esc(repair.ticket_no||"—")}</div>
+        <div><strong>Urządzenie:</strong> ${esc(item.device_name||"—")}</div>
+        <div><strong>Model:</strong> ${esc(item.model||"—")}</div>
+        <div><strong>Nr seryjny:</strong> ${esc(item.serial_number||"—")}</div>
+      </div>
+
+      <div class="complaint-admin-description"><strong>Opis klienta:</strong><br>${esc(c.description||"—")}</div>
+
+      ${photos.length ? `<div style="margin-top:14px"><strong>Zdjęcia klienta:</strong></div>
+        <div class="complaint-admin-photos">
+          ${photos.map(p=>p.url?`<a href="${esc(p.url)}" target="_blank" rel="noopener"><img class="complaint-admin-photo" src="${esc(p.url)}" alt="${esc(p.file_name||"Zdjęcie reklamacji")}"></a>`:"").join("")}
+        </div>` : '<div class="muted" style="margin-top:12px">Brak zdjęć.</div>'}
+
+      <div class="complaint-admin-controls">
+        <div>
+          <label>Status reklamacji</label>
+          <select id="complaint-status-${c.id}">${complaintStatusOptions(c.status)}</select>
+        </div>
+        <div>
+          <label>Odpowiedź / notatka serwisu</label>
+          <textarea class="complaint-admin-note" id="complaint-note-${c.id}" placeholder="Wpisz odpowiedź dla klienta…">${esc(c.admin_note||"")}</textarea>
+        </div>
+        <button type="button" class="gold" onclick="saveAdminComplaint('${c.id}')">Zapisz</button>
+      </div>
+      <div id="complaint-admin-msg-${c.id}" class="complaint-admin-msg"></div>
+    </div>`;
+  }).join("");
+}
+
+async function saveAdminComplaint(id){
+  const status=document.getElementById("complaint-status-"+id)?.value || "Nowa";
+  const admin_note=document.getElementById("complaint-note-"+id)?.value.trim() || null;
+  const msg=document.getElementById("complaint-admin-msg-"+id);
+  if(msg) msg.textContent="Zapisywanie…";
+
+  const {error}=await sb
+    .from("complaints")
+    .update({status,admin_note})
+    .eq("id",id);
+
+  if(error){
+    if(msg) msg.textContent="Błąd zapisu: "+error.message;
+    return;
+  }
+
+  const local=allComplaintsAdmin.find(x=>String(x.id)===String(id));
+  if(local){local.status=status;local.admin_note=admin_note}
+  if(msg) msg.textContent="Reklamacja zapisana ✅";
+}
+
+
 /* =============================
    GALERIA ADMINISTRATORA
 ============================= */
@@ -2519,6 +2699,11 @@ async function checkSession(){
     .classList
     .toggle("hidden", !user);
 
+  document
+    .getElementById("complaintsAdminPanel")
+    .classList
+    .toggle("hidden", !user);
+
 
   if(user){
 
@@ -2528,6 +2713,7 @@ async function checkSession(){
       "Zalogowano: " + user.email;
 
     await loadAllRepairs();
+    await loadAdminComplaints();
     await loadGalleryAdmin();
 
   }
