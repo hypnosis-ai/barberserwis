@@ -820,6 +820,45 @@
         width:100%;
       }
     }
+
+    /* ===== Menu mobilne – bez łamania słów ===== */
+    @media (max-width: 600px){
+      .top-contact{
+        width:100%;
+        display:block !important;
+      }
+
+      .top-contact .menu{
+        width:100%;
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px 10px !important;
+        margin-bottom:12px;
+      }
+
+      .top-contact .menu a{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:42px;
+        text-align:center;
+        white-space:nowrap !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        font-size:14px;
+        padding:8px 6px;
+      }
+
+      .top-contact .menu a:last-child{
+        grid-column:1/-1;
+      }
+
+      .top-contact > .btn,
+      .top-contact > .account-btn{
+        width:100%;
+        margin-top:10px;
+      }
+    }
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
