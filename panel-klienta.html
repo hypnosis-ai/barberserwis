@@ -104,7 +104,8 @@
       text-align: center;
       padding: 12px 20px;
       border-radius: 10px;
-      font-weight: bold;
+      font-weight: 600;
+      font-family: Arial, Helvetica, sans-serif;
       transition: 0.2s ease;
       cursor: pointer;
       border: none;
@@ -964,9 +965,146 @@
 /* ===== Osobna strona Panel klienta ===== */
 body.client-page > section:not(#konto){display:none !important;}
 body.client-page #konto{min-height:calc(100vh - 220px);}
-body.client-page .client-panel-nav{display:none !important;}
+body.client-page .client-panel-nav{display:flex !important;}
 body.client-page #konto > h3{margin-top:0;}
 @media(max-width:600px){body.client-page #konto{padding-top:34px;}}
+
+
+/* ===== Finalne poprawki górnych przycisków ===== */
+#accountOpenBtn{
+  font-weight:600;
+  font-family:Arial,Helvetica,sans-serif;
+}
+#accountOpenBtn.client-logged-in{
+  background:#18181d !important;
+  color:#e0b36a !important;
+  border:1px solid rgba(224,179,106,.72) !important;
+}
+#accountOpenBtn.client-logged-in:hover{
+  background:#24242b !important;
+  border-color:#e0b36a !important;
+}
+.client-top-dropdown button,
+.client-top-dropdown a{
+  font-weight:600 !important;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.client-top-dropdown .client-dropdown-logout{
+  margin-top:6px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.09);
+  color:#ff9b9b;
+}
+.client-top-dropdown .client-dropdown-logout:hover{
+  background:#4d2626;
+  color:#fff;
+}
+
+
+/* ===== Finalny responsywny Panel klienta ===== */
+body.client-page #konto{
+  width:min(1280px,100%);
+  min-height:calc(100vh - 180px);
+  padding:44px 24px 70px;
+}
+body.client-page #konto > .form-box{
+  max-width:1180px;
+  padding:30px;
+}
+body.client-page .client-panel-nav{
+  display:flex !important;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:24px;
+}
+body.client-page .client-panel-nav button{
+  min-height:44px;
+  font-weight:600;
+  font-family:Arial,Helvetica,sans-serif;
+}
+body.client-page .client-panel-nav button.active{
+  background:#e0b36a;
+  color:#111;
+}
+body.client-page #clientViewRepairs{max-width:1080px;margin:0 auto}
+body.client-page #repairsList{width:100%}
+body.client-page #repairsList .repair-item,
+body.client-page #repairsList .repair-card{
+  width:100%;
+}
+body.client-page .profile-grid{
+  max-width:940px;
+  gap:14px 18px;
+}
+body.client-page #profileSaveBtn{
+  min-width:210px;
+}
+body.client-page #clientViewDevices{
+  max-width:980px;
+  margin:0 auto;
+}
+body.client-page .device-list{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+body.client-page .saved-device{
+  min-height:132px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:18px;
+}
+body.client-page .saved-device-head{
+  align-items:center;
+}
+body.client-page .saved-device-title{
+  font-size:17px;
+}
+body.client-page .saved-device .btn{
+  min-width:92px;
+  font-weight:600;
+}
+body.client-page .security-box{
+  max-width:600px;
+}
+body.client-page #clientViewSecurity{
+  padding-top:8px;
+}
+@media(max-width:850px){
+  body.client-page #konto{padding:34px 16px 55px}
+  body.client-page #konto > .form-box{padding:22px 18px}
+  body.client-page .device-list{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  body.client-page #konto{
+    padding:28px 12px 44px;
+    min-height:calc(100vh - 160px);
+  }
+  body.client-page #konto > .form-box{padding:16px 12px}
+  body.client-page .client-panel-nav{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  body.client-page .client-panel-nav button{
+    width:100%;
+    min-height:46px;
+  }
+  body.client-page .profile-grid{grid-template-columns:1fr}
+  body.client-page .profile-grid .profile-full{grid-column:auto}
+  body.client-page #profileSaveBtn,
+  body.client-page #clientViewDevices .btn,
+  body.client-page #securitySaveBtn{
+    width:100%;
+  }
+  body.client-page .saved-device-head{
+    align-items:flex-start;
+  }
+}
+@media(max-width:420px){
+  body.client-page .client-panel-nav{grid-template-columns:1fr}
+}
 
 </style>
   <!-- Google tag (gtag.js) -->
@@ -1023,9 +1161,9 @@ body.client-page #konto > h3{margin-top:0;}
       <button type="button" onclick="openClientSection('security')">Bezpieczeństwo</button>
       <a href="regulamin.html">Regulamin</a>
       <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+      <button class="client-dropdown-logout hidden" id="topLogoutBtn" type="button" onclick="logoutClient()">Wyloguj</button>
     </div>
   </div>
-  <button class="btn btn-red account-btn hidden" id="topLogoutBtn" type="button" onclick="logoutClient()">Wyloguj</button>
 </div>
   </header>
 
@@ -1806,7 +1944,8 @@ function updateAccountUi(u){
     topLogoutBtn.classList.toggle("hidden",!l);
   }
 
-  b.textContent = l ? "Panel klienta" : "Konto klienta";
+  b.textContent = l ? "Panel klienta ▼" : "Konto klienta";
+  b.classList.toggle("client-logged-in",l);
 
   b.onclick = handleTopAccountButton;
 
