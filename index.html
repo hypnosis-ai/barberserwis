@@ -897,6 +897,54 @@
   border:1px solid rgba(255,255,255,.08);background:#202028;color:#fff;font:inherit
 }
 
+
+/* ===== Rozwijane menu Panel klienta w nagłówku ===== */
+.client-top-menu-wrap{
+  position:relative;
+}
+.client-top-dropdown{
+  display:none;
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  z-index:12000;
+  min-width:240px;
+  padding:8px;
+  border-radius:12px;
+  background:#18181d;
+  border:1px solid rgba(224,179,106,.25);
+  box-shadow:0 14px 35px rgba(0,0,0,.45);
+}
+.client-top-dropdown.open{display:block}
+.client-top-dropdown button,
+.client-top-dropdown a{
+  display:block;
+  width:100%;
+  padding:11px 12px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#eee;
+  text-align:left;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+}
+.client-top-dropdown button:hover,
+.client-top-dropdown a:hover{
+  background:#26262e;
+  color:#e0b36a;
+}
+@media(max-width:600px){
+  .client-top-menu-wrap{width:100%}
+  .client-top-menu-wrap > .btn{width:100%}
+  .client-top-dropdown{
+    position:static;
+    width:100%;
+    margin-top:8px;
+  }
+}
+
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -941,7 +989,18 @@
   </nav>
 
   <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a>
-  <button class="btn btn-gold account-btn" id="accountOpenBtn" type="button" onclick="openAccount()">Konto klienta</button>
+  <div class="client-top-menu-wrap" id="clientTopMenuWrap">
+    <button class="btn btn-gold account-btn" id="accountOpenBtn" type="button" onclick="handleTopAccountButton()">Konto klienta</button>
+
+    <div class="client-top-dropdown" id="clientTopDropdown">
+      <button type="button" onclick="openClientSection('repairs')">Moje naprawy</button>
+      <button type="button" onclick="openClientSection('profile')">Moje dane</button>
+      <button type="button" onclick="openClientSection('devices')">Moje urządzenia</button>
+      <button type="button" onclick="openClientSection('security')">Bezpieczeństwo</button>
+      <a href="regulamin.html">Regulamin</a>
+      <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+    </div>
+  </div>
   <button class="btn btn-red account-btn hidden" id="topLogoutBtn" type="button" onclick="logoutClient()">Wyloguj</button>
 </div>
   </header>
@@ -1622,6 +1681,29 @@ function goToRepairForm(){
     openAccount();
   }
 }
+
+function handleTopAccountButton(){
+  if(!currentUser){
+    openAccount();
+    return;
+  }
+  document.getElementById("clientTopDropdown")?.classList.toggle("open");
+}
+
+function openClientSection(which){
+  document.getElementById("clientTopDropdown")?.classList.remove("open");
+  showClientPanel(which);
+  document.getElementById("konto")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+document.addEventListener("click",function(e){
+  const wrap=document.getElementById("clientTopMenuWrap");
+  const dropdown=document.getElementById("clientTopDropdown");
+  if(wrap && dropdown && !wrap.contains(e.target)){
+    dropdown.classList.remove("open");
+  }
+});
+
 function updateAccountUi(u){
   currentUser=u||null;
   const l=!!currentUser;
@@ -1653,14 +1735,13 @@ function updateAccountUi(u){
 
   b.textContent = l ? "Panel klienta" : "Konto klienta";
 
-  b.onclick = l
-    ? ()=>document.getElementById("konto").scrollIntoView({behavior:"smooth"})
-    : openAccount;
+  b.onclick = handleTopAccountButton;
 
   if(l){
     loadRepairs();
     loadCustomerProfile();
   }else{
+    document.getElementById("clientTopDropdown")?.classList.remove("open");
     document.getElementById("repairsList").innerHTML="";
     document.getElementById("repairsEmpty").textContent=
       "Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
