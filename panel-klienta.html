@@ -1398,16 +1398,9 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
     <textarea id="complaintDescription" placeholder="Opisz dokładnie problem występujący po naprawie."></textarea>
 
     <div style="margin-top:18px;color:#e0b36a;font-weight:800">Zdjęcia (opcjonalnie)</div>
-    <div class="complaint-photo-choice">
-      <div class="complaint-photo-option">
-        <label class="profile-label">Dodaj zdjęcia z galerii</label>
-        <input id="complaintGalleryPhotos" type="file" accept="image/*" multiple>
-      </div>
-      <div class="complaint-or">LUB</div>
-      <div class="complaint-photo-option">
-        <label class="profile-label">Zrób zdjęcie aparatem</label>
-        <input id="complaintCameraPhoto" type="file" accept="image/*" capture="environment">
-      </div>
+    <div class="complaint-photo-option" style="margin-top:14px">
+      <label class="profile-label">Dodaj zdjęcia z galerii</label>
+      <input id="complaintGalleryPhotos" type="file" accept="image/*" multiple>
     </div>
 
     <div style="text-align:center;margin-top:20px">
@@ -2006,10 +1999,7 @@ function updateAccountUi(u){
       const repair_id=document.getElementById("complaintRepair")?.value||"";
       const repair_item_id=document.getElementById("complaintRepairItem")?.value||"";
       const description=document.getElementById("complaintDescription")?.value.trim()||"";
-      const photos=[
-        ...Array.from(document.getElementById("complaintGalleryPhotos")?.files||[]),
-        ...Array.from(document.getElementById("complaintCameraPhoto")?.files||[])
-      ];
+      const photos=Array.from(document.getElementById("complaintGalleryPhotos")?.files||[]);
       if(!repair_id)return setComplaintMessage("Wybierz zgłoszenie naprawy.","err");
       if(!repair_item_id)return setComplaintMessage("Wybierz urządzenie.","err");
       if(description.length<10)return setComplaintMessage("Opisz problem dokładniej – minimum 10 znaków.","err");
@@ -2039,7 +2029,6 @@ function updateAccountUi(u){
         document.getElementById("complaintRepair").value="";
         document.getElementById("complaintRepairItem").innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';
         document.getElementById("complaintGalleryPhotos").value="";
-        document.getElementById("complaintCameraPhoto").value="";
         setComplaintMessage(`Reklamacja ${r.complaint_no||""} została wysłana ✅${n?` Dodano zdjęć: ${n}.`:""}`,"ok");
         await loadComplaints();
       }catch(err){
