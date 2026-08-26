@@ -740,6 +740,86 @@
     }
     .scroll-top-btn:hover{opacity:1}
 
+
+    /* ===== Panel klienta – wygodniejszy układ na telefonie ===== */
+    @media (max-width: 600px){
+      #moje-naprawy.section{
+        padding-left:12px;
+        padding-right:12px;
+      }
+
+      #repairsList{
+        display:block;
+      }
+
+      #repairsList .repair-card{
+        padding:14px !important;
+        margin-bottom:14px;
+        border-radius:14px;
+      }
+
+      #repairsList .repair-head{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      #repairsList .repair-ticket,
+      #repairsList .repair-status{
+        max-width:100%;
+        white-space:normal;
+        overflow-wrap:anywhere;
+      }
+
+      #repairsList .repair-meta{
+        margin-top:7px;
+        font-size:13px;
+      }
+
+      #repairsList .repair-device{
+        padding:12px !important;
+        margin-top:12px !important;
+        border-radius:12px;
+      }
+
+      #repairsList .repair-device-head{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:7px;
+        margin-bottom:8px;
+      }
+
+      #repairsList .repair-device-title{
+        width:100%;
+        font-size:15px;
+        line-height:1.35;
+        overflow-wrap:anywhere;
+      }
+
+      #repairsList .repair-details{
+        margin-top:10px;
+        padding-top:10px;
+      }
+
+      #repairsList .status-steps{
+        margin-top:10px;
+        gap:5px;
+      }
+
+      #repairsList .status-steps > *{
+        font-size:11px;
+      }
+
+      #repairsList button{
+        max-width:100%;
+      }
+
+      #repairsList .repair-cancel-btn{
+        width:100%;
+      }
+    }
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
