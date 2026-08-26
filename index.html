@@ -1306,72 +1306,6 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
     </div>
   </section>
 
-<section class="section hidden" id="konto">
-<h3>Panel klienta</h3><p class="section-sub">Twoje naprawy i dane konta BarberSerwis.</p>
-<div class="form-box"><div class="account-bar">
-<span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
-<button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
-<button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
-</div>
-<div class="client-panel-nav">
-<button id="clientTabRepairs" class="active" type="button" onclick="showClientPanel('repairs')">Moje naprawy</button>
-<button id="clientTabProfile" type="button" onclick="showClientPanel('profile')">Moje dane</button>
-<button id="clientTabDevices" type="button" onclick="showClientPanel('devices')">Moje urządzenia</button><button id="clientTabSecurity" type="button" onclick="showClientPanel('security')">Bezpieczeństwo</button></div>
-<div id="clientViewRepairs" class="client-panel-view active">
-<div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
-<div id="repairsList" class="repairs-list"></div>
-<p class="small-note">Statusy i wyceny są aktualizowane przez BarberSerwis po diagnozie sprzętu.</p></div>
-<div id="clientViewProfile" class="client-panel-view">
-<div class="profile-grid">
-<div><label class="profile-label">Imię</label><input id="profileFirstName" type="text"></div>
-<div><label class="profile-label">Nazwisko</label><input id="profileLastName" type="text"></div>
-<div><label class="profile-label">Telefon</label><input id="profilePhone" type="tel"></div>
-<div><label class="profile-label">E-mail</label><input id="profileEmail" class="profile-email" type="email" readonly></div>
-<div class="profile-full"><label class="profile-label">Adres do zwrotu – ulica i numer</label><input id="profileReturnAddress" type="text"></div>
-<div><label class="profile-label">Kod pocztowy</label><input id="profilePostalCode" type="text"></div>
-<div><label class="profile-label">Miasto</label><input id="profileCity" type="text"></div></div>
-<div style="text-align:center;margin-top:18px"><button class="btn btn-gold" id="profileSaveBtn" type="button" onclick="saveCustomerProfile()">Zapisz moje dane</button></div>
-<div id="profileMessage" class="profile-message"></div>
-<p class="small-note" style="text-align:center">Zapisane dane będą automatycznie uzupełniane przy zgłoszeniu naprawy.</p>
-</div>
-
-<div id="clientViewDevices" class="client-panel-view">
-  <div class="profile-grid">
-    <div>
-      <label class="profile-label">Rodzaj sprzętu</label>
-      <input id="deviceTypeSaved" type="text" placeholder="np. maszynka, trymer, golarka">
-    </div>
-    <div>
-      <label class="profile-label">Marka i model</label>
-      <input id="deviceModelSaved" type="text" placeholder="np. Wahl Magic Clip">
-    </div>
-    <div class="profile-full">
-      <label class="profile-label">Numer seryjny (opcjonalnie)</label>
-      <input id="deviceSerialSaved" type="text" placeholder="Numer seryjny">
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:18px">
-    <button class="btn btn-gold" type="button" onclick="addCustomerDevice()">+ Dodaj urządzenie</button>
-  </div>
-  <div id="devicesMessage" class="profile-message"></div>
-  <div id="customerDevicesList" class="device-list"></div>
-</div>
-
-<div id="clientViewSecurity" class="client-panel-view">
-  <div class="security-box">
-    <label class="profile-label">Nowe hasło</label>
-    <input id="securityPassword" type="password" minlength="8" placeholder="Minimum 8 znaków" autocomplete="new-password">
-    <label class="profile-label">Powtórz nowe hasło</label>
-    <input id="securityPassword2" type="password" minlength="8" placeholder="Powtórz hasło" autocomplete="new-password">
-    <div style="text-align:center;margin-top:14px">
-      <button class="btn btn-gold" id="securitySaveBtn" type="button" onclick="changeClientPassword()">Zmień hasło</button>
-    </div>
-    <div id="securityMessage" class="profile-message"></div>
-  </div>
-</div>
-
-</div></section>
-
 <section class="section">
     <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
     <p class="section-sub">
@@ -1692,8 +1626,7 @@ function handleTopAccountButton(){
 
 function openClientSection(which){
   document.getElementById("clientTopDropdown")?.classList.remove("open");
-  showClientPanel(which);
-  document.getElementById("konto")?.scrollIntoView({behavior:"smooth",block:"start"});
+  window.location.href = "panel-klienta.html?sekcja=" + encodeURIComponent(which);
 }
 
 document.addEventListener("click",function(e){
@@ -1708,12 +1641,16 @@ function updateAccountUi(u){
   currentUser=u||null;
   const l=!!currentUser;
 
-  document.getElementById("accountStatus").textContent =
-    l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  const accountStatus=document.getElementById("accountStatus");
+  const accountLoginBtn=document.getElementById("accountLoginBtn");
+  const accountRefreshBtn=document.getElementById("accountRefreshBtn");
 
-  document.getElementById("accountLoginBtn").classList.toggle("hidden",l);
+  if(accountStatus){
+    accountStatus.textContent = l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  }
+  if(accountLoginBtn) accountLoginBtn.classList.toggle("hidden",l);
   document.getElementById("accountLogoutBtn")?.classList.toggle("hidden",!l);
-  document.getElementById("accountRefreshBtn").classList.toggle("hidden",!l);
+  if(accountRefreshBtn) accountRefreshBtn.classList.toggle("hidden",!l);
 
   const formSection=document.getElementById("formularz");
   const accountSection=document.getElementById("konto");
@@ -1738,13 +1675,14 @@ function updateAccountUi(u){
   b.onclick = handleTopAccountButton;
 
   if(l){
-    loadRepairs();
+    // Na stronie głównej profil nadal wczytujemy, aby automatycznie uzupełniać formularz zgłoszenia.
     loadCustomerProfile();
   }else{
     document.getElementById("clientTopDropdown")?.classList.remove("open");
-    document.getElementById("repairsList").innerHTML="";
-    document.getElementById("repairsEmpty").textContent=
-      "Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
+    const repairsList=document.getElementById("repairsList");
+    const repairsEmpty=document.getElementById("repairsEmpty");
+    if(repairsList) repairsList.innerHTML="";
+    if(repairsEmpty) repairsEmpty.textContent="Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
   }
 }
     function setProfileMessage(m,t=""){const e=document.getElementById("profileMessage");if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}}
