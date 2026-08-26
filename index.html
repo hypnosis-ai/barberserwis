@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel klienta – BarberSerwis</title>
+  <title>Naprawa maszynek do strzyżenia i trymerów – BarberSerwis | Cała Polska</title>
   <meta name="description" content="Naprawa maszynek do strzyżenia i trymerów – serwis wysyłkowy na terenie całej Polski. Czyszczenie, regulacja ostrzy, naprawa usterek. Szybka diagnoza.">
   <meta name="keywords" content="serwis maszynek do strzyżenia Polska, naprawa maszynek barber, konserwacja maszynek, regulacja lub wymiana ostrzy, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis7.png" />
@@ -945,29 +945,6 @@
   }
 }
 
-
-
-
-/* ===== Panel klienta: Reklamacje ===== */
-.complaint-box{max-width:760px;margin:0 auto}
-.complaint-box select,.complaint-box textarea,.complaint-box input[type="file"]{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#202028;color:#fff;font:inherit}
-.complaint-box textarea{min-height:150px;resize:vertical}
-.complaint-photo-choice{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:14px}
-.complaint-photo-option{padding:16px;border:1px solid rgba(224,179,106,.22);border-radius:12px;background:#202028}
-.complaint-or{color:#e0b36a;font-weight:800;text-align:center}
-.complaints-list{display:grid;gap:12px;margin-top:24px}
-.complaint-card{padding:16px;border-radius:12px;background:#202028;border:1px solid rgba(224,179,106,.20)}
-.complaint-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.complaint-number{color:#e0b36a;font-weight:800}
-.complaint-status{padding:6px 10px;border-radius:999px;background:#2c2c36;color:#fff;font-size:13px;font-weight:700}
-@media(max-width:650px){.complaint-photo-choice{grid-template-columns:1fr}}
-/* ===== Osobna strona Panel klienta ===== */
-body.client-page > section:not(#konto){display:none !important;}
-body.client-page #konto{min-height:calc(100vh - 220px);}
-body.client-page .client-panel-nav{display:none !important;}
-body.client-page #konto > h3{margin-top:0;}
-@media(max-width:600px){body.client-page #konto{padding-top:34px;}}
-
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -989,7 +966,7 @@ body.client-page #konto > h3{margin-top:0;}
 </script>
 
 </head>
-<body class="client-page">
+<body>
 
   <header>
     <div class="topbar">
@@ -1330,106 +1307,6 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
     </div>
   </section>
 
-<section class="section hidden" id="konto">
-<h3>Panel klienta</h3><p class="section-sub">Twoje naprawy i dane konta BarberSerwis.</p>
-<div class="form-box"><div class="account-bar">
-<span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
-<button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
-<button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
-</div>
-<div class="client-panel-nav">
-<button id="clientTabRepairs" class="active" type="button" onclick="showClientPanel('repairs')">Moje naprawy</button>
-<button id="clientTabProfile" type="button" onclick="showClientPanel('profile')">Moje dane</button>
-<button id="clientTabDevices" type="button" onclick="showClientPanel('devices')">Moje urządzenia</button>
-<button id="clientTabComplaints" type="button" onclick="showClientPanel('complaints')">Reklamacje</button>
-<button id="clientTabSecurity" type="button" onclick="showClientPanel('security')">Bezpieczeństwo</button></div>
-<div id="clientViewRepairs" class="client-panel-view active">
-<div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
-<div id="repairsList" class="repairs-list"></div>
-<p class="small-note">Statusy i wyceny są aktualizowane przez BarberSerwis po diagnozie sprzętu.</p></div>
-<div id="clientViewProfile" class="client-panel-view">
-<div class="profile-grid">
-<div><label class="profile-label">Imię</label><input id="profileFirstName" type="text"></div>
-<div><label class="profile-label">Nazwisko</label><input id="profileLastName" type="text"></div>
-<div><label class="profile-label">Telefon</label><input id="profilePhone" type="tel"></div>
-<div><label class="profile-label">E-mail</label><input id="profileEmail" class="profile-email" type="email" readonly></div>
-<div class="profile-full"><label class="profile-label">Adres do zwrotu – ulica i numer</label><input id="profileReturnAddress" type="text"></div>
-<div><label class="profile-label">Kod pocztowy</label><input id="profilePostalCode" type="text"></div>
-<div><label class="profile-label">Miasto</label><input id="profileCity" type="text"></div></div>
-<div style="text-align:center;margin-top:18px"><button class="btn btn-gold" id="profileSaveBtn" type="button" onclick="saveCustomerProfile()">Zapisz moje dane</button></div>
-<div id="profileMessage" class="profile-message"></div>
-<p class="small-note" style="text-align:center">Zapisane dane będą automatycznie uzupełniane przy zgłoszeniu naprawy.</p>
-</div>
-
-<div id="clientViewDevices" class="client-panel-view">
-  <div class="profile-grid">
-    <div>
-      <label class="profile-label">Rodzaj sprzętu</label>
-      <input id="deviceTypeSaved" type="text" placeholder="np. maszynka, trymer, golarka">
-    </div>
-    <div>
-      <label class="profile-label">Marka i model</label>
-      <input id="deviceModelSaved" type="text" placeholder="np. Wahl Magic Clip">
-    </div>
-    <div class="profile-full">
-      <label class="profile-label">Numer seryjny (opcjonalnie)</label>
-      <input id="deviceSerialSaved" type="text" placeholder="Numer seryjny">
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:18px">
-    <button class="btn btn-gold" type="button" onclick="addCustomerDevice()">+ Dodaj urządzenie</button>
-  </div>
-  <div id="devicesMessage" class="profile-message"></div>
-  <div id="customerDevicesList" class="device-list"></div>
-</div>
-
-
-<div id="clientViewComplaints" class="client-panel-view">
-  <div class="complaint-box">
-    <p class="section-sub" style="margin-bottom:20px">Wybierz wcześniejsze zgłoszenie i urządzenie, którego dotyczy reklamacja.</p>
-
-    <label class="profile-label">Zgłoszenie naprawy</label>
-    <select id="complaintRepair" onchange="loadComplaintRepairItems()"><option value="">Wybierz zgłoszenie</option></select>
-
-    <label class="profile-label" style="margin-top:14px">Urządzenie</label>
-    <select id="complaintRepairItem"><option value="">Najpierw wybierz zgłoszenie</option></select>
-
-    <label class="profile-label" style="margin-top:14px">Opis reklamacji</label>
-    <textarea id="complaintDescription" placeholder="Opisz dokładnie problem występujący po naprawie."></textarea>
-
-    <div style="margin-top:18px;color:#e0b36a;font-weight:800">Zdjęcia (opcjonalnie)</div>
-    <div class="complaint-photo-option" style="margin-top:14px">
-      <label class="profile-label">Dodaj zdjęcia z galerii</label>
-      <input id="complaintGalleryPhotos" type="file" accept="image/*" multiple>
-    </div>
-
-    <div style="text-align:center;margin-top:20px">
-      <button class="btn btn-gold" id="complaintSubmitBtn" type="button" onclick="submitComplaint()">Wyślij reklamację</button>
-    </div>
-    <div id="complaintMessage" class="profile-message"></div>
-
-    <div style="margin-top:30px">
-      <h4 style="color:#e0b36a;margin:0 0 10px">Moje reklamacje</h4>
-      <div id="complaintsList" class="complaints-list"></div>
-    </div>
-  </div>
-</div>
-
-<div id="clientViewSecurity" class="client-panel-view">
-  <div class="security-box">
-    <label class="profile-label">Nowe hasło</label>
-    <input id="securityPassword" type="password" minlength="8" placeholder="Minimum 8 znaków" autocomplete="new-password">
-    <label class="profile-label">Powtórz nowe hasło</label>
-    <input id="securityPassword2" type="password" minlength="8" placeholder="Powtórz hasło" autocomplete="new-password">
-    <div style="text-align:center;margin-top:14px">
-      <button class="btn btn-gold" id="securitySaveBtn" type="button" onclick="changeClientPassword()">Zmień hasło</button>
-    </div>
-    <div id="securityMessage" class="profile-message"></div>
-  </div>
-</div>
-
-</div></section>
-
 <section class="section">
     <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
     <p class="section-sub">
@@ -1750,12 +1627,7 @@ function handleTopAccountButton(){
 
 function openClientSection(which){
   document.getElementById("clientTopDropdown")?.classList.remove("open");
-  showClientPanel(which);
-  setClientPageHeading(which);
-  const url=new URL(window.location.href);
-  url.searchParams.set("sekcja",which);
-  history.replaceState({},"",url);
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.location.href = "panel-klienta.html?sekcja=" + encodeURIComponent(which);
 }
 
 document.addEventListener("click",function(e){
@@ -1766,31 +1638,20 @@ document.addEventListener("click",function(e){
   }
 });
 
-function getRequestedClientSection(){
-  const allowed=["repairs","profile","devices","complaints","security"];
-  const value=new URLSearchParams(window.location.search).get("sekcja") || "repairs";
-  return allowed.includes(value) ? value : "repairs";
-}
-
-function setClientPageHeading(which){
-  const titles={repairs:"Moje naprawy",profile:"Moje dane",devices:"Moje urządzenia",complaints:"Reklamacje",security:"Bezpieczeństwo"};
-  const h=document.querySelector("#konto > h3");
-  const sub=document.querySelector("#konto > .section-sub");
-  if(h) h.textContent=titles[which]||"Panel klienta";
-  if(sub) sub.textContent="Panel klienta BarberSerwis";
-  document.title=(titles[which]||"Panel klienta")+" – BarberSerwis";
-}
-
 function updateAccountUi(u){
   currentUser=u||null;
   const l=!!currentUser;
 
-  document.getElementById("accountStatus").textContent =
-    l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  const accountStatus=document.getElementById("accountStatus");
+  const accountLoginBtn=document.getElementById("accountLoginBtn");
+  const accountRefreshBtn=document.getElementById("accountRefreshBtn");
 
-  document.getElementById("accountLoginBtn").classList.toggle("hidden",l);
+  if(accountStatus){
+    accountStatus.textContent = l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  }
+  if(accountLoginBtn) accountLoginBtn.classList.toggle("hidden",l);
   document.getElementById("accountLogoutBtn")?.classList.toggle("hidden",!l);
-  document.getElementById("accountRefreshBtn").classList.toggle("hidden",!l);
+  if(accountRefreshBtn) accountRefreshBtn.classList.toggle("hidden",!l);
 
   const formSection=document.getElementById("formularz");
   const accountSection=document.getElementById("konto");
@@ -1815,28 +1676,25 @@ function updateAccountUi(u){
   b.onclick = handleTopAccountButton;
 
   if(l){
-    const requested=getRequestedClientSection();
-    showClientPanel(requested);
-    setClientPageHeading(requested);
-    loadRepairs();
+    // Na stronie głównej profil nadal wczytujemy, aby automatycznie uzupełniać formularz zgłoszenia.
     loadCustomerProfile();
   }else{
     document.getElementById("clientTopDropdown")?.classList.remove("open");
-    document.getElementById("repairsList").innerHTML="";
-    document.getElementById("repairsEmpty").textContent=
-      "Zaloguj się, aby zobaczyć panel klienta.";
+    const repairsList=document.getElementById("repairsList");
+    const repairsEmpty=document.getElementById("repairsEmpty");
+    if(repairsList) repairsList.innerHTML="";
+    if(repairsEmpty) repairsEmpty.textContent="Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
   }
 }
     function setProfileMessage(m,t=""){const e=document.getElementById("profileMessage");if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}}
     function showClientPanel(w){
-      const views=["repairs","profile","devices","complaints","security"];
+      const views=["repairs","profile","devices","security"];
       views.forEach(name=>{
         document.getElementById("clientView"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
         document.getElementById("clientTab"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
       });
       if(w==="profile") loadCustomerProfile();
       if(w==="devices") loadCustomerDevices();
-      if(w==="complaints"){loadComplaintRepairs();loadComplaints();}
     }
     function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
     async function loadCustomerProfile(){const c=getSb();if(!c||!currentUser)return;setProfileMessage("Wczytywanie danych…");const {data,error}=await c.from("customer_profiles").select("first_name,last_name,phone,return_address,return_postal_code,return_city").eq("user_id",currentUser.id).maybeSingle();if(error){setProfileMessage("Nie udało się pobrać danych: "+error.message,"err");return}const p=data||{};const m={profileFirstName:p.first_name||"",profileLastName:p.last_name||"",profilePhone:p.phone||"",profileReturnAddress:p.return_address||"",profilePostalCode:p.return_postal_code||"",profileCity:p.return_city||""};Object.entries(m).forEach(([id,x])=>{const e=document.getElementById(id);if(e)e.value=x});const em=document.getElementById("profileEmail");if(em)em.value=currentUser.email||"";fillRepairFormFromProfile(p);setProfileMessage(data?"Dane wczytane.":"Uzupełnij dane i kliknij „Zapisz moje dane”.")}
@@ -1930,113 +1788,6 @@ function updateAccountUi(u){
       document.getElementById("securityPassword").value="";
       document.getElementById("securityPassword2").value="";
       setSecurityMessage("Hasło zostało zmienione ✅","ok");
-    }
-
-
-    function setComplaintMessage(m,t=""){
-      const e=document.getElementById("complaintMessage");
-      if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}
-    }
-    let complaintRepairCache=[];
-
-    async function loadComplaintRepairs(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const rs=document.getElementById("complaintRepair"), is=document.getElementById("complaintRepairItem");
-      if(!rs||!is)return;
-      rs.innerHTML='<option value="">Wczytywanie zgłoszeń…</option>';
-      is.innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';
-
-      const {data:repairs,error:e1}=await c.from("repairs").select("id,ticket_no,created_at").order("created_at",{ascending:false});
-      if(e1){rs.innerHTML='<option value="">Błąd pobierania</option>';return setComplaintMessage(e1.message,"err")}
-      if(!repairs?.length){rs.innerHTML='<option value="">Brak wcześniejszych zgłoszeń</option>';return}
-
-      const {data:items,error:e2}=await c.from("repair_items")
-        .select("id,repair_id,item_no,device_name,model").in("repair_id",repairs.map(r=>r.id)).order("item_no",{ascending:true});
-      if(e2)return setComplaintMessage(e2.message,"err");
-
-      complaintRepairCache=repairs.map(r=>({...r,items:(items||[]).filter(i=>i.repair_id===r.id)}));
-      rs.innerHTML='<option value="">Wybierz zgłoszenie</option>'+complaintRepairCache.map(r=>
-        `<option value="${escapeHtml(r.id)}">${escapeHtml(r.ticket_no||"Zgłoszenie")} – ${escapeHtml(new Date(r.created_at).toLocaleDateString("pl-PL"))}</option>`
-      ).join("");
-    }
-
-    function loadComplaintRepairItems(){
-      const rid=document.getElementById("complaintRepair")?.value||"";
-      const is=document.getElementById("complaintRepairItem"); if(!is)return;
-      const r=complaintRepairCache.find(x=>x.id===rid);
-      if(!r){is.innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';return}
-      is.innerHTML='<option value="">Wybierz urządzenie</option>'+r.items.map(i=>{
-        const label=[i.device_name,i.model].filter(Boolean).join(" – ")||("Sprzęt "+(i.item_no||""));
-        return `<option value="${escapeHtml(i.id)}">${escapeHtml(label)}</option>`;
-      }).join("");
-    }
-
-    async function loadComplaints(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const box=document.getElementById("complaintsList"); if(!box)return;
-      box.innerHTML='<div class="form-note">Wczytywanie reklamacji…</div>';
-      const {data,error}=await c.from("complaints")
-        .select("id,complaint_no,description,status,admin_note,created_at")
-        .eq("user_id",currentUser.id).order("created_at",{ascending:false});
-      if(error){box.innerHTML='<div class="form-note">Nie udało się pobrać reklamacji.</div>';return}
-      if(!data?.length){box.innerHTML='<div class="form-note">Nie masz jeszcze żadnych reklamacji.</div>';return}
-      box.innerHTML=data.map(r=>`<div class="complaint-card">
-        <div class="complaint-head"><div class="complaint-number">${escapeHtml(r.complaint_no||"Reklamacja")}</div>
-        <div class="complaint-status">${escapeHtml(r.status||"Nowa")}</div></div>
-        <div class="small-note">${escapeHtml(new Date(r.created_at).toLocaleString("pl-PL"))}</div>
-        <div style="color:#ddd;margin-top:10px">${escapeHtml(r.description||"")}</div>
-        ${r.admin_note?`<div style="margin-top:10px;color:#f0c988"><strong>Odpowiedź serwisu:</strong> ${escapeHtml(r.admin_note)}</div>`:""}
-      </div>`).join("");
-    }
-
-    function complaintFileName(name){
-      const ext=(String(name||"foto.jpg").split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
-      return `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-    }
-
-    async function submitComplaint(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const repair_id=document.getElementById("complaintRepair")?.value||"";
-      const repair_item_id=document.getElementById("complaintRepairItem")?.value||"";
-      const description=document.getElementById("complaintDescription")?.value.trim()||"";
-      const photos=Array.from(document.getElementById("complaintGalleryPhotos")?.files||[]);
-      if(!repair_id)return setComplaintMessage("Wybierz zgłoszenie naprawy.","err");
-      if(!repair_item_id)return setComplaintMessage("Wybierz urządzenie.","err");
-      if(description.length<10)return setComplaintMessage("Opisz problem dokładniej – minimum 10 znaków.","err");
-
-      const b=document.getElementById("complaintSubmitBtn");
-      b.disabled=true;b.textContent="Wysyłanie…";setComplaintMessage("Zapisywanie reklamacji…");
-      try{
-        const {data:r,error:e}=await c.from("complaints").insert({
-          user_id:currentUser.id,repair_id,repair_item_id,description
-        }).select("id,complaint_no").single();
-        if(e)throw e;
-
-        let n=0;
-        for(const file of photos){
-          if(!file.type.startsWith("image/"))continue;
-          const path=`${currentUser.id}/${r.id}/${complaintFileName(file.name)}`;
-          const {error:ue}=await c.storage.from("complaint-attachments").upload(path,file,{upsert:false,contentType:file.type});
-          if(ue)throw ue;
-          const {error:ae}=await c.from("complaint_attachments").insert({
-            complaint_id:r.id,user_id:currentUser.id,storage_path:path,file_name:file.name||null
-          });
-          if(ae)throw ae;
-          n++;
-        }
-
-        document.getElementById("complaintDescription").value="";
-        document.getElementById("complaintRepair").value="";
-        document.getElementById("complaintRepairItem").innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';
-        document.getElementById("complaintGalleryPhotos").value="";
-        setComplaintMessage(`Reklamacja ${r.complaint_no||""} została wysłana ✅${n?` Dodano zdjęć: ${n}.`:""}`,"ok");
-        await loadComplaints();
-      }catch(err){
-        console.error("Błąd reklamacji:",err);
-        setComplaintMessage("Nie udało się wysłać reklamacji: "+(err?.message||"nieznany błąd"),"err");
-      }finally{
-        b.disabled=false;b.textContent="Wyślij reklamację";
-      }
     }
 
     function statusRank(status){
