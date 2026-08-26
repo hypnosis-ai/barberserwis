@@ -551,6 +551,31 @@
     .scroll-top-btn:hover{opacity:1}
 
 
+    /* ===== Workflow zlecenia ===== */
+    .workflow-status-box{
+      margin-top:14px;
+      padding:16px;
+      border:1px solid #6b542e;
+      border-radius:12px;
+      background:#211b13;
+    }
+    .workflow-status-box .workflow-title{
+      color:#e9b45e;
+      font-weight:800;
+      font-size:16px;
+      margin-bottom:10px;
+    }
+    .workflow-section-hidden{display:none!important}
+    .workflow-device-head{
+      margin-top:14px;
+      padding:10px 12px;
+      border-radius:9px;
+      background:#25262e;
+      color:#e9b45e;
+      font-weight:800;
+    }
+
+
     /* ===== Kosztorys naprawy ===== */
     .quote-builder{
       margin-top:14px;
@@ -866,12 +891,12 @@
             Naprawa
           </option>
 
-          <option value="Gotowe">
-            Gotowe
+          <option value="Przygotowano do wysyłki">
+            Przygotowano do wysyłki
           </option>
 
-          <option value="Odesłano">
-            Odesłano
+          <option value="Wysłano">
+            Wysłano
           </option>
 
         </select>
@@ -2582,9 +2607,11 @@ function statusClass(status){
       return "status-repair";
 
     case "Gotowe":
+    case "Przygotowano do wysyłki":
       return "status-ready";
 
     case "Odesłano":
+    case "Wysłano":
       return "status-sent";
 
     case "Bez naprawy / do odesłania":
@@ -3194,26 +3221,10 @@ function renderRepairs(data){
 
               <div class="item-edit-grid">
 
-                <div>
-                  <label>Status sprzętu</label>
-                  <select id="item-status-${item.id}" onchange="autoSaveRepairItemStatus('${item.id}')">
-                    ${[
-                      "Nowe zgłoszenie",
-                      "Przyjęto – oczekuje na diagnostykę",
-                      "Sprzęt jest w trakcie diagnostyki",
-                      "Wycena",
-                      "Naprawa",
-                      "Gotowe",
-                      "Bez naprawy / do odesłania",
-                      "Odesłano",
-                      "Anulowane"
-                    ].map(s => {
-                      const label = s === "Wycena"
-                        ? "Szczegóły diagnostyki i wycena"
-                        : s;
-                      return `<option value="${esc(s)}" ${s === normalizeItemStatus(item.status) ? "selected" : ""}>${esc(label)}</option>`;
-                    }).join("")}
-                  </select>
+                <div style="grid-column:1/-1;">
+                  <div class="workflow-device-head">
+                    Sprzęt ${esc(item.item_no || index + 1)} — ${esc(item.device_name || "—")} ${item.model ? " / " + esc(item.model) : ""}
+                  </div>
                 </div>
 
                 <div>
@@ -3238,7 +3249,12 @@ function renderRepairs(data){
 
               </div>
 
-              <div class="diagnostic-box">
+              <div
+                class="diagnostic-box ${["Diagnostyka w toku","Diagnoza / wycena","Akceptacja"].includes(r.status) ? "" : "workflow-section-hidden"}"
+                id="diagnostic-workflow-${item.id}"
+                data-repair-id="${r.id}"
+                data-workflow="diagnostic"
+              >
                 <div class="diagnostic-title">
                   Szczegóły diagnostyki i wycena
                 </div>
@@ -3324,6 +3340,14 @@ function renderRepairs(data){
                   >
                     Raport diagnostyczny / Drukuj
                   </button>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="setRepairWorkflowStatus('${r.id}','Diagnoza / wycena')"
+                  >
+                    Przejdź do wyceny
+                  </button>
                 </div>
 
                 <div class="diagnostic-help">
@@ -3332,7 +3356,12 @@ function renderRepairs(data){
                 </div>
               </div>
 
-              <div class="quote-builder">
+              <div
+                class="quote-builder ${["Diagnoza / wycena","Akceptacja"].includes(r.status) ? "" : "workflow-section-hidden"}"
+                id="quote-workflow-${item.id}"
+                data-repair-id="${r.id}"
+                data-workflow="quote"
+              >
                 <div class="quote-builder-title">
                   Kosztorys naprawy
                 </div>
@@ -3543,6 +3572,39 @@ function renderRepairs(data){
 
       ${invoiceHtml}
 
+      <div class="workflow-status-box">
+        <div class="workflow-title">Etap całego zlecenia</div>
+        <label>Status zlecenia</label>
+        <select
+          id="status-${r.id}"
+          onchange="updateRepairWorkflowVisibility('${r.id}',this.value)"
+        >
+          ${[
+            "Nowe zgłoszenie",
+            "Przyjęto",
+            "Diagnostyka w toku",
+            "Diagnoza / wycena",
+            "Akceptacja",
+            "Naprawa",
+            "Przygotowano do wysyłki",
+            "Wysłano",
+            "Anulowane"
+          ].map(s =>
+            `<option value="${esc(s)}" ${s === r.status ? "selected" : ""}>${esc(s)}</option>`
+          ).join("")}
+        </select>
+
+        <div class="actions" style="margin-top:10px;">
+          <button type="button" class="gold" onclick="saveRepair('${r.id}')">
+            Zapisz status zlecenia
+          </button>
+        </div>
+
+        <div class="muted" style="margin-top:8px;">
+          Status dotyczy całego zlecenia. Przy wielu urządzeniach diagnostyka i wycena są prowadzone osobno dla każdego sprzętu.
+        </div>
+      </div>
+
       <div class="invoice-admin-box">
         ${
           r.diagnostic_consent
@@ -3575,9 +3637,8 @@ function renderRepairs(data){
             <label>Metoda płatności</label>
             <select id="payment-method-${r.id}">
               <option value="">Wybierz metodę</option>
-              <option value="Przelew" ${r.payment_method==="Przelew"?"selected":""}>Przelew</option>
               <option value="BLIK" ${r.payment_method==="BLIK"?"selected":""}>BLIK</option>
-              <option value="Pobranie" ${r.payment_method==="Pobranie"?"selected":""}>Pobranie</option>
+              <option value="Pobranie" ${r.payment_method==="Pobranie"?"selected":""}>Za pobraniem</option>
             </select>
           </div>
 
@@ -3627,38 +3688,6 @@ function renderRepairs(data){
 
         <div>
 
-          <label>Status</label>
-
-          <select id="status-${r.id}">
-
-            ${[
-              "Nowe zgłoszenie",
-              "Przyjęto",
-              "Diagnoza / wycena",
-              "Akceptacja",
-              "Naprawa",
-              "Gotowe",
-              "Odesłano",
-              "Anulowane"
-            ]
-
-            .map(s =>
-              `<option
-                ${s === r.status ? "selected" : ""}
-              >
-                ${s}
-              </option>`
-            )
-
-            .join("")}
-
-          </select>
-
-        </div>
-
-
-        <div>
-
           <label>Łączna wycena wszystkich sprzętów (zł)</label>
 
           <input
@@ -3704,7 +3733,7 @@ function renderRepairs(data){
           class="gold"
           onclick="saveRepair('${r.id}')"
         >
-          Zapisz zmiany
+          Zapisz dane zlecenia
         </button>
 
 
@@ -3929,6 +3958,35 @@ async function autoSaveRepairItemStatus(itemId){
 async function setQuickItemStatus(itemId,status){
   document.getElementById("item-status-"+itemId).value = status;
   await saveRepairItem(itemId);
+}
+
+
+function updateRepairWorkflowVisibility(repairId,status){
+  document
+    .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="diagnostic"]`)
+    .forEach(el=>{
+      el.classList.toggle(
+        "workflow-section-hidden",
+        !["Diagnostyka w toku","Diagnoza / wycena","Akceptacja"].includes(status)
+      );
+    });
+
+  document
+    .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="quote"]`)
+    .forEach(el=>{
+      el.classList.toggle(
+        "workflow-section-hidden",
+        !["Diagnoza / wycena","Akceptacja"].includes(status)
+      );
+    });
+}
+
+async function setRepairWorkflowStatus(repairId,status){
+  const select=document.getElementById("status-"+repairId);
+  if(!select) return;
+  select.value=status;
+  updateRepairWorkflowVisibility(repairId,status);
+  await saveRepair(repairId);
 }
 
 
