@@ -1005,7 +1005,7 @@ body.client-page #konto > h3{margin-top:0;}
   <nav class="menu">
     <a href="index.html">Strona główna</a>
     <a href="jak-to-dziala.html">Jak to działa</a>
-    <a href="javascript:void(0)" onclick="goToRepairForm()">Zgłoś naprawę</a>
+    <a href="index.html?akcja=zglos" onclick="goToRepairForm();return false;">Zgłoś naprawę</a>
     <a href="galeria.html">Galeria</a>
     <a href="wysylka.html">Wysyłka</a>
     <a href="kontakt.html">Kontakt</a>
@@ -1043,7 +1043,7 @@ body.client-page #konto > h3{margin-top:0;}
       </p>
 
       <div class="hero-buttons">
-        <a class="btn btn-gold" href="javascript:void(0)" onclick="goToRepairForm()">Zgłoś naprawę</a>
+        <a class="btn btn-gold" href="index.html?akcja=zglos" onclick="goToRepairForm();return false;">Zgłoś naprawę</a>
         <a class="btn btn-dark" href="wysylka.html">Jak wysłać sprzęt</a>
         <a class="btn btn-dark" href="tel:+48782618575">Telefon</a>
       </div>
@@ -1733,11 +1733,7 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     async function logoutClient(){const c=getSb();if(c)await c.auth.signOut()}
     
 function goToRepairForm(){
-  if(currentUser){
-    document.getElementById("formularz").scrollIntoView({behavior:"smooth"});
-  }else{
-    openAccount();
-  }
+  window.location.href="index.html?akcja=zglos";
 }
 
 function handleTopAccountButton(){
