@@ -3267,7 +3267,7 @@ function renderRepairs(data){
                 data-workflow="diagnostic"
               >
                 <div class="diagnostic-title">
-                  Szczegóły diagnostyki i wycena
+                  BLOK 1 — DIAGNOSTYKA
                 </div>
 
                 <div class="diagnostic-grid">
@@ -3341,7 +3341,7 @@ function renderRepairs(data){
                     class="gold"
                     onclick="saveDiagnosticNote('${item.id}')"
                   >
-                    Zapisz szczegóły diagnostyki
+                    Zapisz diagnostykę
                   </button>
 
                   <button
@@ -3349,7 +3349,15 @@ function renderRepairs(data){
                     class="dark"
                     onclick="printDiagnosticReport('${item.id}')"
                   >
-                    Raport diagnostyczny / Drukuj
+                    Protokół diagnostyczny — druk / PDF
+                  </button>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="sendDiagnosticSummary('${r.id}','${item.id}')"
+                  >
+                    Wyślij podsumowanie diagnostyki
                   </button>
 
                   <button
@@ -3362,8 +3370,8 @@ function renderRepairs(data){
                 </div>
 
                 <div class="diagnostic-help">
-                  Diagnostyka jest częścią kosztorysu. Pozycję „Diagnostyka – 30 zł”
-                  dodajesz z cennika poniżej. Cena i kosztorys nadal wymagają ręcznego zapisu.
+                  Ten blok służy wyłącznie do zebrania i zapisania danych diagnostycznych.
+                  Protokół możesz otworzyć do druku albo zapisać jako PDF.
                 </div>
               </div>
 
@@ -3374,7 +3382,7 @@ function renderRepairs(data){
                 data-workflow="quote"
               >
                 <div class="quote-builder-title">
-                  Kosztorys naprawy
+                  BLOK 2 — WYCENA
                 </div>
 
                 <div
@@ -3458,61 +3466,36 @@ function renderRepairs(data){
                   </strong>
                 </div>
 
-                <div class="quote-help">
-                  Możesz zmienić cenę pozycji z cennika, dodać kilka usług
-                  albo wpisać własną pozycję ręcznie. Pozycje nie wysyłają
-                  e-maila automatycznie.
+                <div class="actions" style="margin-top:12px;">
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="printQuoteReport('${item.id}')"
+                  >
+                    Protokół wyceny — druk / PDF
+                  </button>
+
+                  <button
+                    type="button"
+                    class="dark"
+                    onclick="sendQuoteSummary('${r.id}','${item.id}')"
+                  >
+                    Wyślij podsumowanie wyceny
+                  </button>
+
+                  <button
+                    type="button"
+                    class="gold"
+                    onclick="sendDiagnosisAndQuote('${r.id}','${item.id}')"
+                  >
+                    Wyślij diagnozę + wycenę
+                  </button>
                 </div>
-              </div>
 
-              <div class="item-actions">
-                <button
-                  class="gold"
-                  type="button"
-                  onclick="saveRepairItem('${item.id}')"
-                >
-                  Zapisz sprzęt
-                </button>
-
-                <button
-                  class="dark"
-                  type="button"
-                  onclick="setQuickItemStatus('${item.id}','Naprawa')"
-                >
-                  Ustaw: Naprawa
-                </button>
-
-                <button
-                  class="dark"
-                  type="button"
-                  onclick="setQuickItemStatus('${item.id}','Gotowe')"
-                >
-                  Ustaw: Gotowe
-                </button>
-
-                <button
-                  class="dark"
-                  type="button"
-                  onclick="setQuickItemStatus('${item.id}','Bez naprawy / do odesłania')"
-                >
-                  Ustaw: Bez naprawy / do odesłania
-                </button>
-
-                <button
-                  class="dark"
-                  type="button"
-                  onclick="setQuickItemStatus('${item.id}','Odesłano')"
-                >
-                  Ustaw: Odesłano
-                </button>
-
-                <button
-                  class="danger"
-                  type="button"
-                  onclick="setQuickItemStatus('${item.id}','Anulowane')"
-                >
-                  Ustaw: Anulowane
-                </button>
+                <div class="quote-help">
+                  Ten blok służy wyłącznie do przygotowania wyceny. Zapis kosztorysu
+                  nie wysyła e-maila automatycznie.
+                </div>
               </div>
 
               <div
@@ -3700,90 +3683,24 @@ function renderRepairs(data){
 
       ${itemsHtml}
 
-      <div class="grid">
-
+      <div
+        class="grid ${["Przygotowano do wysyłki","Wysłano"].includes(r.status) ? "" : "workflow-section-hidden"}"
+        data-repair-id="${r.id}"
+        data-workflow="shipment"
+      >
         <div>
-
-          <label>Łączna wycena wszystkich sprzętów (zł)</label>
-
-          <input
-            id="quote-${r.id}"
-            type="text"
-            value="${items.reduce((sum,item)=>sum + quoteItemTotal(item.id),0).toFixed(2)} zł"
-            readonly
-          >
-
-        </div>
-
-
-        <div>
-
           <label>Numer przesyłki</label>
-
           <input
             id="tracking-${r.id}"
             value="${esc(r.tracking || "")}"
             placeholder="Numer przesyłki"
           >
-
         </div>
-
-
-        <div>
-
-          <label>Informacja dla klienta</label>
-
-          <textarea
-            id="note-${r.id}"
-            placeholder="Np. Wymagana wymiana silnika"
-          >${esc(r.admin_note || "")}</textarea>
-
-        </div>
-
       </div>
 
+      <textarea id="note-${r.id}" style="display:none;">${esc(r.admin_note || "")}</textarea>
 
       <div class="actions">
-
-        <button
-          class="gold"
-          onclick="saveRepair('${r.id}')"
-        >
-          Zapisz dane zlecenia
-        </button>
-
-
-        <button
-          class="dark"
-          onclick="sendRepairEmail('${r.id}')"
-        >
-          Wyślij e-mail do klienta
-        </button>
-
-
-        <button
-          class="dark"
-          onclick="setQuickStatus('${r.id}','Naprawa')"
-        >
-          Ustaw: Naprawa
-        </button>
-
-
-        <button
-          class="dark"
-          onclick="setQuickStatus('${r.id}','Gotowe')"
-        >
-          Ustaw: Gotowe
-        </button>
-
-
-        <button
-          class="dark"
-          onclick="setQuickStatus('${r.id}','Odesłano')"
-        >
-          Ustaw: Odesłano
-        </button>
-
         <button
           class="danger"
           onclick="cancelRepairAdmin('${r.id}')"
@@ -4011,6 +3928,13 @@ function updateRepairWorkflowVisibility(repairId,status){
   document
     .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="payment"]`)
     .forEach(el=>el.classList.toggle("workflow-section-hidden",!paymentVisible));
+
+  const shipmentVisible =
+    ["Przygotowano do wysyłki","Wysłano"].includes(status);
+
+  document
+    .querySelectorAll(`[data-repair-id="${repairId}"][data-workflow="shipment"]`)
+    .forEach(el=>el.classList.toggle("workflow-section-hidden",!shipmentVisible));
 }
 
 async function setRepairWorkflowStatus(repairId,status){
@@ -4160,6 +4084,100 @@ async function saveRepair(id){
   msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
 
   setTimeout(loadAllRepairs,500);
+}
+
+
+
+function printQuoteReport(itemId){
+  const repair = getRepairByItemId(itemId);
+  if(!repair){
+    alert("Nie znaleziono zgłoszenia.");
+    return;
+  }
+  const item = (repair.items || []).find(x => String(x.id) === String(itemId));
+  if(!item){
+    alert("Nie znaleziono sprzętu.");
+    return;
+  }
+
+  const lines = getQuoteLines(itemId);
+  const rows = lines.length
+    ? lines.map(row => `
+        <tr>
+          <td>${esc(row.description || "—")}</td>
+          <td style="text-align:right">${Number(row.unit_price || 0).toFixed(2)} zł</td>
+        </tr>`).join("")
+    : `<tr><td colspan="2">Brak pozycji wyceny.</td></tr>`;
+
+  const total = quoteItemTotal(itemId).toFixed(2);
+  const w = window.open("", "_blank");
+  if(!w){
+    alert("Przeglądarka zablokowała okno protokołu.");
+    return;
+  }
+
+  w.document.write(`<!doctype html>
+  <html lang="pl"><head><meta charset="utf-8"><title>Protokół wyceny ${esc(repair.ticket_no || "")}</title>
+  <style>
+    body{font-family:Arial,sans-serif;color:#111;padding:32px;max-width:850px;margin:auto}
+    h1{font-size:22px;border-bottom:2px solid #9b5b00;padding-bottom:12px}
+    table{width:100%;border-collapse:collapse;margin-top:20px}
+    td,th{padding:10px;border-bottom:1px solid #ccc;text-align:left}
+    .total{font-size:20px;font-weight:700;text-align:right;margin-top:20px}
+    .meta{line-height:1.6}
+    @media print{button{display:none}}
+  </style></head><body>
+  <h1>PROTOKÓŁ WYCENY NAPRAWY</h1>
+  <div class="meta">
+    <strong>Numer zgłoszenia:</strong> ${esc(repair.ticket_no || "—")}<br>
+    <strong>Klient:</strong> ${esc(repair.name || "—")}<br>
+    <strong>Sprzęt:</strong> ${esc(item.device_name || "—")} ${esc(item.model || "")}
+  </div>
+  <table><thead><tr><th>Pozycja</th><th style="text-align:right">Cena</th></tr></thead>
+  <tbody>${rows}</tbody></table>
+  <div class="total">Razem: ${total} zł</div>
+  <p><button onclick="window.print()">Drukuj / Zapisz jako PDF</button></p>
+  </body></html>`);
+  w.document.close();
+}
+
+async function sendWorkflowSummary(repairId,itemId,notificationType,label){
+  const msg = document.getElementById("item-msg-"+itemId) || document.getElementById("msg-"+repairId);
+  if(msg) msg.textContent = "Wysyłanie…";
+
+  const {data,error} = await sb.functions.invoke("swift-responder",{
+    body:{
+      repair_id:repairId,
+      repair_item_id:itemId,
+      notification_type:notificationType
+    }
+  });
+
+  if(error){
+    console.error("swift-responder:", error, data);
+    if(msg) msg.textContent = "Nie udało się wysłać e-maila: " + (error.message || "nieznany błąd");
+    return;
+  }
+
+  if(msg) msg.textContent = label + " wysłane do klienta ✅";
+}
+
+async function sendDiagnosticSummary(repairId,itemId){
+  await saveDiagnosticNote(itemId);
+  await sendWorkflowSummary(repairId,itemId,"diagnostic_summary","Podsumowanie diagnostyki");
+}
+
+async function sendQuoteSummary(repairId,itemId){
+  const ok = await saveQuoteLines(itemId);
+  if(!ok) return;
+  await sendWorkflowSummary(repairId,itemId,"quote_summary","Podsumowanie wyceny");
+}
+
+async function sendDiagnosisAndQuote(repairId,itemId){
+  await saveDiagnosticNote(itemId);
+  const ok = await saveQuoteLines(itemId);
+  if(!ok) return;
+  await sendWorkflowSummary(repairId,itemId,"diagnosis_and_quote","Diagnoza i wycena");
 }
 
 
