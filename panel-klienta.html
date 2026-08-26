@@ -2837,5 +2837,65 @@ document.addEventListener("DOMContentLoaded",()=>{
   });
 </script>
 
+<script>
+
+// ===== Zatwierdzanie Enterem =====
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Enter") return;
+
+  const target = e.target;
+  if(!target) return;
+
+  // W polach wielowierszowych Enter ma nadal robić nową linię.
+  if(target.tagName === "TEXTAREA") return;
+
+  const id = target.id || "";
+
+  // Logowanie
+  if(id === "loginEmail" || id === "loginPassword"){
+    e.preventDefault();
+    loginClient();
+    return;
+  }
+
+  // Rejestracja
+  const registerIds = [
+    "registerFirstName","registerLastName","registerPhone",
+    "registerReturnAddress","registerPostalCode","registerCity",
+    "registerEmail","registerPassword","registerPassword2"
+  ];
+  if(registerIds.includes(id)){
+    e.preventDefault();
+    registerClient();
+    return;
+  }
+
+  // Moje dane
+  const profileIds = [
+    "profileFirstName","profileLastName","profilePhone",
+    "profileReturnAddress","profilePostalCode","profileCity"
+  ];
+  if(profileIds.includes(id)){
+    e.preventDefault();
+    saveCustomerProfile();
+    return;
+  }
+
+  // Moje urządzenia
+  if(["deviceTypeSaved","deviceModelSaved","deviceSerialSaved"].includes(id)){
+    e.preventDefault();
+    addCustomerDevice();
+    return;
+  }
+
+  // Bezpieczeństwo
+  if(id === "securityPassword" || id === "securityPassword2"){
+    e.preventDefault();
+    changeClientPassword();
+    return;
+  }
+});
+
+</script>
 </body>
 </html>
