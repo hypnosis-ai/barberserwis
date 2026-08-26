@@ -2919,7 +2919,7 @@ async function loadAllRepairs(){
     const {data:consentData,error:consentError} =
       await sb
         .from("repairs")
-        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note,shipment_carrier,shipment_sent_date,shipment_cod")
+        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note,shipment_carrier,shipment_sent_date,shipment_cod,shipment_cod_amount")
         .in("id",consentRepairIds);
 
     if(consentError){
@@ -2942,6 +2942,7 @@ async function loadAllRepairs(){
           repair.shipment_carrier = consent.shipment_carrier || null;
           repair.shipment_sent_date = consent.shipment_sent_date || null;
           repair.shipment_cod = consent.shipment_cod === true;
+          repair.shipment_cod_amount = consent.shipment_cod_amount ?? null;
         }
       });
     }
@@ -3808,7 +3809,29 @@ function renderRepairs(data){
               <span>Przesyłka za pobraniem</span>
             </div>
           </div>
+
+          <div id="shipment-cod-amount-wrap-${r.id}" style="${r.shipment_cod === true || r.payment_method === "Pobranie" ? "" : "display:none;"}">
+            <label>Kwota pobrania (zł)</label>
+            <input
+              id="shipment-cod-amount-${r.id}"
+              type="number"
+              min="0"
+              step="0.01"
+              value="${r.shipment_cod_amount != null ? esc(r.shipment_cod_amount) : ""}"
+              placeholder="Np. 190.00"
+            >
+          </div>
         </div>
+
+        <script>
+          setTimeout(()=>{
+            const cod=document.getElementById("shipment-cod-${r.id}");
+            const wrap=document.getElementById("shipment-cod-amount-wrap-${r.id}");
+            if(cod && wrap){
+              cod.onchange=()=>{ wrap.style.display=cod.checked ? "" : "none"; };
+            }
+          },0);
+        </script>
 
         <div class="shipment-actions">
           <button
@@ -4331,6 +4354,17 @@ async function saveShipment(repairId){
   const cod =
     document.getElementById("shipment-cod-"+repairId)?.checked === true;
 
+  const codAmountRaw =
+    document.getElementById("shipment-cod-amount-"+repairId)?.value.trim() || "";
+
+  const codAmount =
+    cod && codAmountRaw !== "" ? Number(codAmountRaw) : null;
+
+  if(cod && (!Number.isFinite(codAmount) || codAmount < 0)){
+    if(msg) msg.textContent = "Wpisz prawidłową kwotę pobrania.";
+    return false;
+  }
+
   if(!carrier){
     if(msg) msg.textContent = "Wybierz firmę kurierską / dostawcę.";
     return false;
@@ -4356,7 +4390,8 @@ async function saveShipment(repairId){
         shipment_carrier:carrier,
         tracking,
         shipment_sent_date:sentDate,
-        shipment_cod:cod
+        shipment_cod:cod,
+        shipment_cod_amount:codAmount
       }
     });
 
@@ -4374,6 +4409,7 @@ async function saveShipment(repairId){
   repair.tracking = tracking;
   repair.shipment_sent_date = sentDate;
   repair.shipment_cod = cod;
+  repair.shipment_cod_amount = codAmount;
 
   if(msg) msg.textContent = "Dane wysyłki zapisane ✅";
   return true;
