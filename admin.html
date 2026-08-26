@@ -3499,7 +3499,7 @@ function renderRepairs(data){
                   <button
                     type="button"
                     class="gold"
-                    onclick="saveRepairItem('${item.id}')"
+                    onclick="saveQuoteForItem('${item.id}')"
                   >
                     Zapisz kosztorys
                   </button>
@@ -3805,6 +3805,7 @@ function renderRepairs(data){
                 id="shipment-cod-${r.id}"
                 type="checkbox"
                 ${r.shipment_cod === true || r.payment_method === "Pobranie" ? "checked" : ""}
+                onchange="toggleShipmentCodAmount('${r.id}')"
               >
               <span>Przesyłka za pobraniem</span>
             </div>
@@ -3822,16 +3823,6 @@ function renderRepairs(data){
             >
           </div>
         </div>
-
-        <script>
-          setTimeout(()=>{
-            const cod=document.getElementById("shipment-cod-${r.id}");
-            const wrap=document.getElementById("shipment-cod-amount-wrap-${r.id}");
-            if(cod && wrap){
-              cod.onchange=()=>{ wrap.style.display=cod.checked ? "" : "none"; };
-            }
-          },0);
-        </script>
 
         <div class="shipment-actions">
           <button
@@ -4244,6 +4235,79 @@ async function saveRepair(id){
 
 
 
+async function saveQuoteForItem(itemId){
+  const msg = document.getElementById("item-msg-"+itemId);
+  const repair = getRepairByItemId(itemId);
+
+  if(!repair){
+    if(msg) msg.textContent = "Błąd: nie znaleziono zgłoszenia dla sprzętu.";
+    return false;
+  }
+
+  const item =
+    repair.items?.find(x => String(x.id) === String(itemId));
+
+  if(!item){
+    if(msg) msg.textContent = "Błąd: nie znaleziono sprzętu.";
+    return false;
+  }
+
+  if(msg) msg.textContent = "Zapisywanie kosztorysu…";
+
+  const saved = await saveQuoteLines(itemId);
+  if(!saved) return false;
+
+  const quoteTotal = quoteItemTotal(itemId);
+  const quote =
+    getQuoteLines(itemId).length ? quoteTotal : null;
+
+  const noteEl = document.getElementById("item-note-"+itemId);
+  const note =
+    noteEl ? (noteEl.value.trim() || null) : (item.admin_note || null);
+
+  const {error:itemError} =
+    await sb.rpc("admin_update_repair_item",{
+      p_item_id:itemId,
+      p_status:item.status || "Nowe zgłoszenie",
+      p_quote_amount:quote,
+      p_admin_note:note
+    });
+
+  if(itemError){
+    if(msg) msg.textContent = "Błąd zapisu kosztorysu: " + itemError.message;
+    return false;
+  }
+
+  item.quote_amount = quote;
+  item.admin_note = note;
+
+  const totalQuote = calculateRepairTotalFromDom(repair);
+
+  const {error:repairError} =
+    await sb.rpc("admin_update_repair",{
+      p_id:repair.id,
+      p_status:repair.status || "Nowe zgłoszenie",
+      p_quote_amount:totalQuote,
+      p_admin_note:repair.admin_note || null,
+      p_tracking:repair.tracking || null
+    });
+
+  if(repairError){
+    if(msg){
+      msg.textContent =
+        "Kosztorys sprzętu zapisany, ale błąd sumy zlecenia: " +
+        repairError.message;
+    }
+    return false;
+  }
+
+  repair.quote_amount = totalQuote;
+
+  if(msg) msg.textContent = "Kosztorys zapisany ✅";
+  return true;
+}
+
+
 function printQuoteReport(itemId){
   const repair = getRepairByItemId(itemId);
   if(!repair){
@@ -4331,6 +4395,21 @@ async function sendQuoteSummary(repairId,itemId){
 }
 
 
+
+
+function toggleShipmentCodAmount(repairId){
+  const cod = document.getElementById("shipment-cod-"+repairId);
+  const wrap = document.getElementById("shipment-cod-amount-wrap-"+repairId);
+  const amount = document.getElementById("shipment-cod-amount-"+repairId);
+
+  if(!cod || !wrap) return;
+
+  wrap.style.display = cod.checked ? "" : "none";
+
+  if(!cod.checked && amount){
+    amount.value = "";
+  }
+}
 
 
 async function saveShipment(repairId){
