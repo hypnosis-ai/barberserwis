@@ -1328,8 +1328,11 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
       if(!c)return;
       const {error}=await c.auth.updateUser({password:p1});
       if(error){alert("Nie udało się ustawić nowego hasła: "+error.message);return;}
-      alert("Hasło zostało zmienione. Możesz korzystać z konta.");
-      history.replaceState({},document.title,window.location.pathname+window.location.hash);
+      alert("Hasło zostało zmienione. Zaloguj się ponownie nowym hasłem.");
+      await c.auth.signOut();
+      history.replaceState({},document.title,window.location.pathname);
+      openAccount();
+      showAuthPane("login");
     }
 
     async function logoutClient(){const c=getSb();if(c)await c.auth.signOut()}
@@ -2128,10 +2131,23 @@ function toggleInvoiceFields(){
       if(!c)return updateAccountUi(null);
       const {data}=await c.auth.getSession();
       updateAccountUi(data?.session?.user||null);
+
+      // Link resetujący z Supabase może od razu utworzyć sesję,
+      // zanim listener PASSWORD_RECOVERY zdąży się uruchomić.
+      // Dlatego dodatkowo sprawdzamy parametr w adresie strony.
+      const resetRequested =
+        new URLSearchParams(window.location.search).get("reset_password")==="1" ||
+        window.location.hash.includes("type=recovery");
+
+      if(resetRequested && data?.session?.user){
+        setTimeout(showNewPasswordDialog,250);
+      }
+
       c.auth.onAuthStateChange((event,s)=>{
         updateAccountUi(s?.user||null);
+
         if(event==="PASSWORD_RECOVERY"){
-          setTimeout(showNewPasswordDialog,150);
+          setTimeout(showNewPasswordDialog,250);
         }
       });
     });
