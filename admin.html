@@ -583,6 +583,50 @@
     }
 
 
+    /* ===== Blok wysyłki ===== */
+    .shipment-box{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid #31505d;
+      border-radius:12px;
+      background:#161d21;
+    }
+    .shipment-title{
+      color:#82dfff;
+      font-weight:800;
+      font-size:16px;
+      margin-bottom:10px;
+    }
+    .shipment-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .shipment-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .shipment-cod-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-height:44px;
+      padding:10px 12px;
+      border:1px solid #3a3c46;
+      border-radius:9px;
+      background:#202129;
+    }
+    .shipment-cod-row input{
+      width:auto;
+      margin:0;
+    }
+    @media(max-width:760px){
+      .shipment-grid{grid-template-columns:1fr}
+    }
+
+
     /* ===== Kosztorys naprawy ===== */
     .quote-builder{
       margin-top:14px;
@@ -2875,7 +2919,7 @@ async function loadAllRepairs(){
     const {data:consentData,error:consentError} =
       await sb
         .from("repairs")
-        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note")
+        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note,shipment_carrier,shipment_sent_date,shipment_cod")
         .in("id",consentRepairIds);
 
     if(consentError){
@@ -2895,6 +2939,9 @@ async function loadAllRepairs(){
           repair.payment_amount = consent.payment_amount ?? null;
           repair.payment_paid_at = consent.payment_paid_at || null;
           repair.payment_note = consent.payment_note || null;
+          repair.shipment_carrier = consent.shipment_carrier || null;
+          repair.shipment_sent_date = consent.shipment_sent_date || null;
+          repair.shipment_cod = consent.shipment_cod === true;
         }
       });
     }
@@ -3110,6 +3157,7 @@ function applyFilters(){
           r.return_address,
           r.return_city,
           r.tracking,
+          r.shipment_carrier,
           r.invoice_company_name,
           r.invoice_nip,
           r.invoice_address,
@@ -3510,13 +3558,6 @@ function renderRepairs(data){
                     Wyślij podsumowanie wyceny
                   </button>
 
-                  <button
-                    type="button"
-                    class="gold"
-                    onclick="sendDiagnosisAndQuote('${r.id}','${item.id}')"
-                  >
-                    Wyślij diagnozę + wycenę
-                  </button>
                 </div>
 
                 <div class="quote-help">
@@ -3711,18 +3752,83 @@ function renderRepairs(data){
       ${itemsHtml}
 
       <div
-        class="grid ${["Przygotowano do wysyłki","Wysłano"].includes(r.status) ? "" : "workflow-section-hidden"}"
+        class="shipment-box ${["Przygotowano do wysyłki","Wysłano"].includes(r.status) ? "" : "workflow-section-hidden"}"
         data-repair-id="${r.id}"
         data-workflow="shipment"
       >
-        <div>
-          <label>Numer przesyłki</label>
-          <input
-            id="tracking-${r.id}"
-            value="${esc(r.tracking || "")}"
-            placeholder="Numer przesyłki"
-          >
+        <div class="shipment-title">BLOK 3 — WYSYŁKA</div>
+
+        <div class="shipment-grid">
+          <div>
+            <label>Firma kurierska / dostawca</label>
+            <select id="shipment-carrier-${r.id}">
+              <option value="">Wybierz dostawcę</option>
+              ${[
+                "InPost",
+                "DPD",
+                "DHL eCommerce",
+                "GLS",
+                "FedEx",
+                "UPS",
+                "ORLEN Paczka",
+                "Pocztex / Poczta Polska",
+                "Inny"
+              ].map(name =>
+                `<option value="${esc(name)}" ${r.shipment_carrier===name ? "selected" : ""}>${esc(name)}</option>`
+              ).join("")}
+            </select>
+          </div>
+
+          <div>
+            <label>Numer przesyłki zwrotnej</label>
+            <input
+              id="tracking-${r.id}"
+              value="${esc(r.tracking || "")}"
+              placeholder="Np. 123456789012345678901234"
+            >
+          </div>
+
+          <div>
+            <label>Data wysłania</label>
+            <input
+              id="shipment-date-${r.id}"
+              type="date"
+              value="${esc(r.shipment_sent_date || "")}"
+            >
+          </div>
+
+          <div>
+            <label>Płatność przy odbiorze</label>
+            <div class="shipment-cod-row">
+              <input
+                id="shipment-cod-${r.id}"
+                type="checkbox"
+                ${r.shipment_cod === true || r.payment_method === "Pobranie" ? "checked" : ""}
+              >
+              <span>Przesyłka za pobraniem</span>
+            </div>
+          </div>
         </div>
+
+        <div class="shipment-actions">
+          <button
+            type="button"
+            class="dark"
+            onclick="saveShipment('${r.id}')"
+          >
+            Zapisz wysyłkę
+          </button>
+
+          <button
+            type="button"
+            class="gold"
+            onclick="sendShipmentSummary('${r.id}')"
+          >
+            Wyślij informacje o wysyłce
+          </button>
+        </div>
+
+        <div id="shipment-msg-${r.id}" class="item-msg"></div>
       </div>
 
       <textarea id="note-${r.id}" style="display:none;">${esc(r.admin_note || "")}</textarea>
@@ -4201,49 +4307,104 @@ async function sendQuoteSummary(repairId,itemId){
   await sendWorkflowSummary(repairId,itemId,"quote_summary","Podsumowanie wyceny");
 }
 
-async function sendDiagnosisAndQuote(repairId,itemId){
-  const saved = await saveDiagnosticNote(itemId);
-  if(!saved) return;
-  const ok = await saveQuoteLines(itemId);
-  if(!ok) return;
-  await sendWorkflowSummary(repairId,itemId,"diagnosis_and_quote","Diagnoza i wycena");
-}
 
 
-async function sendRepairEmail(id){
 
-  const repair =
-    allRepairs.find(r => String(r.id) === String(id));
+async function saveShipment(repairId){
+  const repair = allRepairs.find(r => String(r.id) === String(repairId));
+  const msg = document.getElementById("shipment-msg-"+repairId);
 
   if(!repair){
-    alert("Nie znaleziono zgłoszenia.");
-    return;
+    if(msg) msg.textContent = "Nie znaleziono zgłoszenia.";
+    return false;
   }
 
-  const msg =
-    document.getElementById("msg-"+id);
+  const carrier =
+    document.getElementById("shipment-carrier-"+repairId)?.value || "";
 
-  if(!confirm("Wysłać klientowi jeden zbiorczy e-mail z aktualnym stanem całego zgłoszenia?")){
-    return;
+  const tracking =
+    document.getElementById("tracking-"+repairId)?.value.trim() || "";
+
+  const sentDate =
+    document.getElementById("shipment-date-"+repairId)?.value || "";
+
+  const cod =
+    document.getElementById("shipment-cod-"+repairId)?.checked === true;
+
+  if(!carrier){
+    if(msg) msg.textContent = "Wybierz firmę kurierską / dostawcę.";
+    return false;
   }
 
-  msg.textContent = "Wysyłanie e-maila…";
+  if(!tracking){
+    if(msg) msg.textContent = "Wpisz numer przesyłki zwrotnej.";
+    return false;
+  }
 
-  const {error} =
+  if(!sentDate){
+    if(msg) msg.textContent = "Wybierz datę wysłania.";
+    return false;
+  }
+
+  if(msg) msg.textContent = "Zapisywanie wysyłki…";
+
+  const {data,error} =
     await sb.functions.invoke("swift-responder",{
       body:{
-        repair_id:id
+        repair_id:repairId,
+        notification_type:"save_shipment",
+        shipment_carrier:carrier,
+        tracking,
+        shipment_sent_date:sentDate,
+        shipment_cod:cod
       }
     });
 
-  if(error){
-    msg.textContent =
-      "Nie udało się wysłać e-maila: " + error.message;
+  if(error || !data?.success){
+    console.error("save_shipment:",error,data);
+    if(msg){
+      msg.textContent =
+        "Błąd zapisu wysyłki: " +
+        (error?.message || data?.error || "nieznany błąd");
+    }
+    return false;
+  }
+
+  repair.shipment_carrier = carrier;
+  repair.tracking = tracking;
+  repair.shipment_sent_date = sentDate;
+  repair.shipment_cod = cod;
+
+  if(msg) msg.textContent = "Dane wysyłki zapisane ✅";
+  return true;
+}
+
+async function sendShipmentSummary(repairId){
+  const saved = await saveShipment(repairId);
+  if(!saved) return;
+
+  const msg = document.getElementById("shipment-msg-"+repairId);
+  if(msg) msg.textContent = "Wysyłanie informacji o wysyłce…";
+
+  const {data,error} =
+    await sb.functions.invoke("swift-responder",{
+      body:{
+        repair_id:repairId,
+        notification_type:"shipment_summary"
+      }
+    });
+
+  if(error || !data?.success){
+    console.error("shipment_summary:",error,data);
+    if(msg){
+      msg.textContent =
+        "Nie udało się wysłać e-maila: " +
+        (error?.message || data?.error || "nieznany błąd");
+    }
     return;
   }
 
-  msg.textContent =
-    "Zbiorczy e-mail do klienta wysłany ✅";
+  if(msg) msg.textContent = "Informacje o wysyłce wysłane do klienta ✅";
 }
 
 
