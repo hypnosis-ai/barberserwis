@@ -850,6 +850,10 @@
             Przyjęto
           </option>
 
+          <option value="Diagnostyka w toku">
+            Diagnostyka w toku
+          </option>
+
           <option value="Diagnoza / wycena">
             Diagnoza / wycena
           </option>
@@ -2538,8 +2542,12 @@ function normalizeItemStatus(status){
     return "Przyjęto – oczekuje na diagnostykę";
   }
 
+  if(s === "Diagnostyka w toku"){
+    return "Diagnostyka w toku";
+  }
+
   if(s === "Diagnoza / wycena"){
-    return "Sprzęt jest w trakcie diagnostyki";
+    return "Diagnoza / wycena";
   }
 
   if(s === "Akceptacja"){
@@ -2561,6 +2569,7 @@ function statusClass(status){
     case "Przyjęto – oczekuje na diagnostykę":
       return "status-received";
 
+    case "Diagnostyka w toku":
     case "Diagnoza / wycena":
     case "Sprzęt jest w trakcie diagnostyki":
     case "Wycena":
