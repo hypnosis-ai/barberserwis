@@ -872,6 +872,31 @@
 .profile-message.ok{color:#9fe0a8}.profile-message.err{color:#ff8b8b}
 @media(max-width:600px){.client-panel-nav{display:grid;grid-template-columns:1fr 1fr}.client-panel-nav button{width:100%}.profile-grid{grid-template-columns:1fr}.profile-grid .profile-full{grid-column:auto}}
 
+
+/* ===== Panel klienta v2 ===== */
+.btn-red{
+  background:#8f2d2d !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+}
+.btn-red:hover{background:#a73838 !important}
+.client-panel-nav button:disabled{
+  opacity:1;
+  cursor:pointer;
+}
+.device-list{display:grid;gap:12px;margin-top:18px}
+.saved-device{
+  padding:16px;border-radius:12px;background:#202028;
+  border:1px solid rgba(224,179,106,.20);
+}
+.saved-device-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.saved-device-title{color:#e0b36a;font-weight:800}
+.security-box{max-width:620px;margin:0 auto}
+.security-box input{
+  width:100%;padding:14px;margin:7px 0;border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);background:#202028;color:#fff;font:inherit
+}
+
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -916,8 +941,8 @@
   </nav>
 
   <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a>
-  <button class="btn btn-dark account-btn" id="accountOpenBtn" type="button" onclick="openAccount()">Konto klienta</button>
-  <button class="btn btn-dark account-btn hidden" id="topLogoutBtn" type="button" onclick="logoutClient()">Wyloguj</button>
+  <button class="btn btn-gold account-btn" id="accountOpenBtn" type="button" onclick="openAccount()">Konto klienta</button>
+  <button class="btn btn-red account-btn hidden" id="topLogoutBtn" type="button" onclick="logoutClient()">Wyloguj</button>
 </div>
   </header>
 
@@ -1228,11 +1253,11 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
 <span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
 <button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
 <button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
-<button class="btn btn-dark hidden" type="button" id="accountLogoutBtn" onclick="logoutClient()">Wyloguj</button></div>
+</div>
 <div class="client-panel-nav">
 <button id="clientTabRepairs" class="active" type="button" onclick="showClientPanel('repairs')">Moje naprawy</button>
 <button id="clientTabProfile" type="button" onclick="showClientPanel('profile')">Moje dane</button>
-<button type="button" disabled>Moje urządzenia</button><button type="button" disabled>Bezpieczeństwo</button></div>
+<button id="clientTabDevices" type="button" onclick="showClientPanel('devices')">Moje urządzenia</button><button id="clientTabSecurity" type="button" onclick="showClientPanel('security')">Bezpieczeństwo</button></div>
 <div id="clientViewRepairs" class="client-panel-view active">
 <div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
 <div id="repairsList" class="repairs-list"></div>
@@ -1249,7 +1274,44 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
 <div style="text-align:center;margin-top:18px"><button class="btn btn-gold" id="profileSaveBtn" type="button" onclick="saveCustomerProfile()">Zapisz moje dane</button></div>
 <div id="profileMessage" class="profile-message"></div>
 <p class="small-note" style="text-align:center">Zapisane dane będą automatycznie uzupełniane przy zgłoszeniu naprawy.</p>
-</div></div></section>
+</div>
+
+<div id="clientViewDevices" class="client-panel-view">
+  <div class="profile-grid">
+    <div>
+      <label class="profile-label">Rodzaj sprzętu</label>
+      <input id="deviceTypeSaved" type="text" placeholder="np. maszynka, trymer, golarka">
+    </div>
+    <div>
+      <label class="profile-label">Marka i model</label>
+      <input id="deviceModelSaved" type="text" placeholder="np. Wahl Magic Clip">
+    </div>
+    <div class="profile-full">
+      <label class="profile-label">Numer seryjny (opcjonalnie)</label>
+      <input id="deviceSerialSaved" type="text" placeholder="Numer seryjny">
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:18px">
+    <button class="btn btn-gold" type="button" onclick="addCustomerDevice()">+ Dodaj urządzenie</button>
+  </div>
+  <div id="devicesMessage" class="profile-message"></div>
+  <div id="customerDevicesList" class="device-list"></div>
+</div>
+
+<div id="clientViewSecurity" class="client-panel-view">
+  <div class="security-box">
+    <label class="profile-label">Nowe hasło</label>
+    <input id="securityPassword" type="password" minlength="8" placeholder="Minimum 8 znaków" autocomplete="new-password">
+    <label class="profile-label">Powtórz nowe hasło</label>
+    <input id="securityPassword2" type="password" minlength="8" placeholder="Powtórz hasło" autocomplete="new-password">
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn btn-gold" id="securitySaveBtn" type="button" onclick="changeClientPassword()">Zmień hasło</button>
+    </div>
+    <div id="securityMessage" class="profile-message"></div>
+  </div>
+</div>
+
+</div></section>
 
 <section class="section">
     <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
@@ -1429,7 +1491,17 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     <img id="galleryLightboxImg" src="" alt="Podgląd zdjęcia">
   </div>
 
-  <div class="auth-modal" id="authModal" aria-hidden="true"><div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle"><button class="auth-close" type="button" onclick="closeAccount()" aria-label="Zamknij">×</button><h3 id="authTitle" style="margin:0;color:#e0b36a;">Konto klienta</h3><p style="color:#bbb;margin:8px 0 0;">Zaloguj się albo utwórz konto, aby wysyłać i śledzić zgłoszenia.</p><div class="auth-tabs"><button class="auth-tab active" id="loginTab" type="button" onclick="showAuthPane('login')">Logowanie</button><button class="auth-tab" id="registerTab" type="button" onclick="showAuthPane('register')">Rejestracja</button></div><div class="auth-pane active" id="loginPane"><input type="email" id="loginEmail" placeholder="E-mail" autocomplete="email"><input type="password" id="loginPassword" placeholder="Hasło" autocomplete="current-password"><button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="loginClient()">Zaloguj</button><button type="button" onclick="forgotPassword()" style="display:block;width:100%;margin-top:12px;background:none;border:0;color:#e0b36a;text-decoration:underline;cursor:pointer;font-weight:700;">Nie pamiętam hasła</button></div><div class="auth-pane" id="registerPane"><input type="email" id="registerEmail" placeholder="E-mail" autocomplete="email"><input type="password" id="registerPassword" placeholder="Hasło (minimum 8 znaków)" autocomplete="new-password"><input type="password" id="registerPassword2" placeholder="Powtórz hasło" autocomplete="new-password"><button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="registerClient()">Załóż konto</button><p style="font-size:12px;color:#999;line-height:1.5;">Po rejestracji otrzymasz wiadomość z linkiem potwierdzającym adres e-mail.</p></div><div class="auth-message" id="authMessage"></div></div></div>
+  <div class="auth-modal" id="authModal" aria-hidden="true"><div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle"><button class="auth-close" type="button" onclick="closeAccount()" aria-label="Zamknij">×</button><h3 id="authTitle" style="margin:0;color:#e0b36a;">Konto klienta</h3><p style="color:#bbb;margin:8px 0 0;">Zaloguj się albo utwórz konto, aby wysyłać i śledzić zgłoszenia.</p><div class="auth-tabs"><button class="auth-tab active" id="loginTab" type="button" onclick="showAuthPane('login')">Logowanie</button><button class="auth-tab" id="registerTab" type="button" onclick="showAuthPane('register')">Rejestracja</button></div><div class="auth-pane active" id="loginPane"><input type="email" id="loginEmail" placeholder="E-mail" autocomplete="email"><input type="password" id="loginPassword" placeholder="Hasło" autocomplete="current-password"><button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="loginClient()">Zaloguj</button><button type="button" onclick="forgotPassword()" style="display:block;width:100%;margin-top:12px;background:none;border:0;color:#e0b36a;text-decoration:underline;cursor:pointer;font-weight:700;">Nie pamiętam hasła</button></div><div class="auth-pane" id="registerPane">
+<input type="text" id="registerFirstName" placeholder="Imię" autocomplete="given-name">
+<input type="text" id="registerLastName" placeholder="Nazwisko" autocomplete="family-name">
+<input type="tel" id="registerPhone" placeholder="Telefon" autocomplete="tel">
+<input type="text" id="registerReturnAddress" placeholder="Adres do zwrotu – ulica i numer" autocomplete="street-address">
+<input type="text" id="registerPostalCode" placeholder="Kod pocztowy" autocomplete="postal-code">
+<input type="text" id="registerCity" placeholder="Miasto" autocomplete="address-level2">
+<input type="email" id="registerEmail" placeholder="E-mail" autocomplete="email">
+<input type="password" id="registerPassword" placeholder="Hasło (minimum 8 znaków)" autocomplete="new-password">
+<input type="password" id="registerPassword2" placeholder="Powtórz hasło" autocomplete="new-password">
+<button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="registerClient()">Załóż konto</button><p style="font-size:12px;color:#999;line-height:1.5;">Po rejestracji otrzymasz wiadomość z linkiem potwierdzającym adres e-mail.</p></div><div class="auth-message" id="authMessage"></div></div></div>
 
   <footer>
     © 2026 BarberSerwis.com – Naprawa maszynek do strzyżenia i trymerów<br><a href="regulamin.html" style="color:#cbb79c;">Regulamin</a> • <a href="polityka-prywatnosci.html" style="color:#cbb79c;">Polityka prywatności</a>
@@ -1450,10 +1522,18 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
       const c=getSb();
       if(!c)return setAuthMessage("Nie udało się połączyć z systemem rejestracji.","err");
 
+      const firstName=document.getElementById("registerFirstName").value.trim();
+      const lastName=document.getElementById("registerLastName").value.trim();
+      const phone=document.getElementById("registerPhone").value.trim();
+      const returnAddress=document.getElementById("registerReturnAddress").value.trim();
+      const postalCode=document.getElementById("registerPostalCode").value.trim();
+      const city=document.getElementById("registerCity").value.trim();
       const email=document.getElementById("registerEmail").value.trim();
       const p=document.getElementById("registerPassword").value;
       const p2=document.getElementById("registerPassword2").value;
 
+      if(!firstName||!lastName||!phone||!returnAddress||!postalCode||!city)
+        return setAuthMessage("Uzupełnij imię, nazwisko, telefon i adres.","err");
       if(!email)return setAuthMessage("Podaj adres e-mail.","err");
       if(p.length<8)return setAuthMessage("Hasło musi mieć co najmniej 8 znaków.","err");
       if(p!==p2)return setAuthMessage("Hasła nie są takie same.","err");
@@ -1464,7 +1544,15 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
         email,
         password:p,
         options:{
-          emailRedirectTo:window.location.origin+window.location.pathname
+          emailRedirectTo:window.location.origin+window.location.pathname,
+          data:{
+            first_name:firstName,
+            last_name:lastName,
+            phone,
+            return_address:returnAddress,
+            return_postal_code:postalCode,
+            return_city:city
+          }
         }
       });
 
@@ -1542,7 +1630,7 @@ function updateAccountUi(u){
     l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
 
   document.getElementById("accountLoginBtn").classList.toggle("hidden",l);
-  document.getElementById("accountLogoutBtn").classList.toggle("hidden",!l);
+  document.getElementById("accountLogoutBtn")?.classList.toggle("hidden",!l);
   document.getElementById("accountRefreshBtn").classList.toggle("hidden",!l);
 
   const formSection=document.getElementById("formularz");
@@ -1563,7 +1651,7 @@ function updateAccountUi(u){
     topLogoutBtn.classList.toggle("hidden",!l);
   }
 
-  b.textContent = l ? "Moje naprawy" : "Konto klienta";
+  b.textContent = l ? "Panel klienta" : "Konto klienta";
 
   b.onclick = l
     ? ()=>document.getElementById("konto").scrollIntoView({behavior:"smooth"})
@@ -1579,10 +1667,109 @@ function updateAccountUi(u){
   }
 }
     function setProfileMessage(m,t=""){const e=document.getElementById("profileMessage");if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}}
-    function showClientPanel(w){const r=w!=="profile";document.getElementById("clientViewRepairs")?.classList.toggle("active",r);document.getElementById("clientViewProfile")?.classList.toggle("active",!r);document.getElementById("clientTabRepairs")?.classList.toggle("active",r);document.getElementById("clientTabProfile")?.classList.toggle("active",!r);if(!r)loadCustomerProfile()}
+    function showClientPanel(w){
+      const views=["repairs","profile","devices","security"];
+      views.forEach(name=>{
+        document.getElementById("clientView"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
+        document.getElementById("clientTab"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
+      });
+      if(w==="profile") loadCustomerProfile();
+      if(w==="devices") loadCustomerDevices();
+    }
     function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
     async function loadCustomerProfile(){const c=getSb();if(!c||!currentUser)return;setProfileMessage("Wczytywanie danych…");const {data,error}=await c.from("customer_profiles").select("first_name,last_name,phone,return_address,return_postal_code,return_city").eq("user_id",currentUser.id).maybeSingle();if(error){setProfileMessage("Nie udało się pobrać danych: "+error.message,"err");return}const p=data||{};const m={profileFirstName:p.first_name||"",profileLastName:p.last_name||"",profilePhone:p.phone||"",profileReturnAddress:p.return_address||"",profilePostalCode:p.return_postal_code||"",profileCity:p.return_city||""};Object.entries(m).forEach(([id,x])=>{const e=document.getElementById(id);if(e)e.value=x});const em=document.getElementById("profileEmail");if(em)em.value=currentUser.email||"";fillRepairFormFromProfile(p);setProfileMessage(data?"Dane wczytane.":"Uzupełnij dane i kliknij „Zapisz moje dane”.")}
     async function saveCustomerProfile(){const c=getSb();if(!c||!currentUser)return;const b=document.getElementById("profileSaveBtn");const p={user_id:currentUser.id,first_name:document.getElementById("profileFirstName").value.trim(),last_name:document.getElementById("profileLastName").value.trim(),phone:document.getElementById("profilePhone").value.trim(),return_address:document.getElementById("profileReturnAddress").value.trim(),return_postal_code:document.getElementById("profilePostalCode").value.trim(),return_city:document.getElementById("profileCity").value.trim(),updated_at:new Date().toISOString()};b.disabled=true;b.textContent="Zapisywanie…";const {error}=await c.from("customer_profiles").upsert(p,{onConflict:"user_id"});b.disabled=false;b.textContent="Zapisz moje dane";if(error){setProfileMessage("Nie udało się zapisać danych: "+error.message,"err");return}fillRepairFormFromProfile(p);setProfileMessage("Dane zostały zapisane ✅","ok")}
+
+    function setDevicesMessage(m,t=""){
+      const e=document.getElementById("devicesMessage");
+      if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}
+    }
+
+    async function loadCustomerDevices(){
+      const c=getSb(); if(!c||!currentUser)return;
+      const box=document.getElementById("customerDevicesList");
+      if(!box)return;
+      box.innerHTML='<div class="form-note">Wczytywanie urządzeń…</div>';
+      const {data,error}=await c.from("customer_devices")
+        .select("id,device_type,model,serial_number,created_at")
+        .eq("user_id",currentUser.id)
+        .order("created_at",{ascending:false});
+      if(error){
+        box.innerHTML='<div class="form-note">Nie udało się pobrać urządzeń.</div>';
+        setDevicesMessage(error.message,"err");
+        return;
+      }
+      if(!data?.length){
+        box.innerHTML='<div class="form-note">Nie masz jeszcze zapisanych urządzeń.</div>';
+        return;
+      }
+      box.innerHTML=data.map(d=>`
+        <div class="saved-device">
+          <div class="saved-device-head">
+            <div>
+              <div class="saved-device-title">${escapeHtml(d.device_type||"Sprzęt")}</div>
+              <div style="color:#ddd">${escapeHtml(d.model||"—")}</div>
+              ${d.serial_number?`<div class="small-note">Nr seryjny: ${escapeHtml(d.serial_number)}</div>`:""}
+            </div>
+            <button class="btn repair-cancel-btn" type="button" onclick="deleteCustomerDevice('${d.id}')">Usuń</button>
+          </div>
+        </div>`).join("");
+    }
+
+    async function addCustomerDevice(){
+      const c=getSb(); if(!c||!currentUser)return;
+      const device_type=document.getElementById("deviceTypeSaved").value.trim();
+      const model=document.getElementById("deviceModelSaved").value.trim();
+      const serial_number=document.getElementById("deviceSerialSaved").value.trim();
+      if(!device_type||!model){
+        setDevicesMessage("Podaj rodzaj sprzętu oraz markę i model.","err");
+        return;
+      }
+      setDevicesMessage("Zapisywanie…");
+      const {error}=await c.from("customer_devices").insert({
+        user_id:currentUser.id,
+        device_type,
+        model,
+        serial_number:serial_number||null
+      });
+      if(error){setDevicesMessage("Nie udało się zapisać: "+error.message,"err");return}
+      document.getElementById("deviceTypeSaved").value="";
+      document.getElementById("deviceModelSaved").value="";
+      document.getElementById("deviceSerialSaved").value="";
+      setDevicesMessage("Urządzenie zapisane ✅","ok");
+      await loadCustomerDevices();
+    }
+
+    async function deleteCustomerDevice(id){
+      if(!confirm("Usunąć zapisane urządzenie?"))return;
+      const c=getSb(); if(!c||!currentUser)return;
+      const {error}=await c.from("customer_devices").delete().eq("id",id).eq("user_id",currentUser.id);
+      if(error){setDevicesMessage("Nie udało się usunąć: "+error.message,"err");return}
+      setDevicesMessage("Urządzenie usunięte.","ok");
+      await loadCustomerDevices();
+    }
+
+    function setSecurityMessage(m,t=""){
+      const e=document.getElementById("securityMessage");
+      if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}
+    }
+
+    async function changeClientPassword(){
+      const c=getSb(); if(!c||!currentUser)return;
+      const p=document.getElementById("securityPassword").value;
+      const p2=document.getElementById("securityPassword2").value;
+      if(p.length<8){setSecurityMessage("Hasło musi mieć co najmniej 8 znaków.","err");return}
+      if(p!==p2){setSecurityMessage("Hasła nie są takie same.","err");return}
+      const b=document.getElementById("securitySaveBtn");
+      b.disabled=true;b.textContent="Zmieniam…";
+      const {error}=await c.auth.updateUser({password:p});
+      b.disabled=false;b.textContent="Zmień hasło";
+      if(error){setSecurityMessage("Nie udało się zmienić hasła: "+error.message,"err");return}
+      document.getElementById("securityPassword").value="";
+      document.getElementById("securityPassword2").value="";
+      setSecurityMessage("Hasło zostało zmienione ✅","ok");
+    }
+
     function statusRank(status){
       const s=String(status||"").toLowerCase();
 
