@@ -3607,7 +3607,7 @@ function renderRepairs(data){
         </select>
 
         <div class="actions" style="margin-top:10px;">
-          <button type="button" class="gold" onclick="saveRepair('${r.id}')">
+          <button type="button" class="gold" onclick="saveRepairStatus('${r.id}')">
             Zapisz status zlecenia
           </button>
         </div>
@@ -4023,7 +4023,92 @@ async function setRepairWorkflowStatus(repairId,status){
 
 
 /* =============================
-   ZAPIS
+   ZAPIS STATUSU CAŁEGO ZLECENIA (ZSZ)
+============================= */
+
+async function saveRepairStatus(id){
+  const statusEl = document.getElementById("status-"+id);
+  const msg = document.getElementById("msg-"+id);
+  const repair = allRepairs.find(r => String(r.id) === String(id));
+
+  if(!statusEl || !repair){
+    if(msg) msg.textContent = "Nie udało się odczytać zgłoszenia.";
+    return;
+  }
+
+  const status = statusEl.value;
+  const quote = calculateRepairTotalFromDom(repair);
+
+  const noteEl = document.getElementById("note-"+id);
+  const trackingEl = document.getElementById("tracking-"+id);
+
+  const note = noteEl ? (noteEl.value.trim() || null) : (repair.admin_note || null);
+  const tracking = trackingEl ? (trackingEl.value.trim() || null) : (repair.tracking || null);
+
+  if(msg) msg.textContent = "Zapisywanie statusu…";
+
+  const {error} = await sb.rpc("admin_update_repair",{
+    p_id:id,
+    p_status:status,
+    p_quote_amount:quote,
+    p_admin_note:note,
+    p_tracking:tracking
+  });
+
+  if(error){
+    if(msg) msg.textContent = "Błąd zapisu statusu: " + error.message;
+    return;
+  }
+
+  repair.status = status;
+  repair.quote_amount = quote;
+  repair.admin_note = note;
+  repair.tracking = tracking;
+
+  updateRepairWorkflowVisibility(id,status);
+
+  const automaticStatusEmails = new Set([
+    "Przyjęto",
+    "Diagnostyka w toku",
+    "Naprawa",
+    "Przygotowano do wysyłki",
+    "Wysłano",
+    "Anulowane"
+  ]);
+
+  if(!automaticStatusEmails.has(status)){
+    if(msg) msg.textContent = "Status zapisany ✅";
+    setTimeout(loadAllRepairs,500);
+    return;
+  }
+
+  if(msg) msg.textContent = "Status zapisany. Wysyłanie e-maila do klienta…";
+
+  const {data:mailData,error:mailError} =
+    await sb.functions.invoke("swift-responder",{
+      body:{
+        repair_id:id,
+        notification_type:"status_only"
+      }
+    });
+
+  if(mailError){
+    console.error("Błąd swift-responder:",mailError,mailData);
+    if(msg){
+      msg.textContent =
+        "Status zapisany ✅, ale e-mail nie został wysłany: " +
+        (mailError.message || "nieznany błąd");
+    }
+    return;
+  }
+
+  if(msg) msg.textContent = "Status zapisany ✅ E-mail wysłany do klienta.";
+  setTimeout(loadAllRepairs,500);
+}
+
+
+/* =============================
+   ZAPIS POZOSTAŁYCH DANYCH ZLECENIA
 ============================= */
 
 async function saveRepair(id){
@@ -4065,8 +4150,6 @@ async function saveRepair(id){
   const localRepair =
     allRepairs.find(r => String(r.id) === String(id));
 
-  const previousStatus = localRepair?.status || "";
-
   if(localRepair){
     localRepair.status = status;
     localRepair.quote_amount = quote;
@@ -4074,40 +4157,7 @@ async function saveRepair(id){
     localRepair.tracking = tracking;
   }
 
-  // Na tym etapie automatyczne maile wysyłamy tylko dla:
-  // 1. Przyjęto
-  // 2. Diagnostyka w toku
-  // Pozostałe statusy pozostają bez zmian.
-  const automaticStatusEmails = new Set([
-    "Przyjęto",
-    "Diagnostyka w toku",
-    "Naprawa",
-    "Przygotowano do wysyłki",
-    "Wysłano",
-    "Anulowane"
-  ]);
-
-  if(status !== previousStatus && automaticStatusEmails.has(status)){
-    msg.textContent = "Status zapisany. Wysyłanie e-maila do klienta…";
-
-    const {error:mailError} =
-      await sb.functions.invoke("swift-responder",{
-        body:{
-          repair_id:id,
-          notification_type:"status_only"
-        }
-      });
-
-    if(mailError){
-      msg.textContent =
-        "Status zapisany ✅, ale e-mail nie został wysłany: " + mailError.message;
-    }else{
-      msg.textContent =
-        "Status zapisany ✅ E-mail statusowy wysłany do klienta.";
-    }
-  }else{
-    msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
-  }
+  msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
 
   setTimeout(loadAllRepairs,500);
 }
