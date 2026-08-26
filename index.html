@@ -859,6 +859,19 @@
         margin-top:10px;
       }
     }
+
+/* ===== Panel klienta: Moje dane ===== */
+.client-panel-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 22px}
+.client-panel-nav button{padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#202028;color:#ddd;font:inherit;font-weight:700;cursor:pointer}
+.client-panel-nav button.active{background:#e0b36a;color:#111}
+.client-panel-view{display:none}.client-panel-view.active{display:block}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:760px;margin:0 auto}
+.profile-grid input{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#202028;color:#fff;font:inherit}
+.profile-grid .profile-full{grid-column:1/-1}.profile-label{display:block;color:#cbb79c;font-size:13px;margin:0 0 5px}
+.profile-email{opacity:.75;cursor:not-allowed}.profile-message{text-align:center;margin-top:14px;font-size:14px;min-height:22px}
+.profile-message.ok{color:#9fe0a8}.profile-message.err{color:#ff8b8b}
+@media(max-width:600px){.client-panel-nav{display:grid;grid-template-columns:1fr 1fr}.client-panel-nav button{width:100%}.profile-grid{grid-template-columns:1fr}.profile-grid .profile-full{grid-column:auto}}
+
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -1210,20 +1223,33 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
   </section>
 
 <section class="section hidden" id="konto">
-    <h3>Panel klienta – moje naprawy</h3>
-    <p class="section-sub">Tutaj sprawdzisz swoje zgłoszenia, wycenę, numer przesyłki i aktualny etap naprawy.</p>
-    <div class="form-box">
-      <div class="account-bar">
-        <span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
-        <button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
-        <button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
-        <button class="btn btn-dark hidden" type="button" id="accountLogoutBtn" onclick="logoutClient()">Wyloguj</button>
-      </div>
-      <div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
-      <div id="repairsList" class="repairs-list"></div>
-      <p class="small-note">Statusy i wyceny są aktualizowane przez BarberSerwis po diagnozie sprzętu.</p>
-    </div>
-  </section>
+<h3>Panel klienta</h3><p class="section-sub">Twoje naprawy i dane konta BarberSerwis.</p>
+<div class="form-box"><div class="account-bar">
+<span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
+<button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
+<button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
+<button class="btn btn-dark hidden" type="button" id="accountLogoutBtn" onclick="logoutClient()">Wyloguj</button></div>
+<div class="client-panel-nav">
+<button id="clientTabRepairs" class="active" type="button" onclick="showClientPanel('repairs')">Moje naprawy</button>
+<button id="clientTabProfile" type="button" onclick="showClientPanel('profile')">Moje dane</button>
+<button type="button" disabled>Moje urządzenia</button><button type="button" disabled>Bezpieczeństwo</button></div>
+<div id="clientViewRepairs" class="client-panel-view active">
+<div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
+<div id="repairsList" class="repairs-list"></div>
+<p class="small-note">Statusy i wyceny są aktualizowane przez BarberSerwis po diagnozie sprzętu.</p></div>
+<div id="clientViewProfile" class="client-panel-view">
+<div class="profile-grid">
+<div><label class="profile-label">Imię</label><input id="profileFirstName" type="text"></div>
+<div><label class="profile-label">Nazwisko</label><input id="profileLastName" type="text"></div>
+<div><label class="profile-label">Telefon</label><input id="profilePhone" type="tel"></div>
+<div><label class="profile-label">E-mail</label><input id="profileEmail" class="profile-email" type="email" readonly></div>
+<div class="profile-full"><label class="profile-label">Adres do zwrotu – ulica i numer</label><input id="profileReturnAddress" type="text"></div>
+<div><label class="profile-label">Kod pocztowy</label><input id="profilePostalCode" type="text"></div>
+<div><label class="profile-label">Miasto</label><input id="profileCity" type="text"></div></div>
+<div style="text-align:center;margin-top:18px"><button class="btn btn-gold" id="profileSaveBtn" type="button" onclick="saveCustomerProfile()">Zapisz moje dane</button></div>
+<div id="profileMessage" class="profile-message"></div>
+<p class="small-note" style="text-align:center">Zapisane dane będą automatycznie uzupełniane przy zgłoszeniu naprawy.</p>
+</div></div></section>
 
 <section class="section">
     <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
@@ -1545,12 +1571,18 @@ function updateAccountUi(u){
 
   if(l){
     loadRepairs();
+    loadCustomerProfile();
   }else{
     document.getElementById("repairsList").innerHTML="";
     document.getElementById("repairsEmpty").textContent=
       "Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
   }
 }
+    function setProfileMessage(m,t=""){const e=document.getElementById("profileMessage");if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}}
+    function showClientPanel(w){const r=w!=="profile";document.getElementById("clientViewRepairs")?.classList.toggle("active",r);document.getElementById("clientViewProfile")?.classList.toggle("active",!r);document.getElementById("clientTabRepairs")?.classList.toggle("active",r);document.getElementById("clientTabProfile")?.classList.toggle("active",!r);if(!r)loadCustomerProfile()}
+    function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
+    async function loadCustomerProfile(){const c=getSb();if(!c||!currentUser)return;setProfileMessage("Wczytywanie danych…");const {data,error}=await c.from("customer_profiles").select("first_name,last_name,phone,return_address,return_postal_code,return_city").eq("user_id",currentUser.id).maybeSingle();if(error){setProfileMessage("Nie udało się pobrać danych: "+error.message,"err");return}const p=data||{};const m={profileFirstName:p.first_name||"",profileLastName:p.last_name||"",profilePhone:p.phone||"",profileReturnAddress:p.return_address||"",profilePostalCode:p.return_postal_code||"",profileCity:p.return_city||""};Object.entries(m).forEach(([id,x])=>{const e=document.getElementById(id);if(e)e.value=x});const em=document.getElementById("profileEmail");if(em)em.value=currentUser.email||"";fillRepairFormFromProfile(p);setProfileMessage(data?"Dane wczytane.":"Uzupełnij dane i kliknij „Zapisz moje dane”.")}
+    async function saveCustomerProfile(){const c=getSb();if(!c||!currentUser)return;const b=document.getElementById("profileSaveBtn");const p={user_id:currentUser.id,first_name:document.getElementById("profileFirstName").value.trim(),last_name:document.getElementById("profileLastName").value.trim(),phone:document.getElementById("profilePhone").value.trim(),return_address:document.getElementById("profileReturnAddress").value.trim(),return_postal_code:document.getElementById("profilePostalCode").value.trim(),return_city:document.getElementById("profileCity").value.trim(),updated_at:new Date().toISOString()};b.disabled=true;b.textContent="Zapisywanie…";const {error}=await c.from("customer_profiles").upsert(p,{onConflict:"user_id"});b.disabled=false;b.textContent="Zapisz moje dane";if(error){setProfileMessage("Nie udało się zapisać danych: "+error.message,"err");return}fillRepairFormFromProfile(p);setProfileMessage("Dane zostały zapisane ✅","ok")}
     function statusRank(status){
       const s=String(status||"").toLowerCase();
 
@@ -2189,6 +2221,7 @@ function toggleInvoiceFields(){
 
     e.target.reset();
     toggleInvoiceFields();
+    await loadCustomerProfile();
 
     resetRepairDevices();
 
