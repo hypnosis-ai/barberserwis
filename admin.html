@@ -455,6 +455,39 @@
     }
     @media(max-width:520px){.gallery-admin-grid{grid-template-columns:1fr}}
 
+    .gallery-link-box{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid #343640;
+    }
+    .gallery-link-grid{
+      display:grid;
+      grid-template-columns:1.3fr 1fr auto;
+      gap:12px;
+      align-items:end;
+    }
+    .gallery-external-preview{
+      width:100%;
+      aspect-ratio:4/3;
+      border:0;
+      display:block;
+      background:#111;
+    }
+    .gallery-platform-badge{
+      display:inline-block;
+      margin-bottom:8px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#30251a;
+      color:#f0c988;
+      font-size:12px;
+      font-weight:800;
+    }
+    @media(max-width:800px){
+      .gallery-link-grid{grid-template-columns:1fr}
+    }
+
+
 
     /* ===== Uporządkowany panel administratora ===== */
     .admin-nav{
@@ -871,14 +904,28 @@
 <div id="galleryAdminPanel" class="panel hidden gallery-admin-panel">
     <div class="gallery-upload-grid">
       <div>
-        <label>Zdjęcie lub film</label>
+        <label>Zdjęcie lub film z komputera</label>
         <input id="galleryFile" type="file" accept="image/*,video/mp4,video/webm,video/quicktime">
       </div>
       <div>
         <label>Podpis (opcjonalnie)</label>
         <input id="galleryCaption" type="text" maxlength="180" placeholder="np. Naprawa Wahl Senior">
       </div>
-      <button class="gold" id="galleryUploadBtn" onclick="uploadGalleryMedia()">Dodaj do galerii</button>
+      <button class="gold" id="galleryUploadBtn" onclick="uploadGalleryMedia()">Dodaj plik</button>
+    </div>
+
+    <div class="gallery-link-box">
+      <div class="gallery-link-grid">
+        <div>
+          <label>Link do filmu YouTube lub TikTok</label>
+          <input id="galleryExternalUrl" type="url" placeholder="https://youtube.com/... lub https://tiktok.com/...">
+        </div>
+        <div>
+          <label>Podpis filmu (opcjonalnie)</label>
+          <input id="galleryExternalCaption" type="text" maxlength="180" placeholder="np. Naprawa maszynki">
+        </div>
+        <button class="gold" id="galleryExternalBtn" onclick="addExternalGalleryVideo()">Dodaj link</button>
+      </div>
     </div>
 
     <div id="galleryMsg" class="msg"></div>
@@ -1726,13 +1773,76 @@ let galleryCropper = null;
 let galleryCropPath = "";
 let galleryCropObjectUrl = "";
 
+function detectExternalPlatform(url){
+  try{
+    const u=new URL(url);
+    const host=u.hostname.toLowerCase().replace(/^www\./,"");
+    if(host==="youtu.be" || host.endsWith("youtube.com")) return "youtube";
+    if(host.endsWith("tiktok.com")) return "tiktok";
+  }catch(_){}
+  return "";
+}
+
+function getYouTubeId(url){
+  try{
+    const u=new URL(url);
+    const host=u.hostname.toLowerCase().replace(/^www\./,"");
+    if(host==="youtu.be") return u.pathname.split("/").filter(Boolean)[0] || "";
+    if(host.endsWith("youtube.com")){
+      if(u.pathname==="/watch") return u.searchParams.get("v") || "";
+      const parts=u.pathname.split("/").filter(Boolean);
+      const idx=parts.findIndex(x=>["shorts","embed","live"].includes(x));
+      if(idx>=0 && parts[idx+1]) return parts[idx+1];
+    }
+  }catch(_){}
+  return "";
+}
+
+function getTikTokId(url){
+  const m=String(url||"").match(/\/video\/(\d+)/);
+  return m ? m[1] : "";
+}
+
+function externalGalleryPreview(item){
+  const url=String(item.external_url||"");
+  const platform=String(item.external_platform||detectExternalPlatform(url)||"").toLowerCase();
+
+  if(platform==="youtube"){
+    const id=getYouTubeId(url);
+    if(id){
+      return `<iframe class="gallery-external-preview"
+        src="https://www.youtube-nocookie.com/embed/${esc(id)}"
+        title="YouTube"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>`;
+    }
+  }
+
+  if(platform==="tiktok"){
+    const id=getTikTokId(url);
+    if(id){
+      return `<iframe class="gallery-external-preview"
+        src="https://www.tiktok.com/player/v1/${esc(id)}"
+        title="TikTok"
+        loading="lazy"
+        allowfullscreen></iframe>`;
+    }
+  }
+
+  return `<a href="${esc(url)}" target="_blank" rel="noopener" class="dark"
+    style="display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;text-decoration:none;">
+    Otwórz film
+  </a>`;
+}
+
 async function loadGalleryAdmin(){
   const box=document.getElementById("galleryAdminGrid");
   if(!box) return;
 
   const {data,error}=await sb
     .from("gallery_media")
-    .select("id,media_type,storage_path,caption,is_visible,sort_order,created_at")
+    .select("id,media_type,storage_path,caption,is_visible,sort_order,created_at,external_url,external_platform")
     .order("sort_order",{ascending:true})
     .order("created_at",{ascending:false});
 
@@ -1749,18 +1859,28 @@ async function loadGalleryAdmin(){
   const cacheBust=Date.now();
 
   box.innerHTML=data.map(item=>{
-    const {data:urlData}=sb.storage.from("gallery").getPublicUrl(item.storage_path);
-    const baseUrl=urlData?.publicUrl||"";
-    const url=baseUrl ? `${baseUrl}?v=${cacheBust}` : "";
+    const isExternal=item.media_type==="external_video";
     const isVideo=item.media_type==="video";
 
-    const media=isVideo
-      ? `<video class="gallery-admin-media" controls preload="metadata"><source src="${esc(url)}"></video>`
-      : `<img class="gallery-admin-media" src="${esc(url)}" alt="">`;
+    let media="";
+    if(isExternal){
+      media=externalGalleryPreview(item);
+    }else{
+      const {data:urlData}=sb.storage.from("gallery").getPublicUrl(item.storage_path);
+      const baseUrl=urlData?.publicUrl||"";
+      const url=baseUrl ? `${baseUrl}?v=${cacheBust}` : "";
+      media=isVideo
+        ? `<video class="gallery-admin-media" controls preload="metadata"><source src="${esc(url)}"></video>`
+        : `<img class="gallery-admin-media" src="${esc(url)}" alt="">`;
+    }
+
+    const platform=String(item.external_platform||"").toUpperCase();
+    const deletePath=item.storage_path ? `'${esc(item.storage_path)}'` : "null";
 
     return `<div class="gallery-admin-card">
       ${media}
       <div class="gallery-admin-body">
+        ${isExternal ? `<div class="gallery-platform-badge">${esc(platform||"FILM")}</div>` : ""}
 
         <label>Podpis</label>
         <input
@@ -1776,11 +1896,11 @@ async function loadGalleryAdmin(){
         ${item.is_visible?"":'<div class="gallery-hidden-badge">UKRYTE NA STRONIE</div>'}
 
         <div class="gallery-admin-actions">
-          ${isVideo ? "" : `<button class="dark" onclick="openGalleryCrop('${esc(item.storage_path)}')">Przytnij zdjęcie</button>`}
+          ${(!isVideo && !isExternal) ? `<button class="dark" onclick="openGalleryCrop('${esc(item.storage_path)}')">Przytnij zdjęcie</button>` : ""}
           <button class="dark" onclick="toggleGalleryVisibility('${item.id}',${!item.is_visible})">${item.is_visible?"Ukryj":"Pokaż"}</button>
           <button class="dark" onclick="moveGalleryItem('${item.id}',-1)">↑</button>
           <button class="dark" onclick="moveGalleryItem('${item.id}',1)">↓</button>
-          <button class="danger" onclick="deleteGalleryMedia('${item.id}','${esc(item.storage_path)}')">Usuń</button>
+          <button class="danger" onclick="deleteGalleryMedia('${item.id}',${deletePath})">Usuń</button>
         </div>
       </div>
     </div>`;
@@ -1877,6 +1997,76 @@ async function uploadGalleryMedia(){
   fileInput.value="";
   document.getElementById("galleryCaption").value="";
   msg.textContent="Dodano do galerii ✅";
+  btn.disabled=false;
+  await loadGalleryAdmin();
+}
+
+async function addExternalGalleryVideo(){
+  const urlEl=document.getElementById("galleryExternalUrl");
+  const captionEl=document.getElementById("galleryExternalCaption");
+  const btn=document.getElementById("galleryExternalBtn");
+  const msg=document.getElementById("galleryMsg");
+
+  const url=urlEl?.value.trim() || "";
+  const caption=captionEl?.value.trim() || "";
+
+  if(!url){
+    msg.textContent="Wklej link do filmu.";
+    return;
+  }
+
+  const platform=detectExternalPlatform(url);
+  if(!platform){
+    msg.textContent="Obsługiwane są linki YouTube i TikTok.";
+    return;
+  }
+
+  if(platform==="youtube" && !getYouTubeId(url)){
+    msg.textContent="Nie udało się rozpoznać linku YouTube.";
+    return;
+  }
+
+  if(platform==="tiktok" && !getTikTokId(url)){
+    msg.textContent="Wklej pełny link TikTok zawierający /video/...";
+    return;
+  }
+
+  btn.disabled=true;
+  msg.textContent="Dodawanie filmu…";
+
+  const {data:lastRows,error:lastError}=await sb
+    .from("gallery_media")
+    .select("sort_order")
+    .order("sort_order",{ascending:false})
+    .limit(1);
+
+  if(lastError){
+    msg.textContent="Błąd: "+lastError.message;
+    btn.disabled=false;
+    return;
+  }
+
+  const nextOrder=(Number(lastRows?.[0]?.sort_order)||0)+10;
+
+  const {error}=await sb.from("gallery_media").insert({
+    media_type:"external_video",
+    storage_path:null,
+    caption:caption || null,
+    is_visible:true,
+    sort_order:nextOrder,
+    external_url:url,
+    external_platform:platform
+  });
+
+  if(error){
+    msg.textContent="Błąd dodawania filmu: "+error.message;
+    btn.disabled=false;
+    return;
+  }
+
+  urlEl.value="";
+  captionEl.value="";
+  msg.textContent="Film dodany ✅";
   btn.disabled=false;
   await loadGalleryAdmin();
 }
@@ -2055,16 +2245,18 @@ async function saveGalleryCrop(){
 async function deleteGalleryMedia(id,path){
   if(!confirm("Usunąć ten element z galerii?")) return;
 
-  const {error:storageError}=await sb.storage.from("gallery").remove([path]);
-  if(storageError){
-    alert("Nie udało się usunąć pliku: "+storageError.message);
-    return;
+  if(path){
+    const {error:storageError}=await sb.storage.from("gallery").remove([path]);
+    if(storageError){
+      alert("Nie udało się usunąć pliku: "+storageError.message);
+      return;
+    }
   }
 
   const {error}=await sb.from("gallery_media").delete().eq("id",id);
 
   if(error){
-    alert("Plik usunięto, ale błąd wpisu galerii: "+error.message);
+    alert("Błąd usuwania elementu galerii: "+error.message);
     return;
   }
 
