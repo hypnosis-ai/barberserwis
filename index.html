@@ -1074,66 +1074,6 @@ body.client-page #konto > h3{margin-top:0;}
 }
 </style>
 
-
-<style id="main-navigation-dropdown-v2">
-/* ===== Spójna nawigacja BarberSerwis ===== */
-.main-nav-dropdown-wrap{position:relative}
-.main-nav-menu-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  min-height:44px;
-  padding:10px 16px;
-  border:1px solid #c99b4b;
-  border-radius:10px;
-  background:#171717;
-  color:#e0b36a;
-  font-weight:800;
-  cursor:pointer;
-}
-.main-nav-menu-btn:hover{background:#222}
-.main-nav-dropdown{
-  display:none;
-  position:absolute;
-  z-index:10000;
-  top:calc(100% + 8px);
-  left:0;
-  width:245px;
-  padding:8px;
-  background:#151519;
-  border:1px solid #3c3c42;
-  border-radius:14px;
-  box-shadow:0 14px 35px rgba(0,0,0,.38);
-}
-.main-nav-dropdown.open{display:grid}
-.main-nav-dropdown a{
-  display:block;
-  padding:12px 13px;
-  border-radius:9px;
-  color:#eee !important;
-  text-decoration:none;
-  font-weight:700;
-}
-.main-nav-dropdown a:hover{background:#29292f;color:#e0b36a !important}
-.main-nav-dropdown .menu-separator{
-  height:1px;background:#36363c;margin:5px 4px;
-}
-@media(max-width:760px){
-  .main-nav-dropdown-wrap{width:100%}
-  .main-nav-menu-btn{width:100%}
-  .main-nav-dropdown{
-    position:fixed;
-    left:12px;
-    right:12px;
-    top:72px;
-    width:auto;
-    max-height:calc(100vh - 90px);
-    overflow:auto;
-  }
-}
-</style>
-
 </head>
 <body class="client-page">
 
@@ -1148,22 +1088,14 @@ body.client-page #konto > h3{margin-top:0;}
       </div>
 
     <div class="top-contact">
-  <nav class="main-nav-dropdown-wrap" id="mainNavDropdownWrap">
-  <button class="main-nav-menu-btn" type="button" onclick="toggleMainNavMenu()" aria-expanded="false" id="mainNavMenuBtn">
-    ☰ Menu
-  </button>
-  <div class="main-nav-dropdown" id="mainNavDropdown">
+  <nav class="menu">
     <a href="index.html">Strona główna</a>
     <a href="jak-to-dziala.html">Jak to działa</a>
-    <a href="javascript:void(0)" onclick="closeMainNavMenu();goToRepairForm()">Zgłoś naprawę</a>
+    <a href="javascript:void(0)" onclick="goToRepairForm()">Zgłoś naprawę</a>
     <a href="galeria.html">Galeria</a>
     <a href="wysylka.html">Wysyłka</a>
     <a href="kontakt.html">Kontakt</a>
-    <div class="menu-separator"></div>
-    <a href="regulamin.html">Regulamin</a>
-    <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-  </div>
-</nav>
+  </nav>
 
   <a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a>
   <div class="client-top-menu-wrap" id="clientTopMenuWrap">
@@ -2850,30 +2782,6 @@ document.addEventListener("DOMContentLoaded",()=>{
       window.scrollTo(0, 0);
     }, 0);
   });
-</script>
-
-
-<script id="main-navigation-dropdown-js-v2">
-function toggleMainNavMenu(){
-  const menu=document.getElementById("mainNavDropdown");
-  const btn=document.getElementById("mainNavMenuBtn");
-  if(!menu)return;
-  const open=menu.classList.toggle("open");
-  if(btn)btn.setAttribute("aria-expanded",open?"true":"false");
-}
-function closeMainNavMenu(){
-  const menu=document.getElementById("mainNavDropdown");
-  const btn=document.getElementById("mainNavMenuBtn");
-  if(menu)menu.classList.remove("open");
-  if(btn)btn.setAttribute("aria-expanded","false");
-}
-document.addEventListener("click",function(e){
-  const wrap=document.getElementById("mainNavDropdownWrap");
-  if(wrap && !wrap.contains(e.target)) closeMainNavMenu();
-});
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape") closeMainNavMenu();
-});
 </script>
 
 </body>
