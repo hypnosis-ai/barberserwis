@@ -1302,72 +1302,19 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     function showAuthPane(w){const l=w==="login";document.getElementById("loginPane").classList.toggle("active",l);document.getElementById("registerPane").classList.toggle("active",!l);document.getElementById("loginTab").classList.toggle("active",l);document.getElementById("registerTab").classList.toggle("active",!l);setAuthMessage("")}
     async function registerClient(){const c=getSb();if(!c)return setAuthMessage("Najpierw trzeba podłączyć projekt Supabase.","err");const email=document.getElementById("registerEmail").value.trim(),p=document.getElementById("registerPassword").value,p2=document.getElementById("registerPassword2").value;if(!email)return setAuthMessage("Podaj adres e-mail.","err");if(p.length<8)return setAuthMessage("Hasło musi mieć co najmniej 8 znaków.","err");if(p!==p2)return setAuthMessage("Hasła nie są takie same.","err");setAuthMessage("Tworzę konto…");const {data,error}=await c.auth.signUp({email,password:p,options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)return setAuthMessage(error.message,"err");setAuthMessage(data.session?"Konto utworzone i zalogowano.":"Konto utworzone. Sprawdź e-mail i kliknij link potwierdzający.","ok");if(data.session)setTimeout(closeAccount,700)}
     async function loginClient(){const c=getSb();if(!c)return setAuthMessage("Najpierw trzeba podłączyć projekt Supabase.","err");const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;if(!email||!password)return setAuthMessage("Podaj e-mail i hasło.","err");setAuthMessage("Logowanie…");const {error}=await c.auth.signInWithPassword({email,password});if(error)return setAuthMessage("Nie udało się zalogować. Sprawdź e-mail, hasło i potwierdzenie konta.","err");setAuthMessage("Zalogowano.","ok");setTimeout(closeAccount,500)}
-    let passwordResetDialogShown = false;
-
     async function forgotPassword(){
       const c=getSb();
       if(!c)return setAuthMessage("Nie udało się połączyć z systemem logowania.","err");
       const email=document.getElementById("loginEmail").value.trim();
       if(!email)return setAuthMessage("Wpisz najpierw swój adres e-mail.","err");
       setAuthMessage("Wysyłam link do ustawienia nowego hasła…");
-      const redirectTo=window.location.origin+window.location.pathname+"?reset_password=1";
+      const redirectTo=window.location.origin+"/reset-hasla.html";
       const {error}=await c.auth.resetPasswordForEmail(email,{redirectTo});
       if(error){
         console.error("Błąd resetu hasła:",error);
         return setAuthMessage("Nie udało się wysłać wiadomości. Sprawdź adres e-mail i spróbuj ponownie.","err");
       }
       setAuthMessage("Wysłaliśmy wiadomość na podany e-mail. Otwórz link i ustaw nowe hasło.","ok");
-    }
-
-    async function showNewPasswordDialog(){
-      if(passwordResetDialogShown) return;
-      passwordResetDialogShown = true;
-
-      // Usuń znacznik resetu z adresu od razu, żeby funkcja nie uruchamiała się ponownie.
-      history.replaceState({}, document.title, window.location.pathname);
-
-      const p1=prompt("Wpisz nowe hasło (minimum 8 znaków):");
-      if(p1===null){
-        passwordResetDialogShown = false;
-        return;
-      }
-      if(p1.length<8){
-        alert("Hasło musi mieć co najmniej 8 znaków.");
-        passwordResetDialogShown = false;
-        return;
-      }
-
-      const p2=prompt("Powtórz nowe hasło:");
-      if(p2===null){
-        passwordResetDialogShown = false;
-        return;
-      }
-      if(p1!==p2){
-        alert("Hasła nie są takie same.");
-        passwordResetDialogShown = false;
-        return;
-      }
-
-      const c=getSb();
-      if(!c){
-        passwordResetDialogShown = false;
-        return;
-      }
-
-      const {error}=await c.auth.updateUser({password:p1});
-
-      if(error){
-        alert("Nie udało się ustawić nowego hasła: "+error.message);
-        passwordResetDialogShown = false;
-        return;
-      }
-
-      alert("Hasło zostało zmienione pomyślnie. Zaloguj się ponownie nowym hasłem.");
-
-      await c.auth.signOut();
-
-      openAccount();
-      showAuthPane("login");
     }
 
     async function logoutClient(){const c=getSb();if(c)await c.auth.signOut()}
@@ -2166,25 +2113,7 @@ function toggleInvoiceFields(){
       if(!c)return updateAccountUi(null);
       const {data}=await c.auth.getSession();
       updateAccountUi(data?.session?.user||null);
-
-      // Link resetujący z Supabase może od razu utworzyć sesję,
-      // zanim listener PASSWORD_RECOVERY zdąży się uruchomić.
-      // Dlatego dodatkowo sprawdzamy parametr w adresie strony.
-      const resetRequested =
-        new URLSearchParams(window.location.search).get("reset_password")==="1" ||
-        window.location.hash.includes("type=recovery");
-
-      if(resetRequested && data?.session?.user && !passwordResetDialogShown){
-        setTimeout(showNewPasswordDialog,250);
-      }
-
-      c.auth.onAuthStateChange((event,s)=>{
-        updateAccountUi(s?.user||null);
-
-        if(event==="PASSWORD_RECOVERY" && !passwordResetDialogShown){
-          setTimeout(showNewPasswordDialog,250);
-        }
-      });
+      c.auth.onAuthStateChange((_event,s)=>updateAccountUi(s?.user||null));
     });
 if(document.readyState === "loading"){
   document.addEventListener("DOMContentLoaded", () => {
