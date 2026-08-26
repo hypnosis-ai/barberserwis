@@ -849,4 +849,203 @@
         margin-top:10px;
       }
     }
-.page-hero{max-width:1200px;margin:0 auto;padding:70px 24px 20px;text-align:center}.page-hero h2{font-size:42px;color:#fff;margin:0 0 14px}.page-hero p{max-width:780px;margin:auto;color:#d2c6b6;font-size:17px}.page-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}@media(max-width:768px){.page-hero{padding:48px 16px 10px}.page-hero h2{font-size:32px}}</style></head><body><header><div class="topbar"><a class="logo-box" href="index.html"><img src="logo-barberserwis7.png" alt="BarberSerwis logo"><div class="logo-text"><h1>BarberSerwis</h1><p>Serwis maszynek do strzyżenia i trymerów – naprawa i konserwacja</p></div></a><div class="top-contact"><nav class="menu"><a href="index.html">Strona główna</a><a href="jak-to-dziala.html">Jak to działa</a><a href="index.html#formularz">Zgłoś naprawę</a><a href="galeria.html">Galeria</a><a href="wysylka.html">Wysyłka</a><a href="kontakt.html">Kontakt</a></nav><a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a><a class="btn btn-dark account-btn" href="index.html#konto">Konto klienta</a></div></div></header><section class="page-hero"><h2>Galeria BarberSerwis</h2><p>Zdjęcia i krótkie filmy z pracy serwisowej.</p></section><section class="section"><div id="galleryGrid" class="gallery-grid"><div class="gallery-empty">Galeria jest dostępna również na stronie głównej. W kolejnym kroku podłączymy tu jej pełną zawartość.</div></div></section><footer>© 2026 BarberSerwis.com – Naprawa maszynek do strzyżenia i trymerów<br><a href="regulamin.html" style="color:#cbb79c;">Regulamin</a> • <a href="polityka-prywatnosci.html" style="color:#cbb79c;">Polityka prywatności</a></footer></body></html>
+.page-hero{max-width:1200px;margin:0 auto;padding:70px 24px 20px;text-align:center}.page-hero h2{font-size:42px;color:#fff;margin:0 0 14px}.page-hero p{max-width:780px;margin:auto;color:#d2c6b6;font-size:17px}.page-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}@media(max-width:768px){.page-hero{padding:48px 16px 10px}.page-hero h2{font-size:32px}}
+.gallery-section-title{
+  margin-top:10px;
+}
+.gallery-video-frame{
+  width:100%;
+  aspect-ratio:4/3;
+  border:0;
+  display:block;
+  background:#111;
+}
+.gallery-platform{
+  display:inline-block;
+  margin:10px 14px 0;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(224,179,106,.12);
+  border:1px solid rgba(224,179,106,.24);
+  color:#f0c988;
+  font-size:12px;
+  font-weight:700;
+}
+
+</style></head><body><header><div class="topbar"><a class="logo-box" href="index.html"><img src="logo-barberserwis7.png" alt="BarberSerwis logo"><div class="logo-text"><h1>BarberSerwis</h1><p>Serwis maszynek do strzyżenia i trymerów – naprawa i konserwacja</p></div></a><div class="top-contact"><nav class="menu"><a href="index.html">Strona główna</a><a href="jak-to-dziala.html">Jak to działa</a><a href="index.html#formularz">Zgłoś naprawę</a><a href="galeria.html">Galeria</a><a href="wysylka.html">Wysyłka</a><a href="kontakt.html">Kontakt</a></nav><a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a><a class="btn btn-dark account-btn" href="index.html#konto">Konto klienta</a></div></div></header><section class="page-hero"><h2>Galeria BarberSerwis</h2><p>Zdjęcia i krótkie filmy z pracy serwisowej.</p></section><section class="section">
+  <h3 class="gallery-section-title">Zdjęcia</h3>
+  <p class="section-sub">Zdjęcia z diagnostyki, napraw i serwisu sprzętu.</p>
+  <div id="galleryImages" class="gallery-grid">
+    <div class="gallery-empty">Ładowanie zdjęć…</div>
+  </div>
+</section>
+
+<section class="section">
+  <h3 class="gallery-section-title">Filmy</h3>
+  <p class="section-sub">Filmy z serwisu oraz materiały z YouTube i TikToka.</p>
+  <div id="galleryVideos" class="gallery-grid">
+    <div class="gallery-empty">Ładowanie filmów…</div>
+  </div>
+</section>
+
+<div id="galleryLightbox" class="gallery-lightbox" onclick="closeGalleryLightbox()" aria-hidden="true">
+  <img id="galleryLightboxImg" src="" alt="Podgląd zdjęcia">
+</div><footer>© 2026 BarberSerwis.com – Naprawa maszynek do strzyżenia i trymerów<br><a href="regulamin.html" style="color:#cbb79c;">Regulamin</a> • <a href="polityka-prywatnosci.html" style="color:#cbb79c;">Polityka prywatności</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://smimabuumtdjkymxpheq.supabase.co";
+const SUPABASE_PUBLIC_KEY="sb_publishable_hv64LFqZTVbVk6Tza29s9w_dXytRVyr";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);
+
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function detectPlatform(url){
+  try{
+    const u=new URL(url);
+    const host=u.hostname.toLowerCase().replace(/^www\./,"");
+    if(host==="youtu.be" || host.endsWith("youtube.com")) return "youtube";
+    if(host.endsWith("tiktok.com")) return "tiktok";
+  }catch(_){}
+  return "";
+}
+
+function youtubeId(url){
+  try{
+    const u=new URL(url);
+    const host=u.hostname.toLowerCase().replace(/^www\./,"");
+    if(host==="youtu.be") return u.pathname.split("/").filter(Boolean)[0] || "";
+    if(host.endsWith("youtube.com")){
+      if(u.pathname==="/watch") return u.searchParams.get("v") || "";
+      const p=u.pathname.split("/").filter(Boolean);
+      const i=p.findIndex(x=>["shorts","embed","live"].includes(x));
+      if(i>=0 && p[i+1]) return p[i+1];
+    }
+  }catch(_){}
+  return "";
+}
+
+function tiktokId(url){
+  const m=String(url||"").match(/\/video\/(\d+)/);
+  return m ? m[1] : "";
+}
+
+function externalVideoHtml(item){
+  const url=String(item.external_url||"");
+  const platform=String(item.external_platform||detectPlatform(url)||"").toLowerCase();
+  const caption=esc(item.caption||"");
+
+  if(platform==="youtube"){
+    const id=youtubeId(url);
+    if(id){
+      return `<div class="gallery-card">
+        <iframe class="gallery-video-frame"
+          src="https://www.youtube-nocookie.com/embed/${esc(id)}"
+          title="${caption||"Film YouTube"}"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+        <div class="gallery-platform">YouTube</div>
+        ${caption?`<div class="gallery-caption">${caption}</div>`:""}
+      </div>`;
+    }
+  }
+
+  if(platform==="tiktok"){
+    const id=tiktokId(url);
+    if(id){
+      return `<div class="gallery-card">
+        <iframe class="gallery-video-frame"
+          src="https://www.tiktok.com/player/v1/${esc(id)}"
+          title="${caption||"Film TikTok"}"
+          loading="lazy"
+          allowfullscreen></iframe>
+        <div class="gallery-platform">TikTok</div>
+        ${caption?`<div class="gallery-caption">${caption}</div>`:""}
+      </div>`;
+    }
+  }
+
+  return `<div class="gallery-card">
+    <a class="gallery-video-frame" href="${esc(url)}" target="_blank" rel="noopener"
+       style="display:flex;align-items:center;justify-content:center;color:#e0b36a;text-align:center;padding:20px;">
+      Otwórz film
+    </a>
+    ${caption?`<div class="gallery-caption">${caption}</div>`:""}
+  </div>`;
+}
+
+async function loadGallery(){
+  const imagesBox=document.getElementById("galleryImages");
+  const videosBox=document.getElementById("galleryVideos");
+
+  const {data,error}=await sb
+    .from("gallery_media")
+    .select("id,media_type,storage_path,caption,is_visible,sort_order,created_at,external_url,external_platform")
+    .eq("is_visible",true)
+    .order("sort_order",{ascending:true})
+    .order("created_at",{ascending:false});
+
+  if(error){
+    imagesBox.innerHTML='<div class="gallery-empty">Nie udało się załadować zdjęć.</div>';
+    videosBox.innerHTML='<div class="gallery-empty">Nie udało się załadować filmów.</div>';
+    console.error(error);
+    return;
+  }
+
+  const images=[];
+  const videos=[];
+
+  (data||[]).forEach(item=>{
+    if(item.media_type==="external_video"){
+      videos.push(externalVideoHtml(item));
+      return;
+    }
+
+    const {data:urlData}=sb.storage.from("gallery").getPublicUrl(item.storage_path);
+    const url=urlData?.publicUrl||"";
+    if(!url) return;
+
+    const caption=esc(item.caption||"");
+
+    if(item.media_type==="video"){
+      videos.push(`<div class="gallery-card">
+        <video class="gallery-media" controls preload="metadata" playsinline src="${esc(url)}"></video>
+        ${caption?`<div class="gallery-caption">${caption}</div>`:""}
+      </div>`);
+    }else{
+      images.push(`<div class="gallery-card">
+        <img class="gallery-media gallery-image" loading="lazy"
+          src="${esc(url)}"
+          alt="${caption||"Zdjęcie z serwisu"}"
+          onclick="openGalleryLightbox(this.src)">
+        ${caption?`<div class="gallery-caption">${caption}</div>`:""}
+      </div>`);
+    }
+  });
+
+  imagesBox.innerHTML=images.length ? images.join("") : '<div class="gallery-empty">Brak zdjęć w galerii.</div>';
+  videosBox.innerHTML=videos.length ? videos.join("") : '<div class="gallery-empty">Brak filmów w galerii.</div>';
+}
+
+function openGalleryLightbox(url){
+  const box=document.getElementById("galleryLightbox");
+  document.getElementById("galleryLightboxImg").src=url;
+  box.classList.add("open");
+  box.setAttribute("aria-hidden","false");
+}
+function closeGalleryLightbox(){
+  const box=document.getElementById("galleryLightbox");
+  box.classList.remove("open");
+  box.setAttribute("aria-hidden","true");
+  document.getElementById("galleryLightboxImg").src="";
+}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeGalleryLightbox(); });
+
+loadGallery();
+</script>
+
+</body></html>
