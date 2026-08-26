@@ -4469,7 +4469,7 @@ async function toggleRepairLock(repairId,lock){
 
   repair.is_locked=lock;
   repair.locked_at=data.locked_at||null;
-  await loadRepairs();
+  await loadAllRepairs();
 }
 
 
