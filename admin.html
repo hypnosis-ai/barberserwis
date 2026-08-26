@@ -583,6 +583,25 @@
     }
 
 
+    /* ===== Zamknięte zlecenie ===== */
+    .repair.repair-locked{
+      border:2px solid #2e9d55 !important;
+      box-shadow:0 0 0 1px rgba(46,157,85,.25),0 8px 24px rgba(46,157,85,.12);
+      background:linear-gradient(180deg,rgba(30,100,55,.18),rgba(20,25,27,.98));
+    }
+    .repair-lock-bar{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      margin:0 0 14px;padding:11px 13px;border:1px solid #2e9d55;
+      border-radius:10px;background:rgba(46,157,85,.12);
+    }
+    .repair-lock-title{font-weight:800;color:#8ce6a9}
+    .repair.repair-locked input,.repair.repair-locked textarea,.repair.repair-locked select{
+      pointer-events:none;opacity:.72;
+    }
+    .repair.repair-locked button:not(.repair-unlock-btn){
+      pointer-events:none;opacity:.48;
+    }
+
     /* ===== Blok wysyłki ===== */
     .shipment-box{
       margin-top:14px;
@@ -2919,7 +2938,7 @@ async function loadAllRepairs(){
     const {data:consentData,error:consentError} =
       await sb
         .from("repairs")
-        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note,shipment_carrier,shipment_sent_date,shipment_cod,shipment_cod_amount")
+        .select("id,diagnostic_consent,diagnostic_consent_at,payment_method,payment_status,payment_amount,payment_paid_at,payment_note,shipment_carrier,shipment_sent_date,shipment_cod,shipment_cod_amount,is_locked,locked_at")
         .in("id",consentRepairIds);
 
     if(consentError){
@@ -2943,6 +2962,8 @@ async function loadAllRepairs(){
           repair.shipment_sent_date = consent.shipment_sent_date || null;
           repair.shipment_cod = consent.shipment_cod === true;
           repair.shipment_cod_amount = consent.shipment_cod_amount ?? null;
+          repair.is_locked = consent.is_locked === true;
+          repair.locked_at = consent.locked_at || null;
         }
       });
     }
@@ -3251,7 +3272,7 @@ function renderRepairs(data){
     const div =
       document.createElement("div");
 
-    div.className = "repair";
+    div.className = "repair" + (r.is_locked ? " repair-locked" : "");
 
 
     const created =
@@ -3634,6 +3655,19 @@ function renderRepairs(data){
       </div>
 
       ${invoiceHtml}
+
+      <div class="repair-lock-bar">
+        <div class="repair-lock-title">
+          ${r.is_locked ? "🔒 Zlecenie zamknięte" : "🔓 Zlecenie otwarte"}
+        </div>
+        ${
+          r.is_locked
+            ? `<button type="button" class="repair-unlock-btn dark" onclick="toggleRepairLock('${r.id}',false)">🔓 Otwórz zlecenie</button>`
+            : r.status === "Wysłano"
+              ? `<button type="button" class="gold" onclick="toggleRepairLock('${r.id}',true)">🔒 Zamknij zlecenie</button>`
+              : `<span style="font-size:12px;color:#aaa;">Zamknięcie dostępne po statusie „Wysłano”</span>`
+        }
+      </div>
 
       <div class="workflow-status-box">
         <div class="workflow-version">BARBERSERWIS ADMIN · WORKFLOW V2</div>
@@ -4395,6 +4429,41 @@ async function sendQuoteSummary(repairId,itemId){
 }
 
 
+
+
+async function toggleRepairLock(repairId,lock){
+  const repair=allRepairs.find(r=>String(r.id)===String(repairId));
+  if(!repair){ alert("Nie znaleziono zgłoszenia."); return; }
+
+  if(lock && repair.status!=="Wysłano"){
+    alert('Zlecenie można zamknąć dopiero po statusie „Wysłano”.');
+    return;
+  }
+
+  const text=lock
+    ? "Zamknąć zlecenie? Edycja zostanie zablokowana do czasu ponownego otwarcia."
+    : "Otworzyć zlecenie i ponownie włączyć edycję?";
+
+  if(!confirm(text)) return;
+
+  const {data,error}=await sb.functions.invoke("swift-responder",{
+    body:{
+      repair_id:repairId,
+      notification_type:"set_repair_lock",
+      is_locked:lock
+    }
+  });
+
+  if(error || !data?.success){
+    console.error("set_repair_lock:",error,data);
+    alert("Nie udało się zmienić blokady: "+(error?.message||data?.error||"nieznany błąd"));
+    return;
+  }
+
+  repair.is_locked=lock;
+  repair.locked_at=data.locked_at||null;
+  await loadRepairs();
+}
 
 
 function toggleShipmentCodAmount(repairId){
