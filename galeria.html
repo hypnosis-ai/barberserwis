@@ -872,19 +872,69 @@
   font-weight:700;
 }
 
+
+/* ===== Podgląd galerii: 3 pełne + 3 częściowo widoczne ===== */
+.gallery-grid.is-collapsed .gallery-card:nth-child(n+7){
+  display:none;
+}
+.gallery-grid.is-collapsed .gallery-card:nth-child(n+4):nth-child(-n+6){
+  max-height:150px;
+  overflow:hidden;
+  position:relative;
+}
+.gallery-grid.is-collapsed .gallery-card:nth-child(n+4):nth-child(-n+6)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:70px;
+  pointer-events:none;
+  background:linear-gradient(to bottom,rgba(30,30,36,0),#1e1e24);
+}
+.gallery-expand-wrap{
+  margin:18px 0 8px;
+  padding-top:16px;
+  border-top:1px solid rgba(224,179,106,.38);
+  text-align:center;
+}
+.gallery-expand-btn{
+  min-width:220px;
+}
+.gallery-expand-wrap.hidden{
+  display:none;
+}
+@media(max-width:800px){
+  .gallery-grid.is-collapsed .gallery-card:nth-child(n+4):nth-child(-n+6){
+    max-height:135px;
+  }
+}
+
 </style></head><body><header><div class="topbar"><a class="logo-box" href="index.html"><img src="logo-barberserwis7.png" alt="BarberSerwis logo"><div class="logo-text"><h1>BarberSerwis</h1><p>Serwis maszynek do strzyżenia i trymerów – naprawa i konserwacja</p></div></a><div class="top-contact"><nav class="menu"><a href="index.html">Strona główna</a><a href="jak-to-dziala.html">Jak to działa</a><a href="index.html#formularz">Zgłoś naprawę</a><a href="galeria.html">Galeria</a><a href="wysylka.html">Wysyłka</a><a href="kontakt.html">Kontakt</a></nav><a class="btn btn-gold" href="tel:+48782618575">Zadzwoń</a><a class="btn btn-dark account-btn" href="index.html#konto">Konto klienta</a></div></div></header><section class="page-hero"><h2>Galeria BarberSerwis</h2><p>Zdjęcia i krótkie filmy z pracy serwisowej.</p></section><section class="section">
   <h3 class="gallery-section-title">Zdjęcia</h3>
   <p class="section-sub">Zdjęcia z diagnostyki, napraw i serwisu sprzętu.</p>
-  <div id="galleryImages" class="gallery-grid">
+  <div id="galleryImages" class="gallery-grid is-collapsed">
     <div class="gallery-empty">Ładowanie zdjęć…</div>
+  </div>
+  <div id="galleryImagesExpandWrap" class="gallery-expand-wrap hidden">
+    <button id="galleryImagesExpandBtn" class="btn btn-gold gallery-expand-btn" type="button"
+      onclick="toggleGallerySection('galleryImages','galleryImagesExpandBtn')">
+      Zobacz więcej zdjęć
+    </button>
   </div>
 </section>
 
 <section class="section">
   <h3 class="gallery-section-title">Filmy</h3>
   <p class="section-sub">Filmy z serwisu oraz materiały z YouTube i TikToka.</p>
-  <div id="galleryVideos" class="gallery-grid">
+  <div id="galleryVideos" class="gallery-grid is-collapsed">
     <div class="gallery-empty">Ładowanie filmów…</div>
+  </div>
+  <div id="galleryVideosExpandWrap" class="gallery-expand-wrap hidden">
+    <button id="galleryVideosExpandBtn" class="btn btn-gold gallery-expand-btn" type="button"
+      onclick="toggleGallerySection('galleryVideos','galleryVideosExpandBtn')">
+      Zobacz więcej filmów
+    </button>
   </div>
 </section>
 
@@ -978,6 +1028,42 @@ function externalVideoHtml(item){
   </div>`;
 }
 
+function configureGalleryPreview(gridId,wrapId,buttonId,fullText){
+  const grid=document.getElementById(gridId);
+  const wrap=document.getElementById(wrapId);
+  const btn=document.getElementById(buttonId);
+  const count=grid ? grid.querySelectorAll(".gallery-card").length : 0;
+
+  if(!grid || !wrap || !btn) return;
+
+  grid.classList.add("is-collapsed");
+
+  if(count>3){
+    wrap.classList.remove("hidden");
+    btn.textContent=fullText;
+  }else{
+    wrap.classList.add("hidden");
+  }
+}
+
+function toggleGallerySection(gridId,buttonId){
+  const grid=document.getElementById(gridId);
+  const btn=document.getElementById(buttonId);
+  if(!grid || !btn) return;
+
+  const collapsed=grid.classList.toggle("is-collapsed");
+
+  if(gridId==="galleryImages"){
+    btn.textContent=collapsed ? "Zobacz więcej zdjęć" : "Zwiń galerię zdjęć";
+  }else{
+    btn.textContent=collapsed ? "Zobacz więcej filmów" : "Zwiń galerię filmów";
+  }
+
+  if(collapsed){
+    grid.closest(".section")?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
 async function loadGallery(){
   const imagesBox=document.getElementById("galleryImages");
   const videosBox=document.getElementById("galleryVideos");
@@ -1029,6 +1115,20 @@ async function loadGallery(){
 
   imagesBox.innerHTML=images.length ? images.join("") : '<div class="gallery-empty">Brak zdjęć w galerii.</div>';
   videosBox.innerHTML=videos.length ? videos.join("") : '<div class="gallery-empty">Brak filmów w galerii.</div>';
+
+  configureGalleryPreview(
+    "galleryImages",
+    "galleryImagesExpandWrap",
+    "galleryImagesExpandBtn",
+    "Zobacz więcej zdjęć"
+  );
+
+  configureGalleryPreview(
+    "galleryVideos",
+    "galleryVideosExpandWrap",
+    "galleryVideosExpandBtn",
+    "Zobacz więcej filmów"
+  );
 }
 
 function openGalleryLightbox(url){
