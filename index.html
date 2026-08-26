@@ -982,7 +982,7 @@
   <nav class="menu">
     <a href="index.html">Strona główna</a>
     <a href="jak-to-dziala.html">Jak to działa</a>
-    <a href="javascript:void(0)" onclick="goToRepairForm()">Zgłoś naprawę</a>
+    <a href="index.html?akcja=zglos" onclick="goToRepairForm();return false;">Zgłoś naprawę</a>
     <a href="galeria.html">Galeria</a>
     <a href="wysylka.html">Wysyłka</a>
     <a href="kontakt.html">Kontakt</a>
@@ -1020,7 +1020,7 @@
       </p>
 
       <div class="hero-buttons">
-        <a class="btn btn-gold" href="javascript:void(0)" onclick="goToRepairForm()">Zgłoś naprawę</a>
+        <a class="btn btn-gold" href="index.html?akcja=zglos" onclick="goToRepairForm();return false;">Zgłoś naprawę</a>
         <a class="btn btn-dark" href="wysylka.html">Jak wysłać sprzęt</a>
         <a class="btn btn-dark" href="tel:+48782618575">Telefon</a>
       </div>
@@ -1609,9 +1609,32 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
 
     async function logoutClient(){const c=getSb();if(c)await c.auth.signOut()}
     
+let repairActionHandled=false;
+
 function goToRepairForm(){
   if(currentUser){
-    document.getElementById("formularz").scrollIntoView({behavior:"smooth"});
+    const form=document.getElementById("formularz");
+    if(form){
+      form.classList.remove("hidden");
+      form.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  }else{
+    openAccount();
+  }
+}
+
+function handleRequestedMainAction(){
+  const action=new URLSearchParams(window.location.search).get("akcja");
+  if(action!=="zglos" || repairActionHandled) return;
+
+  if(currentUser){
+    repairActionHandled=true;
+    setTimeout(()=>{
+      goToRepairForm();
+      const url=new URL(window.location.href);
+      url.searchParams.delete("akcja");
+      history.replaceState({},"",url);
+    },120);
   }else{
     openAccount();
   }
@@ -1674,6 +1697,8 @@ function updateAccountUi(u){
   b.textContent = l ? "Panel klienta" : "Konto klienta";
 
   b.onclick = handleTopAccountButton;
+
+  handleRequestedMainAction();
 
   if(l){
     // Na stronie głównej profil nadal wczytujemy, aby automatycznie uzupełniać formularz zgłoszenia.
@@ -2592,5 +2617,65 @@ document.addEventListener("DOMContentLoaded",()=>{
   });
 </script>
 
+<script>
+
+// ===== Zatwierdzanie Enterem =====
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Enter") return;
+
+  const target = e.target;
+  if(!target) return;
+
+  // W polach wielowierszowych Enter ma nadal robić nową linię.
+  if(target.tagName === "TEXTAREA") return;
+
+  const id = target.id || "";
+
+  // Logowanie
+  if(id === "loginEmail" || id === "loginPassword"){
+    e.preventDefault();
+    loginClient();
+    return;
+  }
+
+  // Rejestracja
+  const registerIds = [
+    "registerFirstName","registerLastName","registerPhone",
+    "registerReturnAddress","registerPostalCode","registerCity",
+    "registerEmail","registerPassword","registerPassword2"
+  ];
+  if(registerIds.includes(id)){
+    e.preventDefault();
+    registerClient();
+    return;
+  }
+
+  // Moje dane
+  const profileIds = [
+    "profileFirstName","profileLastName","profilePhone",
+    "profileReturnAddress","profilePostalCode","profileCity"
+  ];
+  if(profileIds.includes(id)){
+    e.preventDefault();
+    saveCustomerProfile();
+    return;
+  }
+
+  // Moje urządzenia
+  if(["deviceTypeSaved","deviceModelSaved","deviceSerialSaved"].includes(id)){
+    e.preventDefault();
+    addCustomerDevice();
+    return;
+  }
+
+  // Bezpieczeństwo
+  if(id === "securityPassword" || id === "securityPassword2"){
+    e.preventDefault();
+    changeClientPassword();
+    return;
+  }
+});
+
+</script>
 </body>
 </html>
