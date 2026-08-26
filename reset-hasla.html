@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ustaw nowe hasło – BarberSerwis.com</title>
+  <link rel="icon" type="image/png" href="logo-barberserwis7.png">
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#2b1d12;
+      color:#eee;
+    }
+    .card{
+      width:min(460px,100%);
+      background:#18191f;
+      border:1px solid #343640;
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 16px 45px rgba(0,0,0,.4);
+    }
+    .logo{width:150px;margin:0 auto 14px}
+    h1{margin:0 0 8px;text-align:center;color:#e0b36a;font-size:26px}
+    p{color:#bbb;text-align:center;line-height:1.5}
+    input{
+      width:100%;
+      margin-top:10px;
+      padding:12px 13px;
+      border-radius:9px;
+      border:1px solid #3a3c46;
+      background:#202129;
+      color:#fff;
+      font:inherit;
+    }
+    button{
+      width:100%;
+      margin-top:14px;
+      padding:12px 16px;
+      border:0;
+      border-radius:9px;
+      background:#e0b36a;
+      color:#17120b;
+      font-weight:800;
+      cursor:pointer;
+    }
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .msg{margin-top:14px;text-align:center;line-height:1.5}
+    .ok{color:#86e6a4}
+    .err{color:#ffaaaa}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="logo-barberserwis7.png" alt="BarberSerwis.com">
+    <h1>Ustaw nowe hasło</h1>
+    <p id="info">Sprawdzamy link resetujący…</p>
+
+    <div id="formBox" class="hidden">
+      <input id="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Nowe hasło (minimum 8 znaków)">
+      <input id="newPassword2" type="password" minlength="8" autocomplete="new-password" placeholder="Powtórz nowe hasło">
+      <button id="saveBtn" type="button" onclick="saveNewPassword()">Zmień hasło</button>
+    </div>
+
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL="https://smimabuumtdjkymxpheq.supabase.co";
+    const SUPABASE_PUBLIC_KEY="sb_publishable_hv64LFqZTVbVk6Tza29s9w_dXytRVyr";
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);
+
+    let recoveryReady=false;
+    let saving=false;
+
+    function showReady(){
+      if(recoveryReady) return;
+      recoveryReady=true;
+      document.getElementById("info").textContent="Wpisz nowe hasło do swojego konta.";
+      document.getElementById("formBox").classList.remove("hidden");
+    }
+
+    function showError(text){
+      document.getElementById("info").textContent="Nie udało się otworzyć resetu hasła.";
+      document.getElementById("msg").className="msg err";
+      document.getElementById("msg").textContent=text;
+    }
+
+    async function initRecovery(){
+      // Supabase przetwarza token z linku i tworzy tymczasową sesję recovery.
+      const {data,error}=await sb.auth.getSession();
+
+      if(error){
+        showError("Link resetujący jest nieprawidłowy lub wygasł. Poproś o nowy link.");
+        return;
+      }
+
+      if(data?.session?.user){
+        showReady();
+      }
+
+      sb.auth.onAuthStateChange((event,session)=>{
+        if(event==="PASSWORD_RECOVERY" || session?.user){
+          showReady();
+        }
+      });
+
+      // Jeżeli po krótkiej chwili nadal nie ma sesji, pokaż czytelny błąd.
+      setTimeout(async()=>{
+        if(recoveryReady) return;
+        const {data:check}=await sb.auth.getSession();
+        if(check?.session?.user){
+          showReady();
+        }else{
+          showError("Link resetujący wygasł albo został już użyty. Wróć do BarberSerwis.com i wybierz „Nie pamiętam hasła” ponownie.");
+        }
+      },1800);
+    }
+
+    async function saveNewPassword(){
+      if(saving) return;
+
+      const p1=document.getElementById("newPassword").value;
+      const p2=document.getElementById("newPassword2").value;
+      const msg=document.getElementById("msg");
+      const btn=document.getElementById("saveBtn");
+
+      msg.className="msg";
+      msg.textContent="";
+
+      if(p1.length<8){
+        msg.className="msg err";
+        msg.textContent="Hasło musi mieć co najmniej 8 znaków.";
+        return;
+      }
+
+      if(p1!==p2){
+        msg.className="msg err";
+        msg.textContent="Hasła nie są takie same.";
+        return;
+      }
+
+      saving=true;
+      btn.disabled=true;
+      btn.textContent="Zapisywanie…";
+
+      const {error}=await sb.auth.updateUser({password:p1});
+
+      if(error){
+        saving=false;
+        btn.disabled=false;
+        btn.textContent="Zmień hasło";
+        msg.className="msg err";
+        msg.textContent="Nie udało się zmienić hasła: "+error.message;
+        return;
+      }
+
+      msg.className="msg ok";
+      msg.textContent="Hasło zostało zmienione pomyślnie. Za chwilę przejdziesz do logowania.";
+      document.getElementById("formBox").classList.add("hidden");
+
+      await sb.auth.signOut();
+
+      setTimeout(()=>{
+        window.location.replace("https://barberserwis.com/");
+      },1800);
+    }
+
+    initRecovery();
+  </script>
+</body>
+</html>
