@@ -4080,7 +4080,11 @@ async function saveRepair(id){
   // Pozostałe statusy pozostają bez zmian.
   const automaticStatusEmails = new Set([
     "Przyjęto",
-    "Diagnostyka w toku"
+    "Diagnostyka w toku",
+    "Naprawa",
+    "Przygotowano do wysyłki",
+    "Wysłano",
+    "Anulowane"
   ]);
 
   if(status !== previousStatus && automaticStatusEmails.has(status)){
