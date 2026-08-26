@@ -585,9 +585,9 @@
 
     /* ===== Zamknięte zlecenie ===== */
     .repair.repair-locked{
-      border:2px solid #2e9d55 !important;
-      box-shadow:0 0 0 1px rgba(46,157,85,.25),0 8px 24px rgba(46,157,85,.12);
-      background:linear-gradient(180deg,rgba(30,100,55,.18),rgba(20,25,27,.98));
+      border:2px solid #c93d3d !important;
+      box-shadow:0 0 0 1px rgba(201,61,61,.28),0 8px 24px rgba(201,61,61,.14);
+      background:linear-gradient(180deg,rgba(125,28,28,.24),rgba(20,25,27,.98));
     }
     .repair-lock-bar{
       display:flex;justify-content:space-between;align-items:center;gap:12px;
@@ -595,6 +595,13 @@
       border-radius:10px;background:rgba(46,157,85,.12);
     }
     .repair-lock-title{font-weight:800;color:#8ce6a9}
+    .repair-lock-bar-closed{
+      border-color:#c93d3d;
+      background:rgba(201,61,61,.16);
+    }
+    .repair-lock-bar-closed .repair-lock-title{
+      color:#ff9b9b;
+    }
     .repair.repair-locked input,.repair.repair-locked textarea,.repair.repair-locked select{
       pointer-events:none;opacity:.72;
     }
@@ -3656,7 +3663,7 @@ function renderRepairs(data){
 
       ${invoiceHtml}
 
-      <div class="repair-lock-bar">
+      <div class="repair-lock-bar ${r.is_locked ? "repair-lock-bar-closed" : ""}">
         <div class="repair-lock-title">
           ${r.is_locked ? "🔒 Zlecenie zamknięte" : "🔓 Zlecenie otwarte"}
         </div>
