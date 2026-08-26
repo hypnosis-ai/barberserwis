@@ -1419,7 +1419,69 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     function openAccount(){document.getElementById("authModal").classList.add("open");document.getElementById("authModal").setAttribute("aria-hidden","false");setAuthMessage(supabaseConfigured()?"":"Połączenie z Supabase nie jest jeszcze skonfigurowane.",supabaseConfigured()?"":"err")}
     function closeAccount(){document.getElementById("authModal").classList.remove("open");document.getElementById("authModal").setAttribute("aria-hidden","true")}
     function showAuthPane(w){const l=w==="login";document.getElementById("loginPane").classList.toggle("active",l);document.getElementById("registerPane").classList.toggle("active",!l);document.getElementById("loginTab").classList.toggle("active",l);document.getElementById("registerTab").classList.toggle("active",!l);setAuthMessage("")}
-    async function registerClient(){const c=getSb();if(!c)return setAuthMessage("Najpierw trzeba podłączyć projekt Supabase.","err");const email=document.getElementById("registerEmail").value.trim(),p=document.getElementById("registerPassword").value,p2=document.getElementById("registerPassword2").value;if(!email)return setAuthMessage("Podaj adres e-mail.","err");if(p.length<8)return setAuthMessage("Hasło musi mieć co najmniej 8 znaków.","err");if(p!==p2)return setAuthMessage("Hasła nie są takie same.","err");setAuthMessage("Tworzę konto…");const {data,error}=await c.auth.signUp({email,password:p,options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)return setAuthMessage(error.message,"err");setAuthMessage(data.session?"Konto utworzone i zalogowano.":"Konto utworzone. Sprawdź e-mail i kliknij link potwierdzający.","ok");if(data.session)setTimeout(closeAccount,700)}
+    async function registerClient(){
+      const c=getSb();
+      if(!c)return setAuthMessage("Nie udało się połączyć z systemem rejestracji.","err");
+
+      const email=document.getElementById("registerEmail").value.trim();
+      const p=document.getElementById("registerPassword").value;
+      const p2=document.getElementById("registerPassword2").value;
+
+      if(!email)return setAuthMessage("Podaj adres e-mail.","err");
+      if(p.length<8)return setAuthMessage("Hasło musi mieć co najmniej 8 znaków.","err");
+      if(p!==p2)return setAuthMessage("Hasła nie są takie same.","err");
+
+      setAuthMessage("Tworzę konto…");
+
+      const {data,error}=await c.auth.signUp({
+        email,
+        password:p,
+        options:{
+          emailRedirectTo:window.location.origin+window.location.pathname
+        }
+      });
+
+      if(error)return setAuthMessage(error.message,"err");
+
+      if(data.session){
+        setAuthMessage("Konto zostało utworzone i zalogowane.","ok");
+        setTimeout(closeAccount,900);
+        return;
+      }
+
+      showEmailConfirmation(email);
+    }
+
+    function showEmailConfirmation(email){
+      const card=document.querySelector("#authModal .auth-card");
+      if(!card)return;
+
+      card.innerHTML=`
+        <button class="auth-close" type="button" onclick="closeAccount()" aria-label="Zamknij">×</button>
+        <div style="text-align:center;padding:12px 4px 6px;">
+          <div style="font-size:54px;line-height:1;margin-bottom:12px;">✉️</div>
+          <h3 style="margin:0;color:#e0b36a;font-size:24px;">Potwierdź adres e-mail</h3>
+          <p style="color:#ddd;line-height:1.6;margin:14px 0 6px;">
+            Konto zostało utworzone.
+          </p>
+          <p style="color:#bbb;line-height:1.6;margin:6px 0;">
+            Wysłaliśmy wiadomość z linkiem potwierdzającym na:
+          </p>
+          <div style="color:#fff;font-weight:800;overflow-wrap:anywhere;margin:12px 0;">
+            ${escapeHtml(email)}
+          </div>
+          <p style="color:#bbb;line-height:1.6;margin:8px 0 18px;">
+            Otwórz wiadomość i kliknij link potwierdzający. Dopiero po potwierdzeniu adresu e-mail będzie można zalogować się do konta klienta.
+          </p>
+          <button class="btn btn-gold" style="width:100%;" type="button" onclick="window.location.reload()">
+            Rozumiem
+          </button>
+          <p style="font-size:12px;color:#888;line-height:1.5;margin:14px 0 0;">
+            Jeśli wiadomości nie ma w skrzynce odbiorczej, sprawdź folder Spam lub Oferty.
+          </p>
+        </div>
+      `;
+    }
     async function loginClient(){const c=getSb();if(!c)return setAuthMessage("Najpierw trzeba podłączyć projekt Supabase.","err");const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;if(!email||!password)return setAuthMessage("Podaj e-mail i hasło.","err");setAuthMessage("Logowanie…");const {error}=await c.auth.signInWithPassword({email,password});if(error)return setAuthMessage("Nie udało się zalogować. Sprawdź e-mail, hasło i potwierdzenie konta.","err");setAuthMessage("Zalogowano.","ok");setTimeout(closeAccount,500)}
     async function forgotPassword(){
       const c=getSb();
