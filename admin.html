@@ -3975,6 +3975,8 @@ async function saveRepair(id){
   const localRepair =
     allRepairs.find(r => String(r.id) === String(id));
 
+  const previousStatus = localRepair?.status || "";
+
   if(localRepair){
     localRepair.status = status;
     localRepair.quote_amount = quote;
@@ -3982,7 +3984,36 @@ async function saveRepair(id){
     localRepair.tracking = tracking;
   }
 
-  msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
+  // Na tym etapie automatyczne maile wysyłamy tylko dla:
+  // 1. Przyjęto
+  // 2. Diagnostyka w toku
+  // Pozostałe statusy pozostają bez zmian.
+  const automaticStatusEmails = new Set([
+    "Przyjęto",
+    "Diagnostyka w toku"
+  ]);
+
+  if(status !== previousStatus && automaticStatusEmails.has(status)){
+    msg.textContent = "Status zapisany. Wysyłanie e-maila do klienta…";
+
+    const {error:mailError} =
+      await sb.functions.invoke("swift-responder",{
+        body:{
+          repair_id:id,
+          notification_type:"status_only"
+        }
+      });
+
+    if(mailError){
+      msg.textContent =
+        "Status zapisany ✅, ale e-mail nie został wysłany: " + mailError.message;
+    }else{
+      msg.textContent =
+        "Status zapisany ✅ E-mail statusowy wysłany do klienta.";
+    }
+  }else{
+    msg.textContent = "Zmiany zapisane ✅ E-mail nie został wysłany.";
+  }
 
   setTimeout(loadAllRepairs,500);
 }
