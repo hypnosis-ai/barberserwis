@@ -2014,7 +2014,19 @@ function updateAccountUi(u){
         document.getElementById("clientTab"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
       });
       if(w==="profile") loadCustomerProfile();
-      if(w==="devices") loadCustomerDevices();
+      if(w==="devices"){
+  const serialInput = document.getElementById("deviceSerialSaved");
+
+  if(serialInput){
+    serialInput.value = "";
+
+    setTimeout(() => {
+      serialInput.value = "";
+    }, 300);
+  }
+
+  loadCustomerDevices();
+}
       if(w==="complaints"){loadComplaintRepairs();loadComplaints();}
     }
     function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
