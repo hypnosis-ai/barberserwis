@@ -1549,12 +1549,15 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
     </div>
     <div class="profile-full">
       <label class="profile-label">Numer seryjny (opcjonalnie)</label>
-      <input
+    <input
   id="deviceSerialSaved"
-  name="device_serial_number"
+  name="barberserwis_device_serial"
   type="text"
   placeholder="Numer seryjny"
-  autocomplete="off"
+  autocomplete="new-password"
+  readonly
+  onfocus="this.removeAttribute('readonly'); this.value='';"
+  onmousedown="this.removeAttribute('readonly'); this.value='';"
 >
     </div>
   </div>
