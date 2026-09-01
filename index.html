@@ -1051,6 +1051,54 @@
   }
 }
 
+
+    /* ===== Galeria pełnoekranowa v2: zdjęcia + filmy + swipe ===== */
+    .gallery-card{cursor:pointer}
+    .gallery-card video{cursor:pointer}
+    .gallery-lightbox{
+      display:none;position:fixed;inset:0;z-index:10050;
+      background:rgba(0,0,0,.94);padding:24px 70px;
+      align-items:center;justify-content:center;
+      overscroll-behavior:contain;touch-action:pan-y;
+    }
+    .gallery-lightbox.open{display:flex}
+    .gallery-lightbox-content{
+      width:min(1200px,92vw);height:min(88vh,900px);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .gallery-lightbox-content img,
+    .gallery-lightbox-content video{
+      display:block;max-width:100%;max-height:88vh;width:auto;height:auto;
+      object-fit:contain;border-radius:12px;background:#000;
+    }
+    .gallery-lightbox-content video{width:min(1100px,92vw)}
+    .gallery-lightbox-close{
+      position:absolute;right:18px;top:14px;z-index:4;
+      width:46px;height:46px;border-radius:50%;
+      border:1px solid rgba(224,179,106,.55);background:rgba(24,24,29,.92);
+      color:#fff;font-size:30px;line-height:1;cursor:pointer;
+    }
+    .gallery-lightbox-nav{
+      position:absolute;top:50%;transform:translateY(-50%);z-index:4;
+      width:50px;height:50px;border-radius:50%;
+      border:1px solid rgba(224,179,106,.55);background:rgba(24,24,29,.92);
+      color:#f0c988;font-size:32px;cursor:pointer;
+    }
+    .gallery-lightbox-nav.prev{left:14px}.gallery-lightbox-nav.next{right:14px}
+    .gallery-lightbox-counter{
+      position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+      color:#ddd;background:rgba(0,0,0,.55);padding:5px 10px;border-radius:999px;font-size:13px;
+    }
+    @media(max-width:600px){
+      .gallery-lightbox{padding:58px 10px 54px}
+      .gallery-lightbox-content{width:100%;height:calc(100vh - 120px)}
+      .gallery-lightbox-content img,.gallery-lightbox-content video{max-width:100%;max-height:calc(100vh - 120px)}
+      .gallery-lightbox-nav{width:42px;height:42px;font-size:28px;top:auto;bottom:10px;transform:none}
+      .gallery-lightbox-nav.prev{left:12px}.gallery-lightbox-nav.next{right:12px}
+      .gallery-lightbox-close{right:10px;top:8px}
+      .gallery-lightbox-counter{bottom:18px}
+    }
+
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -1602,8 +1650,12 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     </div>
   </section>
 
-<div id="galleryLightbox" class="gallery-lightbox" onclick="closeGalleryLightbox()" aria-hidden="true">
-    <img id="galleryLightboxImg" src="" alt="Podgląd zdjęcia">
+<div id="galleryLightbox" class="gallery-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Podgląd galerii">
+    <button class="gallery-lightbox-close" type="button" aria-label="Zamknij podgląd" onclick="closeGalleryLightbox()">×</button>
+    <button class="gallery-lightbox-nav prev" type="button" aria-label="Poprzedni element" onclick="event.stopPropagation();galleryLightboxStep(-1)">‹</button>
+    <div class="gallery-lightbox-content" id="galleryLightboxContent" onclick="event.stopPropagation()"></div>
+    <button class="gallery-lightbox-nav next" type="button" aria-label="Następny element" onclick="event.stopPropagation();galleryLightboxStep(1)">›</button>
+    <div class="gallery-lightbox-counter" id="galleryLightboxCounter"></div>
   </div>
 
   <div class="auth-modal" id="authModal" aria-hidden="true"><div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle"><button class="auth-close" type="button" onclick="closeAccount()" aria-label="Zamknij">×</button><h3 id="authTitle" style="margin:0;color:#e0b36a;">Konto klienta</h3><p style="color:#bbb;margin:8px 0 0;">Zaloguj się albo utwórz konto, aby wysyłać i śledzić zgłoszenia.</p><div class="auth-tabs"><button class="auth-tab active" id="loginTab" type="button" onclick="showAuthPane('login')">Logowanie</button><button class="auth-tab" id="registerTab" type="button" onclick="showAuthPane('register')">Rejestracja</button></div><div class="auth-pane active" id="loginPane"><input type="email" id="loginEmail" placeholder="E-mail" autocomplete="email"><input type="password" id="loginPassword" placeholder="Hasło" autocomplete="current-password"><button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="loginClient()">Zaloguj</button><button type="button" onclick="forgotPassword()" style="display:block;width:100%;margin-top:12px;background:none;border:0;color:#e0b36a;text-decoration:underline;cursor:pointer;font-weight:700;">Nie pamiętam hasła</button></div><div class="auth-pane" id="registerPane">
@@ -2695,21 +2747,29 @@ function toggleInvoiceFields(){
 
 
     /* =============================
-       GALERIA PUBLICZNA
+       GALERIA PUBLICZNA – pełny podgląd zdjęć i filmów
     ============================= */
-    function galleryCardHtml(item,c){
+    let galleryLightboxItems=[];
+    let galleryLightboxIndex=0;
+    let galleryTouchStartX=0;
+
+    function galleryPublicUrl(item,c){
       const {data:urlData}=c.storage.from("gallery").getPublicUrl(item.storage_path);
-      const url=urlData?.publicUrl||"";
+      return urlData?.publicUrl||"";
+    }
+
+    function galleryCardHtml(item,c,index){
+      const url=galleryPublicUrl(item,c);
       const caption=item.caption?`<div class="gallery-caption">${escapeHtml(item.caption)}</div>`:"";
       if(item.media_type==="video"){
-        return `<article class="gallery-card">
-          <video class="gallery-media" controls preload="metadata" playsinline>
+        return `<article class="gallery-card" onclick="openGalleryLightbox(${index})">
+          <video class="gallery-media" preload="metadata" playsinline muted>
             <source src="${escapeHtml(url)}">
           </video>${caption}
         </article>`;
       }
-      return `<article class="gallery-card">
-        <img class="gallery-media gallery-image" src="${escapeHtml(url)}" alt="${escapeHtml(item.caption||"BarberSerwis – galeria")}" loading="lazy" onclick="openGalleryLightbox('${escapeHtml(url)}')">
+      return `<article class="gallery-card" onclick="openGalleryLightbox(${index})">
+        <img class="gallery-media gallery-image" src="${escapeHtml(url)}" alt="${escapeHtml(item.caption||"BarberSerwis – galeria")}" loading="lazy">
         ${caption}
       </article>`;
     }
@@ -2743,33 +2803,77 @@ function toggleInvoiceFields(){
 
       const images=(data||[]).filter(x=>x.media_type!=="video");
       const films=(data||[]).filter(x=>x.media_type==="video");
+      galleryLightboxItems=[...images,...films].map(x=>({
+        type:x.media_type==="video"?"video":"image",
+        url:galleryPublicUrl(x,c),
+        caption:x.caption||""
+      }));
 
       photos.innerHTML=images.length
-        ? images.map(x=>galleryCardHtml(x,c)).join("")
+        ? images.map((x,i)=>galleryCardHtml(x,c,i)).join("")
         : '<div class="gallery-empty">Zdjęcia będą uzupełnione wkrótce.</div>';
 
       videos.innerHTML=films.length
-        ? films.map(x=>galleryCardHtml(x,c)).join("")
+        ? films.map((x,i)=>galleryCardHtml(x,c,images.length+i)).join("")
         : '<div class="gallery-empty">Filmy będą uzupełnione wkrótce.</div>';
     }
 
-    function openGalleryLightbox(url){
+    function renderGalleryLightbox(){
+      const content=document.getElementById("galleryLightboxContent");
+      const counter=document.getElementById("galleryLightboxCounter");
+      const item=galleryLightboxItems[galleryLightboxIndex];
+      if(!content||!item)return;
+      content.innerHTML=item.type==="video"
+        ? `<video controls autoplay playsinline preload="metadata"><source src="${escapeHtml(item.url)}"></video>`
+        : `<img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption||"Podgląd zdjęcia")}">`;
+      if(counter)counter.textContent=`${galleryLightboxIndex+1} / ${galleryLightboxItems.length}`;
+    }
+
+    function openGalleryLightbox(index){
       const box=document.getElementById("galleryLightbox");
-      const img=document.getElementById("galleryLightboxImg");
-      if(!box||!img) return;
-      img.src=url;
+      if(!box||!galleryLightboxItems.length)return;
+      galleryLightboxIndex=Math.max(0,Math.min(Number(index)||0,galleryLightboxItems.length-1));
+      renderGalleryLightbox();
       box.classList.add("open");
       box.setAttribute("aria-hidden","false");
+      document.body.style.overflow="hidden";
+    }
+
+    function galleryLightboxStep(direction){
+      if(!galleryLightboxItems.length)return;
+      galleryLightboxIndex=(galleryLightboxIndex+direction+galleryLightboxItems.length)%galleryLightboxItems.length;
+      renderGalleryLightbox();
     }
 
     function closeGalleryLightbox(){
       const box=document.getElementById("galleryLightbox");
-      const img=document.getElementById("galleryLightboxImg");
-      if(!box||!img) return;
+      const content=document.getElementById("galleryLightboxContent");
+      if(!box)return;
       box.classList.remove("open");
       box.setAttribute("aria-hidden","true");
-      img.src="";
+      if(content)content.innerHTML="";
+      document.body.style.overflow="";
     }
+
+    document.addEventListener("keydown",e=>{
+      const box=document.getElementById("galleryLightbox");
+      if(!box?.classList.contains("open"))return;
+      if(e.key==="Escape")closeGalleryLightbox();
+      if(e.key==="ArrowLeft")galleryLightboxStep(-1);
+      if(e.key==="ArrowRight")galleryLightboxStep(1);
+    });
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const box=document.getElementById("galleryLightbox");
+      if(!box)return;
+      box.addEventListener("click",e=>{if(e.target===box)closeGalleryLightbox();});
+      box.addEventListener("touchstart",e=>{galleryTouchStartX=e.changedTouches[0]?.clientX||0;},{passive:true});
+      box.addEventListener("touchend",e=>{
+        const endX=e.changedTouches[0]?.clientX||0;
+        const diff=endX-galleryTouchStartX;
+        if(Math.abs(diff)>55)galleryLightboxStep(diff>0?-1:1);
+      },{passive:true});
+    });
 
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[ch])}
     function copyShipping(){const text="Odbiorca: BarberSerwis\nTelefon: +48 782 618 575\nAdres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\nInPost: MRK03M\nDPD Pickup: PL83482\nOrlen Paczka: 328169\nPunkt z obsługą DPD: Żabka, ul. Sportowa 2/1, 55-095 Mirków";navigator.clipboard.writeText(text);alert("Dane do wysyłki zostały skopiowane.")}
