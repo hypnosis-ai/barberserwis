@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel klienta – BarberSerwis</title>
+  <title>Naprawa maszynek do strzyżenia i trymerów – BarberSerwis | Cała Polska</title>
   <meta name="description" content="Naprawa maszynek do strzyżenia i trymerów – serwis wysyłkowy na terenie całej Polski. Czyszczenie, regulacja ostrzy, naprawa usterek. Szybka diagnoza.">
   <meta name="keywords" content="serwis maszynek do strzyżenia Polska, naprawa maszynek barber, konserwacja maszynek, regulacja lub wymiana ostrzy, serwis wysyłkowy maszynek" />
   <link rel="icon" type="image/png" href="logo-barberserwis7.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <meta name="theme-color" content="#1e140c" />
 
   <style>
     * {
@@ -598,19 +601,39 @@
     }
 
 
-    /* ===== Galeria ===== */
-    .gallery-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-      margin-top:24px;
+    /* ===== Galeria: zdjęcia i filmy osobno, poziome przewijanie ===== */
+    .gallery-group{margin-top:30px}
+    .gallery-group-title{
+      margin:0 0 14px;
+      color:#f0c988;
+      font-size:22px;
+      text-align:left;
     }
+    .gallery-scroll-wrap{position:relative}
+    .gallery-grid{
+      display:flex;
+      gap:16px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:4px 48px 14px 0;
+      margin-top:0;
+      scroll-snap-type:x mandatory;
+      scroll-behavior:smooth;
+      scrollbar-width:thin;
+      scrollbar-color:#e0b36a #202028;
+    }
+    .gallery-grid::-webkit-scrollbar{height:9px}
+    .gallery-grid::-webkit-scrollbar-track{background:#202028;border-radius:999px}
+    .gallery-grid::-webkit-scrollbar-thumb{background:#e0b36a;border-radius:999px}
     .gallery-card{
+      flex:0 0 calc((100% - 32px)/3.18);
+      min-width:0;
       overflow:hidden;
       border-radius:16px;
       border:1px solid rgba(224,179,106,.22);
       background:#1e1e24;
       box-shadow:0 8px 24px rgba(0,0,0,.22);
+      scroll-snap-align:start;
     }
     .gallery-media{
       width:100%;
@@ -627,32 +650,45 @@
       line-height:1.45;
     }
     .gallery-empty{
+      flex:0 0 100%;
       text-align:center;
       color:#999;
       padding:24px;
       border:1px dashed rgba(255,255,255,.12);
       border-radius:14px;
     }
+    .gallery-nav{
+      position:absolute;
+      z-index:3;
+      top:50%;
+      transform:translateY(-50%);
+      width:42px;height:42px;
+      border:1px solid rgba(224,179,106,.5);
+      border-radius:50%;
+      background:rgba(24,24,29,.94);
+      color:#f0c988;
+      font-size:25px;
+      cursor:pointer;
+    }
+    .gallery-nav.prev{left:8px}
+    .gallery-nav.next{right:8px}
     .gallery-lightbox{
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:10050;
-      background:rgba(0,0,0,.9);
-      padding:24px;
-      align-items:center;
-      justify-content:center;
-      cursor:zoom-out;
+      display:none;position:fixed;inset:0;z-index:10050;
+      background:rgba(0,0,0,.9);padding:24px;
+      align-items:center;justify-content:center;cursor:zoom-out;
     }
     .gallery-lightbox.open{display:flex}
     .gallery-lightbox img{
-      max-width:min(1100px,96vw);
-      max-height:90vh;
-      object-fit:contain;
-      border-radius:12px;
+      max-width:min(1100px,96vw);max-height:90vh;
+      object-fit:contain;border-radius:12px;
     }
-    @media (max-width:800px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (max-width:520px){.gallery-grid{grid-template-columns:1fr}}
+    @media(max-width:800px){.gallery-card{flex-basis:calc((100% - 16px)/2.18)}}
+    @media(max-width:520px){
+      .gallery-card{flex-basis:84%}
+      .gallery-grid{padding-right:34px}
+      .gallery-nav{display:none}
+      .gallery-group-title{font-size:20px}
+    }
 
 
     /* ===== Kafelki naprawy 3 + 2 ===== */
@@ -947,29 +983,6 @@
 }
 
 
-
-
-/* ===== Panel klienta: Reklamacje ===== */
-.complaint-box{max-width:760px;margin:0 auto}
-.complaint-box select,.complaint-box textarea,.complaint-box input[type="file"]{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#202028;color:#fff;font:inherit}
-.complaint-box textarea{min-height:150px;resize:vertical}
-.complaint-photo-choice{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:14px}
-.complaint-photo-option{padding:16px;border:1px solid rgba(224,179,106,.22);border-radius:12px;background:#202028}
-.complaint-or{color:#e0b36a;font-weight:800;text-align:center}
-.complaints-list{display:grid;gap:12px;margin-top:24px}
-.complaint-card{padding:16px;border-radius:12px;background:#202028;border:1px solid rgba(224,179,106,.20)}
-.complaint-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.complaint-number{color:#e0b36a;font-weight:800}
-.complaint-status{padding:6px 10px;border-radius:999px;background:#2c2c36;color:#fff;font-size:13px;font-weight:700}
-@media(max-width:650px){.complaint-photo-choice{grid-template-columns:1fr}}
-/* ===== Osobna strona Panel klienta ===== */
-body.client-page > section:not(#konto){display:none !important;}
-body.client-page #konto{min-height:calc(100vh - 220px);}
-body.client-page .client-panel-nav{display:flex !important;}
-body.client-page #konto > h3{margin-top:0;}
-@media(max-width:600px){body.client-page #konto{padding-top:34px;}}
-
-
 /* ===== Finalne poprawki górnych przycisków ===== */
 #accountOpenBtn{
   font-weight:600;
@@ -998,112 +1011,6 @@ body.client-page #konto > h3{margin-top:0;}
 .client-top-dropdown .client-dropdown-logout:hover{
   background:#4d2626;
   color:#fff;
-}
-
-
-/* ===== Finalny responsywny Panel klienta ===== */
-body.client-page #konto{
-  width:min(1280px,100%);
-  min-height:calc(100vh - 180px);
-  padding:44px 24px 70px;
-}
-body.client-page #konto > .form-box{
-  max-width:1180px;
-  padding:30px;
-}
-body.client-page .client-panel-nav{
-  display:flex !important;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-bottom:24px;
-}
-body.client-page .client-panel-nav button{
-  min-height:44px;
-  font-weight:600;
-  font-family:Arial,Helvetica,sans-serif;
-}
-body.client-page .client-panel-nav button.active{
-  background:#e0b36a;
-  color:#111;
-}
-body.client-page #clientViewRepairs{max-width:1080px;margin:0 auto}
-body.client-page #repairsList{width:100%}
-body.client-page #repairsList .repair-item,
-body.client-page #repairsList .repair-card{
-  width:100%;
-}
-body.client-page .profile-grid{
-  max-width:940px;
-  gap:14px 18px;
-}
-body.client-page #profileSaveBtn{
-  min-width:210px;
-}
-body.client-page #clientViewDevices{
-  max-width:980px;
-  margin:0 auto;
-}
-body.client-page .device-list{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:16px;
-}
-body.client-page .saved-device{
-  min-height:132px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:18px;
-}
-body.client-page .saved-device-head{
-  align-items:center;
-}
-body.client-page .saved-device-title{
-  font-size:17px;
-}
-body.client-page .saved-device .btn{
-  min-width:92px;
-  font-weight:600;
-}
-body.client-page .security-box{
-  max-width:600px;
-}
-body.client-page #clientViewSecurity{
-  padding-top:8px;
-}
-@media(max-width:850px){
-  body.client-page #konto{padding:34px 16px 55px}
-  body.client-page #konto > .form-box{padding:22px 18px}
-  body.client-page .device-list{grid-template-columns:1fr}
-}
-@media(max-width:600px){
-  body.client-page #konto{
-    padding:28px 12px 44px;
-    min-height:calc(100vh - 160px);
-  }
-  body.client-page #konto > .form-box{padding:16px 12px}
-  body.client-page .client-panel-nav{
-    display:grid !important;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-  }
-  body.client-page .client-panel-nav button{
-    width:100%;
-    min-height:46px;
-  }
-  body.client-page .profile-grid{grid-template-columns:1fr}
-  body.client-page .profile-grid .profile-full{grid-column:auto}
-  body.client-page #profileSaveBtn,
-  body.client-page #clientViewDevices .btn,
-  body.client-page #securitySaveBtn{
-    width:100%;
-  }
-  body.client-page .saved-device-head{
-    align-items:flex-start;
-  }
-}
-@media(max-width:420px){
-  body.client-page .client-panel-nav{grid-template-columns:1fr}
 }
 
 
@@ -1144,6 +1051,54 @@ body.client-page #clientViewSecurity{
   }
 }
 
+
+    /* ===== Galeria pełnoekranowa v2: zdjęcia + filmy + swipe ===== */
+    .gallery-card{cursor:pointer}
+    .gallery-card video{cursor:pointer}
+    .gallery-lightbox{
+      display:none;position:fixed;inset:0;z-index:10050;
+      background:rgba(0,0,0,.94);padding:24px 70px;
+      align-items:center;justify-content:center;
+      overscroll-behavior:contain;touch-action:pan-y;
+    }
+    .gallery-lightbox.open{display:flex}
+    .gallery-lightbox-content{
+      width:min(1200px,92vw);height:min(88vh,900px);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .gallery-lightbox-content img,
+    .gallery-lightbox-content video{
+      display:block;max-width:100%;max-height:88vh;width:auto;height:auto;
+      object-fit:contain;border-radius:12px;background:#000;
+    }
+    .gallery-lightbox-content video{width:min(1100px,92vw)}
+    .gallery-lightbox-close{
+      position:absolute;right:18px;top:14px;z-index:4;
+      width:46px;height:46px;border-radius:50%;
+      border:1px solid rgba(224,179,106,.55);background:rgba(24,24,29,.92);
+      color:#fff;font-size:30px;line-height:1;cursor:pointer;
+    }
+    .gallery-lightbox-nav{
+      position:absolute;top:50%;transform:translateY(-50%);z-index:4;
+      width:50px;height:50px;border-radius:50%;
+      border:1px solid rgba(224,179,106,.55);background:rgba(24,24,29,.92);
+      color:#f0c988;font-size:32px;cursor:pointer;
+    }
+    .gallery-lightbox-nav.prev{left:14px}.gallery-lightbox-nav.next{right:14px}
+    .gallery-lightbox-counter{
+      position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+      color:#ddd;background:rgba(0,0,0,.55);padding:5px 10px;border-radius:999px;font-size:13px;
+    }
+    @media(max-width:600px){
+      .gallery-lightbox{padding:58px 10px 54px}
+      .gallery-lightbox-content{width:100%;height:calc(100vh - 120px)}
+      .gallery-lightbox-content img,.gallery-lightbox-content video{max-width:100%;max-height:calc(100vh - 120px)}
+      .gallery-lightbox-nav{width:42px;height:42px;font-size:28px;top:auto;bottom:10px;transform:none}
+      .gallery-lightbox-nav.prev{left:12px}.gallery-lightbox-nav.next{right:12px}
+      .gallery-lightbox-close{right:10px;top:8px}
+      .gallery-lightbox-counter{bottom:18px}
+    }
+
 </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18034553646">
@@ -1165,7 +1120,7 @@ body.client-page #clientViewSecurity{
 </script>
 
 </head>
-<body class="client-page">
+<body>
 
   <header>
     <div class="topbar">
@@ -1506,115 +1461,6 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
     </div>
   </section>
 
-<section class="section hidden" id="konto">
-<h3>Panel klienta</h3><p class="section-sub">Twoje naprawy i dane konta BarberSerwis.</p>
-<div class="form-box"><div class="account-bar">
-<span class="account-status" id="accountStatus">Nie jesteś zalogowany/a.</span>
-<button class="btn btn-gold" type="button" id="accountLoginBtn" onclick="openAccount()">Zaloguj / Załóż konto</button>
-<button class="btn btn-dark hidden" type="button" id="accountRefreshBtn" onclick="loadRepairs()">Odśwież statusy</button>
-</div>
-<div class="client-panel-nav">
-<button id="clientTabRepairs" class="active" type="button" onclick="showClientPanel('repairs')">Moje naprawy</button>
-<button id="clientTabProfile" type="button" onclick="showClientPanel('profile')">Moje dane</button>
-<button id="clientTabDevices" type="button" onclick="showClientPanel('devices')">Moje urządzenia</button>
-<button id="clientTabComplaints" type="button" onclick="showClientPanel('complaints')">Reklamacje</button>
-<button id="clientTabSecurity" type="button" onclick="showClientPanel('security')">Bezpieczeństwo</button></div>
-<div id="clientViewRepairs" class="client-panel-view active">
-<div id="repairsEmpty" class="form-note">Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.</div>
-<div id="repairsList" class="repairs-list"></div>
-<p class="small-note">Statusy i wyceny są aktualizowane przez BarberSerwis po diagnozie sprzętu.</p></div>
-<div id="clientViewProfile" class="client-panel-view">
-<div class="profile-grid">
-<div><label class="profile-label">Imię</label><input id="profileFirstName" type="text"></div>
-<div><label class="profile-label">Nazwisko</label><input id="profileLastName" type="text"></div>
-<div><label class="profile-label">Telefon</label><input id="profilePhone" type="tel"></div>
-<div><label class="profile-label">E-mail</label><input id="profileEmail" class="profile-email" type="email" readonly></div>
-<div class="profile-full"><label class="profile-label">Adres do zwrotu – ulica i numer</label><input id="profileReturnAddress" type="text"></div>
-<div><label class="profile-label">Kod pocztowy</label><input id="profilePostalCode" type="text"></div>
-<div><label class="profile-label">Miasto</label><input id="profileCity" type="text"></div></div>
-<div style="text-align:center;margin-top:18px"><button class="btn btn-gold" id="profileSaveBtn" type="button" onclick="saveCustomerProfile()">Zapisz moje dane</button></div>
-<div id="profileMessage" class="profile-message"></div>
-<p class="small-note" style="text-align:center">Zapisane dane będą automatycznie uzupełniane przy zgłoszeniu naprawy.</p>
-</div>
-
-<div id="clientViewDevices" class="client-panel-view">
-  <div class="profile-grid">
-    <div>
-      <label class="profile-label">Rodzaj sprzętu</label>
-      <input id="deviceTypeSaved" type="text" placeholder="np. maszynka, trymer, golarka">
-    </div>
-    <div>
-      <label class="profile-label">Marka i model</label>
-      <input id="deviceModelSaved" type="text" placeholder="np. Wahl Magic Clip">
-    </div>
-    <div class="profile-full">
-      <label class="profile-label">Numer seryjny (opcjonalnie)</label>
-    <input
-  id="deviceSerialSaved"
-  name="barberserwis_device_serial"
-  type="text"
-  placeholder="Numer seryjny"
-  autocomplete="new-password"
-  readonly
-  onfocus="this.removeAttribute('readonly'); this.value='';"
-  onmousedown="this.removeAttribute('readonly'); this.value='';"
->
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:18px">
-    <button class="btn btn-gold" type="button" onclick="addCustomerDevice()">+ Dodaj urządzenie</button>
-  </div>
-  <div id="devicesMessage" class="profile-message"></div>
-  <div id="customerDevicesList" class="device-list"></div>
-</div>
-
-
-<div id="clientViewComplaints" class="client-panel-view">
-  <div class="complaint-box">
-    <p class="section-sub" style="margin-bottom:20px">Wybierz wcześniejsze zgłoszenie i urządzenie, którego dotyczy reklamacja.</p>
-
-    <label class="profile-label">Zgłoszenie naprawy</label>
-    <select id="complaintRepair" onchange="loadComplaintRepairItems()"><option value="">Wybierz zgłoszenie</option></select>
-
-    <label class="profile-label" style="margin-top:14px">Urządzenie</label>
-    <select id="complaintRepairItem"><option value="">Najpierw wybierz zgłoszenie</option></select>
-
-    <label class="profile-label" style="margin-top:14px">Opis reklamacji</label>
-    <textarea id="complaintDescription" placeholder="Opisz dokładnie problem występujący po naprawie."></textarea>
-
-    <div style="margin-top:18px;color:#e0b36a;font-weight:800">Zdjęcia (opcjonalnie)</div>
-    <div class="complaint-photo-option" style="margin-top:14px">
-      <label class="profile-label">Dodaj zdjęcia z galerii</label>
-      <input id="complaintGalleryPhotos" type="file" accept="image/*" multiple>
-    </div>
-
-    <div style="text-align:center;margin-top:20px">
-      <button class="btn btn-gold" id="complaintSubmitBtn" type="button" onclick="submitComplaint()">Wyślij reklamację</button>
-    </div>
-    <div id="complaintMessage" class="profile-message"></div>
-
-    <div style="margin-top:30px">
-      <h4 style="color:#e0b36a;margin:0 0 10px">Moje reklamacje</h4>
-      <div id="complaintsList" class="complaints-list"></div>
-    </div>
-  </div>
-</div>
-
-<div id="clientViewSecurity" class="client-panel-view">
-  <div class="security-box">
-    <label class="profile-label">Nowe hasło</label>
-    <input id="securityPassword" type="password" minlength="8" placeholder="Minimum 8 znaków" autocomplete="new-password">
-    <label class="profile-label">Powtórz nowe hasło</label>
-    <input id="securityPassword2" type="password" minlength="8" placeholder="Powtórz hasło" autocomplete="new-password">
-    <div style="text-align:center;margin-top:14px">
-      <button class="btn btn-gold" id="securitySaveBtn" type="button" onclick="changeClientPassword()">Zmień hasło</button>
-    </div>
-    <div id="securityMessage" class="profile-message"></div>
-  </div>
-</div>
-
-</div></section>
-
 <section class="section">
     <h3>Serwis i naprawa maszynek do strzyżenia i trymerów</h3>
     <p class="section-sub">
@@ -1661,8 +1507,23 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
 <section class="section" id="galeria">
     <h3>Galeria BarberSerwis</h3>
     <p class="section-intro">Zdjęcia i krótkie filmy z naszej pracy serwisowej.</p>
-    <div id="galleryGrid" class="gallery-grid">
-      <div class="gallery-empty">Ładowanie galerii…</div>
+
+    <div class="gallery-group" id="galleryPhotosGroup">
+      <h4 class="gallery-group-title">Zdjęcia</h4>
+      <div class="gallery-scroll-wrap">
+        <button class="gallery-nav prev" type="button" aria-label="Poprzednie zdjęcia" onclick="scrollGallery('galleryPhotos',-1)">‹</button>
+        <div id="galleryPhotos" class="gallery-grid"><div class="gallery-empty">Ładowanie zdjęć…</div></div>
+        <button class="gallery-nav next" type="button" aria-label="Następne zdjęcia" onclick="scrollGallery('galleryPhotos',1)">›</button>
+      </div>
+    </div>
+
+    <div class="gallery-group" id="galleryVideosGroup">
+      <h4 class="gallery-group-title">Filmy</h4>
+      <div class="gallery-scroll-wrap">
+        <button class="gallery-nav prev" type="button" aria-label="Poprzednie filmy" onclick="scrollGallery('galleryVideos',-1)">‹</button>
+        <div id="galleryVideos" class="gallery-grid"><div class="gallery-empty">Ładowanie filmów…</div></div>
+        <button class="gallery-nav next" type="button" aria-label="Następne filmy" onclick="scrollGallery('galleryVideos',1)">›</button>
+      </div>
     </div>
   </section>
 
@@ -1789,8 +1650,12 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
     </div>
   </section>
 
-<div id="galleryLightbox" class="gallery-lightbox" onclick="closeGalleryLightbox()" aria-hidden="true">
-    <img id="galleryLightboxImg" src="" alt="Podgląd zdjęcia">
+<div id="galleryLightbox" class="gallery-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Podgląd galerii">
+    <button class="gallery-lightbox-close" type="button" aria-label="Zamknij podgląd" onclick="closeGalleryLightbox()">×</button>
+    <button class="gallery-lightbox-nav prev" type="button" aria-label="Poprzedni element" onclick="event.stopPropagation();galleryLightboxStep(-1)">‹</button>
+    <div class="gallery-lightbox-content" id="galleryLightboxContent" onclick="event.stopPropagation()"></div>
+    <button class="gallery-lightbox-nav next" type="button" aria-label="Następny element" onclick="event.stopPropagation();galleryLightboxStep(1)">›</button>
+    <div class="gallery-lightbox-counter" id="galleryLightboxCounter"></div>
   </div>
 
   <div class="auth-modal" id="authModal" aria-hidden="true"><div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle"><button class="auth-close" type="button" onclick="closeAccount()" aria-label="Zamknij">×</button><h3 id="authTitle" style="margin:0;color:#e0b36a;">Konto klienta</h3><p style="color:#bbb;margin:8px 0 0;">Zaloguj się albo utwórz konto, aby wysyłać i śledzić zgłoszenia.</p><div class="auth-tabs"><button class="auth-tab active" id="loginTab" type="button" onclick="showAuthPane('login')">Logowanie</button><button class="auth-tab" id="registerTab" type="button" onclick="showAuthPane('register')">Rejestracja</button></div><div class="auth-pane active" id="loginPane"><input type="email" id="loginEmail" placeholder="E-mail" autocomplete="email"><input type="password" id="loginPassword" placeholder="Hasło" autocomplete="current-password"><button class="btn btn-gold" style="width:100%;margin-top:8px;" type="button" onclick="loginClient()">Zaloguj</button><button type="button" onclick="forgotPassword()" style="display:block;width:100%;margin-top:12px;background:none;border:0;color:#e0b36a;text-decoration:underline;cursor:pointer;font-weight:700;">Nie pamiętam hasła</button></div><div class="auth-pane" id="registerPane">
@@ -1917,8 +1782,35 @@ Jeśli wymaga adresu – wpisz: ul. Sportowa 6, 55-095 Mirków.
 
     async function logoutClient(){const c=getSb();if(c)await c.auth.signOut()}
     
+let repairActionHandled=false;
+
 function goToRepairForm(){
-  window.location.href="index.html?akcja=zglos";
+  if(currentUser){
+    const form=document.getElementById("formularz");
+    if(form){
+      form.classList.remove("hidden");
+      form.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  }else{
+    openAccount();
+  }
+}
+
+function handleRequestedMainAction(){
+  const action=new URLSearchParams(window.location.search).get("akcja");
+  if(action!=="zglos" || repairActionHandled) return;
+
+  if(currentUser){
+    repairActionHandled=true;
+    setTimeout(()=>{
+      goToRepairForm();
+      const url=new URL(window.location.href);
+      url.searchParams.delete("akcja");
+      history.replaceState({},"",url);
+    },120);
+  }else{
+    openAccount();
+  }
 }
 
 function handleTopAccountButton(){
@@ -1931,12 +1823,7 @@ function handleTopAccountButton(){
 
 function openClientSection(which){
   document.getElementById("clientTopDropdown")?.classList.remove("open");
-  showClientPanel(which);
-  setClientPageHeading(which);
-  const url=new URL(window.location.href);
-  url.searchParams.set("sekcja",which);
-  history.replaceState({},"",url);
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.location.href = "panel-klienta.html?sekcja=" + encodeURIComponent(which);
 }
 
 document.addEventListener("click",function(e){
@@ -1947,31 +1834,20 @@ document.addEventListener("click",function(e){
   }
 });
 
-function getRequestedClientSection(){
-  const allowed=["repairs","profile","devices","complaints","security"];
-  const value=new URLSearchParams(window.location.search).get("sekcja") || "repairs";
-  return allowed.includes(value) ? value : "repairs";
-}
-
-function setClientPageHeading(which){
-  const titles={repairs:"Moje naprawy",profile:"Moje dane",devices:"Moje urządzenia",complaints:"Reklamacje",security:"Bezpieczeństwo"};
-  const h=document.querySelector("#konto > h3");
-  const sub=document.querySelector("#konto > .section-sub");
-  if(h) h.textContent=titles[which]||"Panel klienta";
-  if(sub) sub.textContent="Panel klienta BarberSerwis";
-  document.title=(titles[which]||"Panel klienta")+" – BarberSerwis";
-}
-
 function updateAccountUi(u){
   currentUser=u||null;
   const l=!!currentUser;
 
-  document.getElementById("accountStatus").textContent =
-    l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  const accountStatus=document.getElementById("accountStatus");
+  const accountLoginBtn=document.getElementById("accountLoginBtn");
+  const accountRefreshBtn=document.getElementById("accountRefreshBtn");
 
-  document.getElementById("accountLoginBtn").classList.toggle("hidden",l);
+  if(accountStatus){
+    accountStatus.textContent = l ? "Zalogowano: "+(currentUser.email||"konto klienta") : "Nie jesteś zalogowany/a.";
+  }
+  if(accountLoginBtn) accountLoginBtn.classList.toggle("hidden",l);
   document.getElementById("accountLogoutBtn")?.classList.toggle("hidden",!l);
-  document.getElementById("accountRefreshBtn").classList.toggle("hidden",!l);
+  if(accountRefreshBtn) accountRefreshBtn.classList.toggle("hidden",!l);
 
   const formSection=document.getElementById("formularz");
   const accountSection=document.getElementById("konto");
@@ -1996,41 +1872,28 @@ function updateAccountUi(u){
 
   b.onclick = handleTopAccountButton;
 
+  handleRequestedMainAction();
+
   if(l){
-    const requested=getRequestedClientSection();
-    showClientPanel(requested);
-    setClientPageHeading(requested);
-    loadRepairs();
+    // Na stronie głównej profil nadal wczytujemy, aby automatycznie uzupełniać formularz zgłoszenia.
     loadCustomerProfile();
   }else{
     document.getElementById("clientTopDropdown")?.classList.remove("open");
-    document.getElementById("repairsList").innerHTML="";
-    document.getElementById("repairsEmpty").textContent=
-      "Zaloguj się, aby zobaczyć panel klienta.";
+    const repairsList=document.getElementById("repairsList");
+    const repairsEmpty=document.getElementById("repairsEmpty");
+    if(repairsList) repairsList.innerHTML="";
+    if(repairsEmpty) repairsEmpty.textContent="Po zalogowaniu zobaczysz tutaj swoje zgłoszenia.";
   }
 }
     function setProfileMessage(m,t=""){const e=document.getElementById("profileMessage");if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}}
     function showClientPanel(w){
-      const views=["repairs","profile","devices","complaints","security"];
+      const views=["repairs","profile","devices","security"];
       views.forEach(name=>{
         document.getElementById("clientView"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
         document.getElementById("clientTab"+name.charAt(0).toUpperCase()+name.slice(1))?.classList.toggle("active",w===name);
       });
       if(w==="profile") loadCustomerProfile();
-      if(w==="devices"){
-  const serialInput = document.getElementById("deviceSerialSaved");
-
-  if(serialInput){
-    serialInput.value = "";
-
-    setTimeout(() => {
-      serialInput.value = "";
-    }, 300);
-  }
-
-  loadCustomerDevices();
-}
-      if(w==="complaints"){loadComplaintRepairs();loadComplaints();}
+      if(w==="devices") loadCustomerDevices();
     }
     function fillRepairFormFromProfile(p){if(!p)return;const v={firstName:p.first_name||"",lastName:p.last_name||"",phone:p.phone||"",returnAddress:p.return_address||"",returnPostalCode:p.return_postal_code||"",returnCity:p.return_city||""};Object.entries(v).forEach(([id,x])=>{const e=document.getElementById(id);if(e&&!e.value.trim())e.value=x})}
     async function loadCustomerProfile(){
@@ -2210,113 +2073,6 @@ function updateAccountUi(u){
       document.getElementById("securityPassword").value="";
       document.getElementById("securityPassword2").value="";
       setSecurityMessage("Hasło zostało zmienione ✅","ok");
-    }
-
-
-    function setComplaintMessage(m,t=""){
-      const e=document.getElementById("complaintMessage");
-      if(e){e.textContent=m||"";e.className="profile-message"+(t?" "+t:"")}
-    }
-    let complaintRepairCache=[];
-
-    async function loadComplaintRepairs(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const rs=document.getElementById("complaintRepair"), is=document.getElementById("complaintRepairItem");
-      if(!rs||!is)return;
-      rs.innerHTML='<option value="">Wczytywanie zgłoszeń…</option>';
-      is.innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';
-
-      const {data:repairs,error:e1}=await c.from("repairs").select("id,ticket_no,created_at").order("created_at",{ascending:false});
-      if(e1){rs.innerHTML='<option value="">Błąd pobierania</option>';return setComplaintMessage(e1.message,"err")}
-      if(!repairs?.length){rs.innerHTML='<option value="">Brak wcześniejszych zgłoszeń</option>';return}
-
-      const {data:items,error:e2}=await c.from("repair_items")
-        .select("id,repair_id,item_no,device_name,model").in("repair_id",repairs.map(r=>r.id)).order("item_no",{ascending:true});
-      if(e2)return setComplaintMessage(e2.message,"err");
-
-      complaintRepairCache=repairs.map(r=>({...r,items:(items||[]).filter(i=>i.repair_id===r.id)}));
-      rs.innerHTML='<option value="">Wybierz zgłoszenie</option>'+complaintRepairCache.map(r=>
-        `<option value="${escapeHtml(r.id)}">${escapeHtml(r.ticket_no||"Zgłoszenie")} – ${escapeHtml(new Date(r.created_at).toLocaleDateString("pl-PL"))}</option>`
-      ).join("");
-    }
-
-    function loadComplaintRepairItems(){
-      const rid=document.getElementById("complaintRepair")?.value||"";
-      const is=document.getElementById("complaintRepairItem"); if(!is)return;
-      const r=complaintRepairCache.find(x=>x.id===rid);
-      if(!r){is.innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';return}
-      is.innerHTML='<option value="">Wybierz urządzenie</option>'+r.items.map(i=>{
-        const label=[i.device_name,i.model].filter(Boolean).join(" – ")||("Sprzęt "+(i.item_no||""));
-        return `<option value="${escapeHtml(i.id)}">${escapeHtml(label)}</option>`;
-      }).join("");
-    }
-
-    async function loadComplaints(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const box=document.getElementById("complaintsList"); if(!box)return;
-      box.innerHTML='<div class="form-note">Wczytywanie reklamacji…</div>';
-      const {data,error}=await c.from("complaints")
-        .select("id,complaint_no,description,status,admin_note,created_at")
-        .eq("user_id",currentUser.id).order("created_at",{ascending:false});
-      if(error){box.innerHTML='<div class="form-note">Nie udało się pobrać reklamacji.</div>';return}
-      if(!data?.length){box.innerHTML='<div class="form-note">Nie masz jeszcze żadnych reklamacji.</div>';return}
-      box.innerHTML=data.map(r=>`<div class="complaint-card">
-        <div class="complaint-head"><div class="complaint-number">${escapeHtml(r.complaint_no||"Reklamacja")}</div>
-        <div class="complaint-status">${escapeHtml(r.status||"Nowa")}</div></div>
-        <div class="small-note">${escapeHtml(new Date(r.created_at).toLocaleString("pl-PL"))}</div>
-        <div style="color:#ddd;margin-top:10px">${escapeHtml(r.description||"")}</div>
-        ${r.admin_note?`<div style="margin-top:10px;color:#f0c988"><strong>Odpowiedź serwisu:</strong> ${escapeHtml(r.admin_note)}</div>`:""}
-      </div>`).join("");
-    }
-
-    function complaintFileName(name){
-      const ext=(String(name||"foto.jpg").split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
-      return `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-    }
-
-    async function submitComplaint(){
-      const c=getSb(); if(!c||!currentUser)return;
-      const repair_id=document.getElementById("complaintRepair")?.value||"";
-      const repair_item_id=document.getElementById("complaintRepairItem")?.value||"";
-      const description=document.getElementById("complaintDescription")?.value.trim()||"";
-      const photos=Array.from(document.getElementById("complaintGalleryPhotos")?.files||[]);
-      if(!repair_id)return setComplaintMessage("Wybierz zgłoszenie naprawy.","err");
-      if(!repair_item_id)return setComplaintMessage("Wybierz urządzenie.","err");
-      if(description.length<10)return setComplaintMessage("Opisz problem dokładniej – minimum 10 znaków.","err");
-
-      const b=document.getElementById("complaintSubmitBtn");
-      b.disabled=true;b.textContent="Wysyłanie…";setComplaintMessage("Zapisywanie reklamacji…");
-      try{
-        const {data:r,error:e}=await c.from("complaints").insert({
-          user_id:currentUser.id,repair_id,repair_item_id,description
-        }).select("id,complaint_no").single();
-        if(e)throw e;
-
-        let n=0;
-        for(const file of photos){
-          if(!file.type.startsWith("image/"))continue;
-          const path=`${currentUser.id}/${r.id}/${complaintFileName(file.name)}`;
-          const {error:ue}=await c.storage.from("complaint-attachments").upload(path,file,{upsert:false,contentType:file.type});
-          if(ue)throw ue;
-          const {error:ae}=await c.from("complaint_attachments").insert({
-            complaint_id:r.id,user_id:currentUser.id,storage_path:path,file_name:file.name||null
-          });
-          if(ae)throw ae;
-          n++;
-        }
-
-        document.getElementById("complaintDescription").value="";
-        document.getElementById("complaintRepair").value="";
-        document.getElementById("complaintRepairItem").innerHTML='<option value="">Najpierw wybierz zgłoszenie</option>';
-        document.getElementById("complaintGalleryPhotos").value="";
-        setComplaintMessage(`Reklamacja ${r.complaint_no||""} została wysłana ✅${n?` Dodano zdjęć: ${n}.`:""}`,"ok");
-        await loadComplaints();
-      }catch(err){
-        console.error("Błąd reklamacji:",err);
-        setComplaintMessage("Nie udało się wysłać reklamacji: "+(err?.message||"nieznany błąd"),"err");
-      }finally{
-        b.disabled=false;b.textContent="Wyślij reklamację";
-      }
     }
 
     function statusRank(status){
@@ -2991,15 +2747,48 @@ function toggleInvoiceFields(){
 
 
     /* =============================
-       GALERIA PUBLICZNA
+       GALERIA PUBLICZNA – pełny podgląd zdjęć i filmów
     ============================= */
-    async function loadGallery(){
-      const grid=document.getElementById("galleryGrid");
-      const c=getSb();
-      if(!grid||!c) return;
+    let galleryLightboxItems=[];
+    let galleryLightboxIndex=0;
+    let galleryTouchStartX=0;
 
-      const {data,error}=await c
-        .from("gallery_media")
+    function galleryPublicUrl(item,c){
+      const {data:urlData}=c.storage.from("gallery").getPublicUrl(item.storage_path);
+      return urlData?.publicUrl||"";
+    }
+
+    function galleryCardHtml(item,c,index){
+      const url=galleryPublicUrl(item,c);
+      const caption=item.caption?`<div class="gallery-caption">${escapeHtml(item.caption)}</div>`:"";
+      if(item.media_type==="video"){
+        return `<article class="gallery-card" onclick="openGalleryLightbox(${index})">
+          <video class="gallery-media" preload="metadata" playsinline muted>
+            <source src="${escapeHtml(url)}">
+          </video>${caption}
+        </article>`;
+      }
+      return `<article class="gallery-card" onclick="openGalleryLightbox(${index})">
+        <img class="gallery-media gallery-image" src="${escapeHtml(url)}" alt="${escapeHtml(item.caption||"BarberSerwis – galeria")}" loading="lazy">
+        ${caption}
+      </article>`;
+    }
+
+    function scrollGallery(id,direction){
+      const grid=document.getElementById(id);
+      if(!grid)return;
+      const card=grid.querySelector(".gallery-card");
+      const amount=card ? card.getBoundingClientRect().width+16 : grid.clientWidth*.8;
+      grid.scrollBy({left:direction*amount,behavior:"smooth"});
+    }
+
+    async function loadGallery(){
+      const photos=document.getElementById("galleryPhotos");
+      const videos=document.getElementById("galleryVideos");
+      const c=getSb();
+      if(!photos||!videos||!c)return;
+
+      const {data,error}=await c.from("gallery_media")
         .select("id,media_type,storage_path,caption,sort_order,created_at")
         .eq("is_visible",true)
         .order("sort_order",{ascending:true})
@@ -3007,53 +2796,84 @@ function toggleInvoiceFields(){
 
       if(error){
         console.error("Błąd galerii:",error);
-        grid.innerHTML='<div class="gallery-empty">Nie udało się wczytać galerii.</div>';
+        photos.innerHTML='<div class="gallery-empty">Nie udało się wczytać galerii.</div>';
+        videos.innerHTML='';
         return;
       }
 
-      if(!data?.length){
-        grid.innerHTML='<div class="gallery-empty">Galeria będzie uzupełniona wkrótce.</div>';
-        return;
-      }
+      const images=(data||[]).filter(x=>x.media_type!=="video");
+      const films=(data||[]).filter(x=>x.media_type==="video");
+      galleryLightboxItems=[...images,...films].map(x=>({
+        type:x.media_type==="video"?"video":"image",
+        url:galleryPublicUrl(x,c),
+        caption:x.caption||""
+      }));
 
-      grid.innerHTML=data.map(item=>{
-        const {data:urlData}=c.storage.from("gallery").getPublicUrl(item.storage_path);
-        const url=urlData?.publicUrl||"";
-        const caption=item.caption?`<div class="gallery-caption">${escapeHtml(item.caption)}</div>`:"";
+      photos.innerHTML=images.length
+        ? images.map((x,i)=>galleryCardHtml(x,c,i)).join("")
+        : '<div class="gallery-empty">Zdjęcia będą uzupełnione wkrótce.</div>';
 
-        if(item.media_type==="video"){
-          return `<article class="gallery-card">
-            <video class="gallery-media" controls preload="metadata" playsinline>
-              <source src="${escapeHtml(url)}">
-            </video>
-            ${caption}
-          </article>`;
-        }
-
-        return `<article class="gallery-card">
-          <img class="gallery-media gallery-image" src="${escapeHtml(url)}" alt="${escapeHtml(item.caption||"BarberSerwis – galeria")}" loading="lazy" onclick="openGalleryLightbox('${escapeHtml(url)}')">
-          ${caption}
-        </article>`;
-      }).join("");
+      videos.innerHTML=films.length
+        ? films.map((x,i)=>galleryCardHtml(x,c,images.length+i)).join("")
+        : '<div class="gallery-empty">Filmy będą uzupełnione wkrótce.</div>';
     }
 
-    function openGalleryLightbox(url){
+    function renderGalleryLightbox(){
+      const content=document.getElementById("galleryLightboxContent");
+      const counter=document.getElementById("galleryLightboxCounter");
+      const item=galleryLightboxItems[galleryLightboxIndex];
+      if(!content||!item)return;
+      content.innerHTML=item.type==="video"
+        ? `<video controls autoplay playsinline preload="metadata"><source src="${escapeHtml(item.url)}"></video>`
+        : `<img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption||"Podgląd zdjęcia")}">`;
+      if(counter)counter.textContent=`${galleryLightboxIndex+1} / ${galleryLightboxItems.length}`;
+    }
+
+    function openGalleryLightbox(index){
       const box=document.getElementById("galleryLightbox");
-      const img=document.getElementById("galleryLightboxImg");
-      if(!box||!img) return;
-      img.src=url;
+      if(!box||!galleryLightboxItems.length)return;
+      galleryLightboxIndex=Math.max(0,Math.min(Number(index)||0,galleryLightboxItems.length-1));
+      renderGalleryLightbox();
       box.classList.add("open");
       box.setAttribute("aria-hidden","false");
+      document.body.style.overflow="hidden";
+    }
+
+    function galleryLightboxStep(direction){
+      if(!galleryLightboxItems.length)return;
+      galleryLightboxIndex=(galleryLightboxIndex+direction+galleryLightboxItems.length)%galleryLightboxItems.length;
+      renderGalleryLightbox();
     }
 
     function closeGalleryLightbox(){
       const box=document.getElementById("galleryLightbox");
-      const img=document.getElementById("galleryLightboxImg");
-      if(!box||!img) return;
+      const content=document.getElementById("galleryLightboxContent");
+      if(!box)return;
       box.classList.remove("open");
       box.setAttribute("aria-hidden","true");
-      img.src="";
+      if(content)content.innerHTML="";
+      document.body.style.overflow="";
     }
+
+    document.addEventListener("keydown",e=>{
+      const box=document.getElementById("galleryLightbox");
+      if(!box?.classList.contains("open"))return;
+      if(e.key==="Escape")closeGalleryLightbox();
+      if(e.key==="ArrowLeft")galleryLightboxStep(-1);
+      if(e.key==="ArrowRight")galleryLightboxStep(1);
+    });
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const box=document.getElementById("galleryLightbox");
+      if(!box)return;
+      box.addEventListener("click",e=>{if(e.target===box)closeGalleryLightbox();});
+      box.addEventListener("touchstart",e=>{galleryTouchStartX=e.changedTouches[0]?.clientX||0;},{passive:true});
+      box.addEventListener("touchend",e=>{
+        const endX=e.changedTouches[0]?.clientX||0;
+        const diff=endX-galleryTouchStartX;
+        if(Math.abs(diff)>55)galleryLightboxStep(diff>0?-1:1);
+      },{passive:true});
+    });
 
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[ch])}
     function copyShipping(){const text="Odbiorca: BarberSerwis\nTelefon: +48 782 618 575\nAdres odbioru przesyłek: ul. Sportowa 6, 55-095 Mirków\nInPost: MRK03M\nDPD Pickup: PL83482\nOrlen Paczka: 328169\nPunkt z obsługą DPD: Żabka, ul. Sportowa 2/1, 55-095 Mirków";navigator.clipboard.writeText(text);alert("Dane do wysyłki zostały skopiowane.")}
@@ -3181,5 +3001,16 @@ document.addEventListener("keydown", function(e){
 });
 
 </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./service-worker.js")
+        .catch(function (error) {
+          console.error("Service Worker registration failed:", error);
+        });
+    });
+  }
+</script>
+
 </body>
 </html>
