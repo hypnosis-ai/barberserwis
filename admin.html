@@ -6,6 +6,11 @@
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
+    // Usuwamy stare kotwice PRZED zbudowaniem strony, by przeglądarka
+    // nie próbowała odtwarzać położenia sekcji Galeria/Reklamacje.
+    if (["#gallerySection", "#repairsSection", "#complaintsSection"].includes(location.hash)) {
+      history.replaceState(history.state, "", location.pathname + location.search);
+    }
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -496,7 +501,7 @@
       flex-wrap:wrap;
       margin-top:14px;
     }
-    .admin-nav a{
+    .admin-nav button{
       display:inline-flex;
       align-items:center;
       justify-content:center;
@@ -509,7 +514,7 @@
       text-decoration:none;
       cursor:pointer;
     }
-    .admin-nav a:hover{
+    .admin-nav button:hover{
       border-color:rgba(224,179,106,.65);
       background:#272731;
     }
@@ -937,10 +942,10 @@
 
     </div>
 
-    <div class="admin-nav">
-      <a href="#repairsSection">Zgłoszenia</a>
-      <a href="#complaintsSection">Reklamacje</a>
-      <a href="#gallerySection">Galeria</a>
+    <div class="admin-nav" aria-label="Sekcje panelu">
+      <button type="button" onclick="goToAdminSection('repairsSection')">Zgłoszenia</button>
+      <button type="button" onclick="goToAdminSection('complaintsSection')">Reklamacje</button>
+      <button type="button" onclick="goToAdminSection('gallerySection')">Galeria</button>
     </div>
 
   </div>
@@ -5016,14 +5021,23 @@ async function setQuickStatus(id,status){
    START
 ============================= */
 
+// Nawigacja w panelu nie zapisuje #gallerySection w adresie URL.
+// Dzięki temu po F5 panel wraca na górę zamiast do Galerii.
+function goToAdminSection(sectionId){
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  section.scrollIntoView({behavior: "smooth", block: "start"});
+}
+
 let initialAdminLoad = true;
 
 async function startAdminPanel(){
   // Po odświeżeniu nie pozwalamy staremu #gallerySection
   // ani zapisanej pozycji przewijania przenieść panelu na dół.
-  if (location.hash === "#gallerySection" || location.hash === "#repairsSection") {
-    history.replaceState(null, "", location.pathname + location.search);
+  if (["#gallerySection", "#repairsSection", "#complaintsSection"].includes(location.hash)) {
+    history.replaceState(history.state, "", location.pathname + location.search);
   }
+  window.scrollTo(0, 0);
 
   await checkSession();
 
@@ -5047,10 +5061,12 @@ sb.auth.onAuthStateChange(() => {
 window.addEventListener("DOMContentLoaded", startAdminPanel);
 
 window.addEventListener("pageshow", function () {
-  if (initialAdminLoad) {
-    window.scrollTo(0, 0);
-  }
+  // Także powrót z historii i zwykłe F5: bez powrotu do zakładki galerii.
+  window.scrollTo(0, 0);
 });
+window.addEventListener("load", function () {
+  window.scrollTo(0, 0);
+}, {once:true});
 
 </script>
 
