@@ -261,13 +261,13 @@
     }
 
     .status-new{
-      background:#343740;
-      color:#ddd
+      background:#1e5037;
+      color:#8bf0b0
     }
 
     .status-received{
-      background:#293c55;
-      color:#9dcaff
+      background:#53351d;
+      color:#ffc481
     }
 
     .status-diagnosis{
@@ -823,9 +823,46 @@
     .repair-toggle:focus-visible{outline:2px solid #e9b45e;outline-offset:3px}
     .repair-toggle-ticket{display:block;color:#e9b45e;font-size:16px;font-weight:800;overflow-wrap:anywhere}
     .repair-toggle-name{display:block;margin-top:5px;color:#f5f5f5;font-size:15px;font-weight:700;overflow-wrap:anywhere}
+    /* Zielona informacja o fakturze w zwiniętym pasku – wyłącznie przy zaznaczonym TAK. */
+    .repair-toggle-invoice{
+      display:inline-block;
+      margin-left:12px;
+      padding:3px 8px;
+      border:1px solid rgba(134,230,164,.48);
+      border-radius:7px;
+      background:rgba(40,142,80,.15);
+      color:#86e6a4;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.4;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
     .repair-toggle-chevron{flex:none;color:#e9b45e;font-size:23px;line-height:1}
     .repair-details{margin-top:14px}
     .repair-details[hidden]{display:none!important}
+
+    /* Kolory obramowania zwiniętych i rozwiniętych kart wg etapu zlecenia.
+       Czerwona blokada ma pierwszeństwo przed każdą barwą statusu. */
+    .repair.repair-stage-new{--repair-stage:#36c978;--repair-glow:rgba(54,201,120,.16)}
+    .repair.repair-stage-received{--repair-stage:#f0a147;--repair-glow:rgba(240,161,71,.17)}
+    .repair.repair-stage-diagnosis{--repair-stage:#e5cd54;--repair-glow:rgba(229,205,84,.15)}
+    .repair.repair-stage-quote{--repair-stage:#ae8df1;--repair-glow:rgba(174,141,241,.16)}
+    .repair.repair-stage-accept{--repair-stage:#d280d8;--repair-glow:rgba(210,128,216,.16)}
+    .repair.repair-stage-repair{--repair-stage:#55aeed;--repair-glow:rgba(85,174,237,.16)}
+    .repair.repair-stage-ready{--repair-stage:#36c9c7;--repair-glow:rgba(54,201,199,.16)}
+    .repair.repair-stage-sent{--repair-stage:#8998aa;--repair-glow:rgba(137,152,170,.13)}
+    .repair.repair-stage-cancelled{--repair-stage:#a18e8e;--repair-glow:rgba(161,142,142,.13)}
+    .repair:not(.repair-locked)[class*="repair-stage-"]{
+      border:1px solid var(--repair-stage);
+      box-shadow:0 0 0 1px var(--repair-glow),0 4px 18px var(--repair-glow);
+    }
+    .repair:not(.repair-locked)[class*="repair-stage-"] > .repair-toggle{
+      border-left:3px solid var(--repair-stage);
+    }
+    /* W zamkniętym zleceniu zachowujemy czerwone podświetlenie i dostęp do rozwijania. */
+    .repair.repair-locked > .repair-toggle{border-color:rgba(201,61,61,.52)}
+
     /* Zamknięta naprawa nadal może być rozwinięta – bez odblokowywania edycji. */
     .repair.repair-locked button.repair-toggle{pointer-events:auto;opacity:1}
 
@@ -2719,6 +2756,29 @@ function normalizeItemStatus(status){
   return s || "Nowe zgłoszenie";
 }
 
+/* Kolor karty to wyłącznie prezentacja — nie zmienia statusu w bazie. */
+function repairCardColorClass(status){
+  switch(String(status || "").trim()){
+    case "Nowe zgłoszenie": return "repair-stage-new";
+    case "Przyjęto":
+    case "Przyjęto / diagnostyka":
+    case "Przyjęto – oczekuje na diagnostykę": return "repair-stage-received";
+    case "Diagnostyka w toku":
+    case "Sprzęt jest w trakcie diagnostyki": return "repair-stage-diagnosis";
+    case "Diagnoza / wycena":
+    case "Wycena": return "repair-stage-quote";
+    case "Akceptacja": return "repair-stage-accept";
+    case "Naprawa": return "repair-stage-repair";
+    case "Gotowe":
+    case "Przygotowano do wysyłki": return "repair-stage-ready";
+    case "Wysłano":
+    case "Odesłano": return "repair-stage-sent";
+    case "Bez naprawy / do odesłania":
+    case "Anulowane": return "repair-stage-cancelled";
+    default: return "";
+  }
+}
+
 function statusClass(status){
 
   switch(status){
@@ -3333,7 +3393,7 @@ function renderRepairs(data){
     const div =
       document.createElement("div");
 
-    div.className = "repair" + (r.is_locked ? " repair-locked" : "");
+    div.className = "repair" + (r.is_locked ? " repair-locked" : "") + " " + repairCardColorClass(r.status);
 
 
     const created =
@@ -3994,7 +4054,7 @@ function renderRepairs(data){
     toggle.innerHTML = `
       <span>
         <span class="repair-toggle-ticket">${esc(r.ticket_no || 'Bez numeru')}</span>
-        <span class="repair-toggle-name">${esc(r.name || 'Brak danych klienta')}</span>
+        <span class="repair-toggle-name">${esc(r.name || 'Brak danych klienta')}${r.wants_invoice ? ' <span class="repair-toggle-invoice">Faktura VAT</span>' : ''}</span>
       </span>
       <span class="repair-toggle-chevron" aria-hidden="true">${isExpanded ? '⌃' : '⌄'}</span>
     `;
@@ -4253,6 +4313,14 @@ async function saveRepairStatus(id){
   }
 
   repair.status = status;
+  const card = document.getElementById("repair-toggle-"+id)?.closest(".repair");
+  if(card){
+    for(const cls of [...card.classList]){
+      if(cls.startsWith("repair-stage-")) card.classList.remove(cls);
+    }
+    const stage = repairCardColorClass(status);
+    if(stage) card.classList.add(stage);
+  }
   repair.quote_amount = quote;
   repair.admin_note = note;
   repair.tracking = tracking;
