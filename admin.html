@@ -804,6 +804,31 @@
       .complaint-admin-photos{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
 
+    /* Rozwijana lista zleceń – wyłącznie warstwa wyświetlania. */
+    .repair-toggle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding:12px 14px;
+      text-align:left;
+      border:1px solid #45434a;
+      border-radius:10px;
+      background:#22232b;
+      color:#fff;
+      cursor:pointer;
+    }
+    .repair-toggle:hover{border-color:#e9b45e;background:#2a2930}
+    .repair-toggle:focus-visible{outline:2px solid #e9b45e;outline-offset:3px}
+    .repair-toggle-ticket{display:block;color:#e9b45e;font-size:16px;font-weight:800;overflow-wrap:anywhere}
+    .repair-toggle-name{display:block;margin-top:5px;color:#f5f5f5;font-size:15px;font-weight:700;overflow-wrap:anywhere}
+    .repair-toggle-chevron{flex:none;color:#e9b45e;font-size:23px;line-height:1}
+    .repair-details{margin-top:14px}
+    .repair-details[hidden]{display:none!important}
+    /* Zamknięta naprawa nadal może być rozwinięta – bez odblokowywania edycji. */
+    .repair.repair-locked button.repair-toggle{pointer-events:auto;opacity:1}
+
 </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
 </head>
@@ -1259,9 +1284,19 @@ function addPriceListLine(itemId){
     return;
   }
 
-  let price = Number(priceInput?.value);
-  if(!Number.isFinite(price)){
-    price = Number(service.default_price ?? 0);
+  // Cena musi zostać podana przez administratora przed dodaniem pozycji.
+  // Dotyczy też usługi „Inna naprawa – cena do ustalenia”.
+  const rawPrice = (priceInput?.value ?? "").trim();
+  if(rawPrice === ""){
+    alert("Wpisz cenę przed dodaniem pozycji do kosztorysu.");
+    priceInput?.focus();
+    return;
+  }
+  const price = Number(rawPrice);
+  if(!Number.isFinite(price) || price < 0){
+    alert("Podaj prawidłową cenę (0 zł lub więcej).");
+    priceInput?.focus();
+    return;
   }
 
   getQuoteLines(itemId).push({
@@ -3249,6 +3284,27 @@ function applyFilters(){
 }
 
 
+
+// Jeden aktualnie rozwinięty numer zgłoszenia; pozostaje rozwinięty po odświeżeniu danych.
+let expandedRepairCardId = null;
+
+function toggleRepairCard(repairId){
+  const id = String(repairId);
+  const nextId = expandedRepairCardId === id ? null : id;
+  expandedRepairCardId = nextId;
+
+  document.querySelectorAll('#repairs .repair-details').forEach(details=>{
+    const isOpen = nextId !== null && details.id === 'repair-details-' + nextId;
+    details.hidden = !isOpen;
+  });
+  document.querySelectorAll('#repairs .repair-toggle').forEach(button=>{
+    const isOpen = nextId !== null && button.id === 'repair-toggle-' + nextId;
+    button.setAttribute('aria-expanded',String(isOpen));
+    const chevron = button.querySelector('.repair-toggle-chevron');
+    if(chevron) chevron.textContent = isOpen ? '⌃' : '⌄';
+  });
+}
+
 /* =============================
    WYŚWIETLANIE
 ============================= */
@@ -3919,6 +3975,32 @@ function renderRepairs(data){
     if(workflowBox && repairHead){
       repairHead.insertAdjacentElement("afterend", workflowBox);
     }
+
+    // Owijamy istniejącą zawartość karty – żadnych pól ani przycisków nie usuwamy.
+    // Zamknięte zgłoszenia nadal mają czerwoną ramkę i zachowują blokadę edycji.
+    const details = document.createElement('div');
+    details.className = 'repair-details';
+    details.id = 'repair-details-' + r.id;
+    const isExpanded = expandedRepairCardId === String(r.id);
+    details.hidden = !isExpanded;
+    while(div.firstChild) details.appendChild(div.firstChild);
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'repair-toggle';
+    toggle.id = 'repair-toggle-' + r.id;
+    toggle.setAttribute('aria-controls',details.id);
+    toggle.setAttribute('aria-expanded',String(isExpanded));
+    toggle.innerHTML = `
+      <span>
+        <span class="repair-toggle-ticket">${esc(r.ticket_no || 'Bez numeru')}</span>
+        <span class="repair-toggle-name">${esc(r.name || 'Brak danych klienta')}</span>
+      </span>
+      <span class="repair-toggle-chevron" aria-hidden="true">${isExpanded ? '⌃' : '⌄'}</span>
+    `;
+    toggle.addEventListener('click',()=>toggleRepairCard(r.id));
+    div.appendChild(toggle);
+    div.appendChild(details);
 
     updateRepairWorkflowVisibility(r.id, r.status || "Nowe zgłoszenie");
 
