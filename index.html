@@ -6,7 +6,7 @@
   <title>Naprawa maszynek do strzyżenia i trymerów – BarberSerwis | Cała Polska</title>
   <meta name="description" content="Naprawa maszynek do strzyżenia i trymerów – serwis wysyłkowy na terenie całej Polski. Czyszczenie, regulacja ostrzy, naprawa usterek. Szybka diagnoza.">
   <meta name="keywords" content="serwis maszynek do strzyżenia Polska, naprawa maszynek barber, konserwacja maszynek, regulacja lub wymiana ostrzy, serwis wysyłkowy maszynek" />
-  <link rel="icon" type="image/png" href="logo-barberserwis8.png" />
+  <link rel="icon" type="image/png" href="logo-barberserwis9.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <meta name="theme-color" content="#1e140c" />
@@ -63,7 +63,12 @@
       align-items: center;
       gap: 14px;
       min-width: 0;
+      cursor: pointer;
+      border-radius: 12px;
     }
+
+    .logo-box:hover .logo-text h1 { color: #f1c782; }
+    .logo-box:focus-visible { outline: 2px solid #e0b36a; outline-offset: 5px; }
 
     .logo-box img {
       height: 80px;
@@ -1157,13 +1162,13 @@
 
   <header>
     <div class="topbar">
-      <div class="logo-box">
-        <img src="logo-barberserwis8.png" alt="BarberSerwis logo">
+      <a class="logo-box" href="index.html" aria-label="BarberSerwis — przejdź na stronę główną">
+        <img src="logo-barberserwis9.png" alt="BarberSerwis logo">
         <div class="logo-text">
           <h1>BarberSerwis</h1>
           <p>Serwis maszynek do strzyżenia i trymerów – naprawa i konserwacja</p>
         </div>
-      </div>
+      </a>
 
     <div class="top-contact">
   <nav class="menu">
@@ -1195,7 +1200,7 @@
 
   <section class="hero">
     <div class="hero-content">
-      <img src="logo-barberserwis8.png" alt="BarberSerwis logo" class="hero-logo">
+      <img src="logo-barberserwis9.png" alt="BarberSerwis logo" class="hero-logo">
 
       <div class="hero-badge">Cała Polska • Serwis wysyłkowy • Szybka diagnoza przed naprawą</div>
 
@@ -1221,6 +1226,12 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
 </p>
     </div>
   </section>
+
+<section class="section" id="cennik">
+  <h3>Cennik serwisu maszynek i trymerów</h3>
+  <p class="section-sub">Wybierz czyszczenie i konserwację albo sprawdź zakres pozostałych napraw. Pakiety można zamawiać również dla sprawnych urządzeń, jako profilaktyczną konserwację.</p>
+  <div id="bsPublicPriceList" class="bs-price-loading" aria-live="polite">Wczytywanie aktualnego cennika…</div>
+</section>
 
 <section class="section">
     <h3>Dlaczego warto skorzystać z BarberSerwis.com</h3>
@@ -1493,12 +1504,6 @@ Naprawiam sprzęt barberów i użytkowników domowych: Wahl, Andis, Babyliss, Pa
       </div>
     </div>
   </section>
-
-<section class="section" id="cennik">
-  <h3>Cennik serwisu maszynek i trymerów</h3>
-  <p class="section-sub">Wybierz czyszczenie i konserwację albo sprawdź zakres pozostałych napraw. Pakiety można zamawiać również dla sprawnych urządzeń, jako profilaktyczną konserwację.</p>
-  <div id="bsPublicPriceList" class="bs-price-loading" aria-live="polite">Wczytywanie aktualnego cennika…</div>
-</section>
 
 <section class="section" id="galeria">
     <h3>Galeria BarberSerwis</h3>
